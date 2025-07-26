@@ -23,6 +23,16 @@ recipes = {
 }
 
 # --- Scaling Function ---
+def get_total_weight(recipe):
+    return sum(recipe.values())
+
+def scale_recipe_to_target_weight(recipe, target_weight):
+    original_weight = get_total_weight(recipe)
+    scale_factor = target_weight / original_weight
+    adjusted = {k: round(v * scale_factor) for k, v in recipe.items()}
+    return adjusted, scale_factor
+
+
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     ratios = []
     for ing, amt in available_ingredients.items():
