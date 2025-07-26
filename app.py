@@ -62,13 +62,51 @@ for ing in recipe:
         except ValueError:
             st.error(f"Invalid input for {ing}")
 
-# Button to adjust
-if st.button("Adjust Recipe"):
-    adjusted, scale = adjust_recipe_with_constraints(recipe, available_inputs)
-    st.success(f"Scale factor: {scale:.2f}")
-    st.subheader("Adjusted Recipe:")
-    for ing, amt in adjusted.items():
+# # Button to adjust
+#  if st.button("Adjust Recipe"):
+#     adjusted, scale = adjust_recipe_with_constraints(recipe, available_inputs)
+#     st.success(f"Scale factor: {scale:.2f}")
+#     st.subheader("Adjusted Recipe:")
+#     for ing, amt in adjusted.items():
+#         st.write(f"{ing}: {amt} g")
+
+# --- Final Adjusted Output ---
+if st.button("Adjust Recipe Based on Ingredients"):
+    adjusted, limit_scale = adjust_recipe_with_constraints(scaled_recipe, available_inputs)
+    st.session_state.adjusted_recipe = adjusted
+    st.session_state.adjusted_total = round(sum(adjusted.values()))
+    st.session_state.processing_mode = False
+    st.session_state.current_step = 0
+
+    st.success(f"Adjusted recipe (scale factor: {limit_scale:.2f})")
+    st.subheader(f"Final Adjusted Recipe (Total: {st.session_state.adjusted_total} g):")
+    for ing, amt in st.session_state.adjusted_recipe.items():
         st.write(f"{ing}: {amt} g")
+
+    st.button("Process Recipe", on_click=lambda: st.session_state.update({
+        "processing_mode": True,
+        "current_step": 0
+    }))
+
+# --- Step-by-step processing screen ---
+if st.session_state.get("processing_mode", False):
+    adjusted = st.session_state.get("adjusted_recipe", {})
+    step = st.session_state.get("current_step", 0)
+    ingredients = list(adjusted.items())
+
+    if step < len(ingredients):
+        ing, amt = ingredients[step]
+        st.header(f"Step {step + 1} of {len(ingredients)}")
+        st.subheader(f"🧪 {ing}: {amt} g")
+
+        if st.button("Next"):
+            st.session_state.current_step += 1
+    else:
+        st.success("✅ All ingredients processed!")
+        if st.button("Reset"):
+            st.session_state.processing_mode = False
+            st.session_state.current_step = 0
+
 
 st.subheader("Choose how you want to scale the recipe:")
 
