@@ -164,25 +164,46 @@ if show_ingredient_inputs:
             "processing_mode": True,
             "current_step": 0
         }))
-
 # --- Step-by-step processing screen ---
 if st.session_state.get("processing_mode", False):
-    adjusted = st.session_state.get("adjusted_recipe", {})
-    step = st.session_state.get("current_step", 0)
-    ingredients = list(adjusted.items())
-
-    if step < len(ingredients):
-        ing, amt = ingredients[step]
-        st.header(f"Step {step + 1} of {len(ingredients)}")
-        st.subheader(f"🧪 {ing}: {amt} g")
-
-        if st.button("Next"):
-            st.session_state.current_step += 1
+    adjusted = st.session_state.get("adjusted_recipe", None)
+    if not adjusted:
+        st.error("No adjusted recipe found. Please scale or adjust a recipe first.")
     else:
-        st.success("✅ All ingredients processed!")
-        if st.button("Reset"):
-            st.session_state.processing_mode = False
-            st.session_state.current_step = 0
+        step = st.session_state.get("current_step", 0)
+        ingredients = list(adjusted.items())
+
+        if step < len(ingredients):
+            ing, amt = ingredients[step]
+            st.header(f"Step {step + 1} of {len(ingredients)}")
+            st.subheader(f"🧪 {ing}: {amt} g")
+
+            if st.button("Next"):
+                st.session_state.current_step += 1
+        else:
+            st.success("✅ All ingredients processed!")
+            if st.button("Reset"):
+                st.session_state.processing_mode = False
+                st.session_state.current_step = 0
+
+# # --- Step-by-step processing screen ---
+# if st.session_state.get("processing_mode", False):
+#     adjusted = st.session_state.get("adjusted_recipe", {})
+#     step = st.session_state.get("current_step", 0)
+#     ingredients = list(adjusted.items())
+
+#     if step < len(ingredients):
+#         ing, amt = ingredients[step]
+#         st.header(f"Step {step + 1} of {len(ingredients)}")
+#         st.subheader(f"🧪 {ing}: {amt} g")
+
+#         if st.button("Next"):
+#             st.session_state.current_step += 1
+#     else:
+#         st.success("✅ All ingredients processed!")
+#         if st.button("Reset"):
+#             st.session_state.processing_mode = False
+#             st.session_state.current_step = 0
 
 
 
