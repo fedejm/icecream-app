@@ -119,6 +119,20 @@ scale_factor = 1
 if target_weight:
     scaled_recipe, scale_factor = scale_recipe_to_target_weight(recipe, target_weight)
     st.success(f"Scaled recipe to {round(target_weight)} g (scale factor: {scale_factor:.2f})")
+    st.subheader(f"Scaled {selected} Recipe:")
+    st.session_state.adjusted_recipe = scaled_recipe
+    st.session_state.adjusted_total = round(sum(scaled_recipe.values()))
+    st.session_state.processing_mode = False
+    st.session_state.current_step = 0
+
+    for ing, amt in scaled_recipe.items():
+        st.write(f"{ing}: {amt} g")
+
+    st.button("Process Recipe", on_click=lambda: st.session_state.update({
+        "processing_mode": True,
+        "current_step": 0
+    }))
+
 
 # --- Available Ingredient Input Mode ---
 if show_ingredient_inputs:
