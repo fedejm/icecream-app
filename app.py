@@ -166,7 +166,7 @@ def adjust_recipe_with_constraints(recipe, available_ingredients):
     for ing, amt in available_ingredients.items():
         if ing in base_ingredients and base_ingredients[ing] != 0:
             ratios.append(amt / base_ingredients[ing])
-    scale_factor = min(ratios) if ratios else
+    scale_factor = min(ratios) if ratios else 1
 
 
 
