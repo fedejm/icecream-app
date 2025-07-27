@@ -14,7 +14,7 @@ recipes = {
         "vanilla_extract": 100,
         "vanilla_seeds": 90
     },
-    {
+    
     "Dulce de Leche": {
         "milk": 24775,
         "cream": 7500,
