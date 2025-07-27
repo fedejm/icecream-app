@@ -69,7 +69,7 @@ recipes = {
                 "ingredients": {
                     "roasted pistachios": 2967,
                     "pistachio oil": 1532,
-                                    }
+                                    }}
 
 # --- Scaling Functions ---
 def get_total_weight(recipe):
