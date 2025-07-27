@@ -4,6 +4,7 @@ import streamlit as st
 # --- Recipes ---
 recipes = {
     "vanilla": {
+        "ingredients":{
         "milk": 28510,
         "cream": 10000,
         "sugar": 8250,
