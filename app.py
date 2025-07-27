@@ -46,13 +46,13 @@ recipes = {
                     "water": 500,
                     "honey": 50
                 },
-                "instructions": [
-                    "Weigh all caramel sauce ingredients.",
-                    "Cook on medium-high (300°F+), stirring occasionally until sugar dissolves.",
-                    "Continue cooking at high heat until it reaches 220°F.",
-                    "Mix a small portion of the main mix into the caramel and stir on low heat until homogeneous.",
-                    "Incorporate the caramel into the full mix."
-                ]
+                # "instructions": [
+                #     "Weigh all caramel sauce ingredients.",
+                #     "Cook on medium-high (300°F+), stirring occasionally until sugar dissolves.",
+                #     "Continue cooking at high heat until it reaches 220°F.",
+                #     "Mix a small portion of the main mix into the caramel and stir on low heat until homogeneous.",
+                #     "Incorporate the caramel into the full mix."
+                # ]
             }
         }
     }
