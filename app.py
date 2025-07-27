@@ -36,7 +36,9 @@ recipes = {
         },
         "instructions": [
             "Weigh and mix all base ingredients except caramel sauce.",
-            "Add caramel sauce according to the steps below.",
+            "Weigh the Caramel Ingredients and cook on high until the sauce reaches 220 F.",
+            "Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous",
+            "In corporate the Caramel/Base mix into the reminder of the base and mix well",
             "Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
         ],
         "subrecipes": {
