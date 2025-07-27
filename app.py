@@ -58,16 +58,44 @@ recipes = {
     }
 }
 
-    
 # --- Scaling Functions ---
 def get_total_weight(recipe):
-    return sum(recipe.values())
+    return sum(recipe["ingredients"].values())
 
+    
+# --- Scaling Functions ---
+# def get_total_weight(recipe):
+#     return sum(recipe.values())
+
+# def scale_recipe_to_target_weight(recipe, target_weight):
+#     original_weight = get_total_weight(recipe)
+#     scale_factor = target_weight / original_weight
+#     adjusted = {k: round(v * scale_factor) for k, v in recipe.items()}
+#     return adjusted, scale_factor
 def scale_recipe_to_target_weight(recipe, target_weight):
     original_weight = get_total_weight(recipe)
     scale_factor = target_weight / original_weight
-    adjusted = {k: round(v * scale_factor) for k, v in recipe.items()}
-    return adjusted, scale_factor
+    adjusted_main = {
+        k: round(v * scale_factor) for k, v in recipe["ingredients"].items()
+    }
+
+    scaled = {
+        "ingredients": adjusted_main,
+        "instructions": recipe.get("instructions", [])
+    }
+
+    if "subrecipes" in recipe:
+        scaled["subrecipes"] = {}
+        for name, sub in recipe["subrecipes"].items():
+            scaled_sub = {
+                "ingredients": {
+                    k: round(v * scale_factor) for k, v in sub["ingredients"].items()
+                },
+                "instructions": sub.get("instructions", [])
+            }
+            scaled["subrecipes"][name] = scaled_sub
+
+    return scaled, scale_factor
 
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     ratios = []
