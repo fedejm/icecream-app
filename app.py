@@ -175,43 +175,83 @@ st.title("Ice Cream Recipe Adjuster")
 selected = st.selectbox("Choose a recipe", list(recipes.keys()))
 recipe = recipes[selected]
 
-# Scaling method
+# --- Scaling Method ---
 st.subheader("Choose how you want to scale the recipe:")
 scale_mode = st.selectbox(
     "Scaling method",
     (
         "Total weight (grams)",
+        "1.5 gallon tubs",
+        "5 liter pans",
+        "Mix of tubs and pans",
         "Available ingredient amounts"
     )
 )
 
 target_weight = None
-scaled_recipe = recipe
-scale_factor = 1
+show_ingredient_inputs = False
 
 if scale_mode == "Total weight (grams)":
     w = st.text_input("Enter target total weight (g)", "")
     if w.strip():
         try:
             target_weight = float(w)
-            scaled_recipe, scale_factor = scale_recipe_to_target_weight(recipe, target_weight)
         except ValueError:
-            st.error("Please enter a valid number")
+            st.error("Enter a valid number for total weight")
+
+elif scale_mode == "1.5 gallon tubs":
+    tubs = st.number_input("Number of 1.5 gallon tubs", min_value=0, step=1)
+    target_weight = tubs * 4275
+
+elif scale_mode == "5 liter pans":
+    pans = st.number_input("Number of 5 liter pans", min_value=0, step=1)
+    target_weight = pans * 3750
+
+elif scale_mode == "Mix of tubs and pans":
+    tubs = st.number_input("Number of 1.5 gallon tubs", min_value=0, step=1)
+    pans = st.number_input("Number of 5 liter pans", min_value=0, step=1)
+    target_weight = tubs * 4275 + pans * 3750
 
 elif scale_mode == "Available ingredient amounts":
-    st.subheader("Enter available ingredient amounts (grams)")
-    available_inputs = {}
-    for ing in recipe["ingredients"]:
-        val = st.text_input(f"{ing}", "")
-        if val.strip():
-            try:
-                available_inputs[ing] = float(val)
-            except ValueError:
-                st.error(f"Invalid input for {ing}")
+    show_ingredient_inputs = True
 
-    if st.button("Adjust Recipe"):
-        scaled_recipe, scale_factor = adjust_recipe_with_constraints(recipe, available_inputs)
-        st.success(f"Adjusted recipe (scale factor: {scale_factor:.2f})")
+# # Scaling method
+# st.subheader("Choose how you want to scale the recipe:")
+# scale_mode = st.selectbox(
+#     "Scaling method",
+#     (
+#         "Total weight (grams)",
+#         "Available ingredient amounts"
+#     )
+# )
+
+# target_weight = None
+# scaled_recipe = recipe
+# scale_factor = 1
+
+# if scale_mode == "Total weight (grams)":
+#     w = st.text_input("Enter target total weight (g)", "")
+#     if w.strip():
+#         try:
+#             target_weight = float(w)
+#             scaled_recipe, scale_factor = scale_recipe_to_target_weight(recipe, target_weight)
+#         except ValueError:
+#             st.error("Please enter a valid number")
+
+# elif scale_mode == "Available ingredient amounts":
+#     st.subheader("Enter available ingredient amounts (grams)")
+#     available_inputs = {}
+#     for ing in recipe["ingredients"]:
+#         val = st.text_input(f"{ing}", "")
+#         if val.strip():
+#             try:
+#                 available_inputs[ing] = float(val)
+#             except ValueError:
+#                 st.error(f"Invalid input for {ing}")
+
+#     if st.button("Adjust Recipe"):
+#         scaled_recipe, scale_factor = adjust_recipe_with_constraints(recipe, available_inputs)
+#         st.success(f"Adjusted recipe (scale factor: {scale_factor:.2f})")
 
 # Display result
 if scaled_recipe:
