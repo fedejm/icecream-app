@@ -30,19 +30,19 @@ recipes = {
             "cream": 6828,
             "sugar": 4400,
             "guar": 72,
-            "dry_milk": 2800,
+            "dry milk": 2800,
             "yolks": 2400,
-            "caramel_sauce": 3200  # total weight from sub-recipe
+            "caramel sauce": 3200  # total weight from sub-recipe
         },
         "instructions": [
-            "Weigh and mix all base ingredients except caramel sauce.",
-            "Weigh the Caramel Ingredients and cook on high until the sauce reaches 220 F.",
-            "Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous",
-            "In corporate the Caramel/Base mix into the reminder of the base and mix well",
-            "Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+            "1) Weigh and mix all base ingredients except caramel sauce.",
+            "2) Weigh the Caramel Ingredients and cook on high until the sauce reaches 220 F.",
+            "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous",
+            "4) In corporate the Caramel/Base mix into the reminder of the base and mix well",
+            "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
         ],
         "subrecipes": {
-            "caramel_sauce": {
+            "caramel sauce": {
                 "ingredients": {
                     "sugar": 3200,
                     "water": 500,
