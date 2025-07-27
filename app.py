@@ -32,6 +32,17 @@ recipes = {
         "dry milk": 2800,
         "yolks": 2400,
         "caramel sauce": 3200
+        "instructions": [
+            "1) Make a Caramel Sauce: Sugar 3200
+                                      Water 500
+                                      Honey 50",
+            "2) Cook on medium high (300+F), stirring occasionally until the sugar is dissolved",
+            "3) Once the sugar is dissolved, keep cooking in highest setting until it reaches 220 F",
+            "4) Mix the rest of the ingredients together",
+            "5) Incorporate some of the mix into the caramel sauce on low heat and stirr until homogeneous.",
+            "6) Incorporate the Caramel+Mix to the reminder of the mix.",
+            "7) Before batch freezing, burn some caramel crust pieces with the torch which will be the mix in."
+        ]
     }
     }
 # --- Scaling Functions ---
