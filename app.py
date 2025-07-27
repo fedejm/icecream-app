@@ -1,26 +1,4 @@
-import streamlit as st
 
-# --- Recipes ---
-recipes = {
-    "vanilla": {
-        "milk": 28510,
-        "cream": 10000,
-        "sugar": 8250,
-        "guar": 110,
-        "dry_milk": 2500,
-        "yolks": 500,
-        "vanilla_extract": 100,
-        "vanilla_seeds": 90
-    },
-    "chocolate": {
-        "milk": 25000,
-        "cream": 9000,
-        "sugar": 7500,
-        "cocoa": 3000,
-        "guar": 120,
-        "dry_milk": 2600
-    }
-}
 
 import streamlit as st
 
