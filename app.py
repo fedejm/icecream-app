@@ -23,6 +23,15 @@ recipes = {
         "dry milk": 1000,
         "yolks": 500,
         "deulce de leche heladero": 90
+    },
+    "Creme Brulee": {
+        "milk": 20300,
+        "cream": 6828,
+        "sugar": 4400,
+        "guar": 72,
+        "dry milk": 2800,
+        "yolks": 2400,
+        "caramel sauce": 3200
     }
     }
 # --- Scaling Functions ---
