@@ -24,7 +24,7 @@ recipes = {
         "yolks": 500,
         "deulce de leche heladero": 90
     }
-
+    }
 # --- Scaling Functions ---
 def get_total_weight(recipe):
     return sum(recipe.values())
