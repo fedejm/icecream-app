@@ -69,7 +69,7 @@ recipes = {
         },
         "instructions": [
             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
-            "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes."
+            "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
         ],
         "subrecipes": {
             "pistachio paste": {
