@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 
 # --- Recipes ---
@@ -159,6 +157,7 @@ def scale_recipe_to_target_weight(recipe, target_weight):
             scaled["subrecipes"][name] = scaled_sub
 
     return scaled, scale_factor
+
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     base_ingredients = recipe.get("ingredients", {})
     ratios = []
@@ -166,10 +165,243 @@ def adjust_recipe_with_constraints(recipe, available_ingredients):
         if ing in base_ingredients and base_ingredients[ing] != 0:
             ratios.append(amt / base_ingredients[ing])
     scale_factor = min(ratios) if ratios else 1
-    adjusted = {
-        k: round(v * scale_factor) for k, v in base_ingredients.items()
-    }
-    return adjusted, scale_factor
+    adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
+    return {"ingredients": adjusted, "instructions": recipe.get("instructions", [])}, scale_factor
+
+# --- UI ---
+st.title("Ice Cream Recipe Adjuster")
+
+# Select recipe
+selected = st.selectbox("Choose a recipe", list(recipes.keys()))
+recipe = recipes[selected]
+
+# Scaling method
+st.subheader("Choose how you want to scale the recipe:")
+scale_mode = st.selectbox(
+    "Scaling method",
+    (
+        "Total weight (grams)",
+        "Available ingredient amounts"
+    )
+)
+
+target_weight = None
+scaled_recipe = recipe
+scale_factor = 1
+
+if scale_mode == "Total weight (grams)":
+    w = st.text_input("Enter target total weight (g)", "")
+    if w.strip():
+        try:
+            target_weight = float(w)
+            scaled_recipe, scale_factor = scale_recipe_to_target_weight(recipe, target_weight)
+        except ValueError:
+            st.error("Please enter a valid number")
+
+elif scale_mode == "Available ingredient amounts":
+    st.subheader("Enter available ingredient amounts (grams)")
+    available_inputs = {}
+    for ing in recipe["ingredients"]:
+        val = st.text_input(f"{ing}", "")
+        if val.strip():
+            try:
+                available_inputs[ing] = float(val)
+            except ValueError:
+                st.error(f"Invalid input for {ing}")
+
+    if st.button("Adjust Recipe"):
+        scaled_recipe, scale_factor = adjust_recipe_with_constraints(recipe, available_inputs)
+        st.success(f"Adjusted recipe (scale factor: {scale_factor:.2f})")
+
+# Display result
+if scaled_recipe:
+    st.subheader(f"Scaled Recipe: {selected}")
+    for ing, amt in scaled_recipe["ingredients"].items():
+        st.write(f"• {ing}: {amt} g")
+
+    if "subrecipes" in scaled_recipe:
+        for subname, sub in scaled_recipe["subrecipes"].items():
+            st.subheader(f"Subrecipe: {subname}")
+            for ing, amt in sub["ingredients"].items():
+                st.write(f"  • {ing}: {amt} g")
+
+    if scaled_recipe.get("instructions"):
+        st.subheader("Instructions")
+        for step in scaled_recipe["instructions"]:
+            st.markdown(f"- {step}")
+
+
+
+# import streamlit as st
+
+# # --- Recipes ---
+# recipes = {
+#     "vanilla": {
+#         "ingredients": {
+#             "milk": 28510,
+#             "cream": 10000,
+#             "sugar": 8250,
+#             "guar": 110,
+#             "dry_milk": 2500,
+#             "yolks": 500,
+#             "vanilla extract": 100,
+#             "vanilla seeds": 90
+#         },
+#         "instructions": [
+#             "1) Mix all ingredients thoroughly.",
+#             "2) Pasteurize the mix.",
+#             "3) Chill and batch freeze."
+#         ]
+#     },
+
+#     "Dulce de Leche": {
+#         "ingredients": {
+#             "milk": 24775,
+#             "cream": 7500,
+#             "sugar": 2550,
+#             "guar": 75,
+#             "dry milk": 1000,
+#             "yolks": 500,
+#             "deulce de leche heladero": 90
+#         },
+#         "instructions": [
+#             "1) Combine all ingredients.",
+#             "2) Pasteurize the mix.",
+#             "3) Chill, batch freeze, and pack."
+#         ]
+#     },
+
+#     "Creme Brulee": {
+#         "ingredients": {
+#             "milk": 20300,
+#             "cream": 6828,
+#             "sugar": 4400,
+#             "guar": 72,
+#             "dry milk": 2800,
+#             "yolks": 2400,
+#             "caramel sauce": 3200
+#         },
+#         "instructions": [
+#             "1) Weigh and mix all base ingredients except caramel sauce.",
+#             "2) Weigh the caramel ingredients and cook on high until the sauce reaches 220°F.",
+#             "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
+#             "4) Incorporate the caramel/base mix into the remainder of the base and mix well.",
+#             "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+#         ],
+#         "subrecipes": {
+#             "caramel sauce": {
+#                 "ingredients": {
+#                     "sugar": 3200,
+#                     "water": 500,
+#                     "honey": 50
+#                 },
+#                 "instructions": [
+#                     "1) Combine sugar, water, and honey.",
+#                     "2) Cook on medium-high heat until sugar dissolves.",
+#                     "3) Raise heat and cook until mixture reaches 220°F."
+#                 ]
+#             }
+#         }
+#     },
+
+#     "Fresh Mint": {
+#         "ingredients": {
+#             "milk": 31140,
+#             "cream": 6500,
+#             "sugar": 8500,
+#             "guar": 110,
+#             "dry milk": 3000,
+#             "yolks": 750,
+#             "mint": 1250,
+#             "blanched mint": 500
+#         },
+#         "instructions": [
+#             "Day 1: Prepare Mint-Infused Milk",
+#             "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
+#             "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
+#             "",
+#             "Day 2: Prepare Blanched Mint Purée",
+#             "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
+#             "4) Bring 2 gallons of fresh water to a boil.",
+#             "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
+#             "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
+#             "7) Drain the mint and blend until very fine and smooth.",
+#             "",
+#             "Final Steps:",
+#             "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
+#             "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+#         ],
+#         "subrecipes": {}
+#     },
+
+#     "Pistachio": {
+#         "ingredients": {
+#             "milk": 32640,
+#             "cream": 750,
+#             "sugar": 8250,
+#             "guar": 110,
+#             "dry milk": 2750,
+#             "yolks": 1000,
+#             "pistachio paste": 4500
+#         },
+#         "instructions": [
+#             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
+#             "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
+#         ],
+#         "subrecipes": {
+#             "pistachio paste": {
+#                 "ingredients": {
+#                     "roasted pistachios": 2967,
+#                     "pistachio oil": 1532
+#                 },
+#                 "instructions": [
+#                     "1) Roast the pistachios if raw.",
+#                     "2) Blend pistachios with pistachio oil until smooth and creamy."
+#                 ]
+#             }
+#         }
+#     }
+# }
+
+# # --- Scaling Functions ---
+# def get_total_weight(recipe):
+#     return sum(recipe["ingredients"].values())
+
+# def scale_recipe_to_target_weight(recipe, target_weight):
+#     original_weight = get_total_weight(recipe)
+#     scale_factor = target_weight / original_weight
+#     adjusted_main = {
+#         k: round(v * scale_factor) for k, v in recipe["ingredients"].items()
+#     }
+
+#     scaled = {
+#         "ingredients": adjusted_main,
+#         "instructions": recipe.get("instructions", [])
+#     }
+
+#     if "subrecipes" in recipe:
+#         scaled["subrecipes"] = {}
+#         for name, sub in recipe["subrecipes"].items():
+#             scaled_sub = {
+#                 "ingredients": {
+#                     k: round(v * scale_factor) for k, v in sub["ingredients"].items()
+#                 },
+#                 "instructions": sub.get("instructions", [])
+#             }
+#             scaled["subrecipes"][name] = scaled_sub
+
+#     return scaled, scale_factor
+# def adjust_recipe_with_constraints(recipe, available_ingredients):
+#     base_ingredients = recipe.get("ingredients", {})
+#     ratios = []
+#     for ing, amt in available_ingredients.items():
+#         if ing in base_ingredients and base_ingredients[ing] != 0:
+#             ratios.append(amt / base_ingredients[ing])
+#     scale_factor = min(ratios) if ratios else 1
+#     adjusted = {
+#         k: round(v * scale_factor) for k, v in base_ingredients.items()
+#     }
+#     return adjusted, scale_factor
 
 
 
