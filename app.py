@@ -36,15 +36,16 @@ recipes = {
         "vanilla_extract": 100,
         "vanilla_seeds": 90
     },
-    "chocolate": {
-        "milk": 25000,
-        "cream": 9000,
-        "sugar": 7500,
-        "cocoa": 3000,
-        "guar": 120,
-        "dry_milk": 2600
+    {
+    "Dulce de Leche": {
+        "milk": 24775,
+        "cream": 7500,
+        "sugar": 2550,
+        "guar": 75,
+        "dry_milk": 1000,
+        "yolks": 500,
+        "deulce de leche heladero": 90
     }
-}
 
 # --- Scaling Functions ---
 def get_total_weight(recipe):
