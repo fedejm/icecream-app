@@ -1,28 +1,42 @@
 
 
 import streamlit as st
+
 # --- Recipes ---
 recipes = {
     "vanilla": {
-        "ingredients":{
-        "milk": 28510,
-        "cream": 10000,
-        "sugar": 8250,
-        "guar": 110,
-        "dry_milk": 2500,
-        "yolks": 500,
-        "vanilla extract": 100,
-        "vanilla seeds": 90
+        "ingredients": {
+            "milk": 28510,
+            "cream": 10000,
+            "sugar": 8250,
+            "guar": 110,
+            "dry_milk": 2500,
+            "yolks": 500,
+            "vanilla extract": 100,
+            "vanilla seeds": 90
+        },
+        "instructions": [
+            "1) Mix all ingredients thoroughly.",
+            "2) Pasteurize the mix.",
+            "3) Chill and batch freeze."
+        ]
     },
 
     "Dulce de Leche": {
-        "milk": 24775,
-        "cream": 7500,
-        "sugar": 2550,
-        "guar": 75,
-        "dry milk": 1000,
-        "yolks": 500,
-        "deulce de leche heladero": 90
+        "ingredients": {
+            "milk": 24775,
+            "cream": 7500,
+            "sugar": 2550,
+            "guar": 75,
+            "dry milk": 1000,
+            "yolks": 500,
+            "deulce de leche heladero": 90
+        },
+        "instructions": [
+            "1) Combine all ingredients.",
+            "2) Pasteurize the mix.",
+            "3) Chill, batch freeze, and pack."
+        ]
     },
 
     "Creme Brulee": {
@@ -33,13 +47,13 @@ recipes = {
             "guar": 72,
             "dry milk": 2800,
             "yolks": 2400,
-            "caramel sauce": 3200  # total weight from sub-recipe
+            "caramel sauce": 3200
         },
         "instructions": [
             "1) Weigh and mix all base ingredients except caramel sauce.",
-            "2) Weigh the Caramel Ingredients and cook on high until the sauce reaches 220°F.",
+            "2) Weigh the caramel ingredients and cook on high until the sauce reaches 220°F.",
             "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
-            "4) Incorporate the Caramel/Base mix into the remainder of the base and mix well.",
+            "4) Incorporate the caramel/base mix into the remainder of the base and mix well.",
             "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
         ],
         "subrecipes": {
@@ -58,7 +72,6 @@ recipes = {
         }
     },
 
-
     "Fresh Mint": {
         "ingredients": {
             "milk": 31140,
@@ -68,39 +81,27 @@ recipes = {
             "dry milk": 3000,
             "yolks": 750,
             "mint": 1250,
-            "blanched mint": 500  # total weight from sub-recipe
+            "blanched mint": 500
         },
         "instructions": [
             "Day 1: Prepare Mint-Infused Milk",
-        "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
-        "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
-        "",
-        "Day 2: Prepare Blanched Mint Purée",
-        "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
-        "4) Bring 2 gallons of fresh water to a boil.",
-        "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
-        "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
-        "7) Drain the mint and blend until very fine and smooth.",
-        "",
-        "Final Steps:",
-        "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
-        "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+            "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
+            "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
+            "",
+            "Day 2: Prepare Blanched Mint Purée",
+            "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
+            "4) Bring 2 gallons of fresh water to a boil.",
+            "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
+            "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
+            "7) Drain the mint and blend until very fine and smooth.",
+            "",
+            "Final Steps:",
+            "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
+            "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
         ],
-        "subrecipes": {
-            "caramel sauce": {
-                "ingredients": {
-                    "sugar": 3200,
-                    "water": 500,
-                    "honey": 50
-                },
-                "instructions": [
-                    "1) Combine sugar, water, and honey.",
-                    "2) Cook on medium-high heat until sugar dissolves.",
-                    "3) Raise heat and cook until mixture reaches 220°F."
-                ]
-            }
-        }
+        "subrecipes": {}
     },
+
     "Pistachio": {
         "ingredients": {
             "milk": 32640,
@@ -109,7 +110,7 @@ recipes = {
             "guar": 110,
             "dry milk": 2750,
             "yolks": 1000,
-            "pistachio paste": 4500  # total weight from sub-recipe
+            "pistachio paste": 4500
         },
         "instructions": [
             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
@@ -129,6 +130,138 @@ recipes = {
         }
     }
 }
+
+
+
+
+# # --- Recipes ---
+# recipes = {
+#     "vanilla": {
+#         "ingredients":{
+#         "milk": 28510,
+#         "cream": 10000,
+#         "sugar": 8250,
+#         "guar": 110,
+#         "dry_milk": 2500,
+#         "yolks": 500,
+#         "vanilla extract": 100,
+#         "vanilla seeds": 90
+#     },
+
+#     "Dulce de Leche": {
+#         "milk": 24775,
+#         "cream": 7500,
+#         "sugar": 2550,
+#         "guar": 75,
+#         "dry milk": 1000,
+#         "yolks": 500,
+#         "deulce de leche heladero": 90
+#     },
+
+#     "Creme Brulee": {
+#         "ingredients": {
+#             "milk": 20300,
+#             "cream": 6828,
+#             "sugar": 4400,
+#             "guar": 72,
+#             "dry milk": 2800,
+#             "yolks": 2400,
+#             "caramel sauce": 3200  # total weight from sub-recipe
+#         },
+#         "instructions": [
+#             "1) Weigh and mix all base ingredients except caramel sauce.",
+#             "2) Weigh the Caramel Ingredients and cook on high until the sauce reaches 220°F.",
+#             "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
+#             "4) Incorporate the Caramel/Base mix into the remainder of the base and mix well.",
+#             "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+#         ],
+#         "subrecipes": {
+#             "caramel sauce": {
+#                 "ingredients": {
+#                     "sugar": 3200,
+#                     "water": 500,
+#                     "honey": 50
+#                 },
+#                 "instructions": [
+#                     "1) Combine sugar, water, and honey.",
+#                     "2) Cook on medium-high heat until sugar dissolves.",
+#                     "3) Raise heat and cook until mixture reaches 220°F."
+#                 ]
+#             }
+#         }
+#     },
+
+
+#     "Fresh Mint": {
+#         "ingredients": {
+#             "milk": 31140,
+#             "cream": 6500,
+#             "sugar": 8500,
+#             "guar": 110,
+#             "dry milk": 3000,
+#             "yolks": 750,
+#             "mint": 1250,
+#             "blanched mint": 500  # total weight from sub-recipe
+#         },
+#         "instructions": [
+#             "Day 1: Prepare Mint-Infused Milk",
+#         "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
+#         "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
+#         "",
+#         "Day 2: Prepare Blanched Mint Purée",
+#         "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
+#         "4) Bring 2 gallons of fresh water to a boil.",
+#         "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
+#         "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
+#         "7) Drain the mint and blend until very fine and smooth.",
+#         "",
+#         "Final Steps:",
+#         "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
+#         "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+#         ],
+#         "subrecipes": {
+#             "caramel sauce": {
+#                 "ingredients": {
+#                     "sugar": 3200,
+#                     "water": 500,
+#                     "honey": 50
+#                 },
+#                 "instructions": [
+#                     "1) Combine sugar, water, and honey.",
+#                     "2) Cook on medium-high heat until sugar dissolves.",
+#                     "3) Raise heat and cook until mixture reaches 220°F."
+#                 ]
+#             }
+#         }
+#     },
+#     "Pistachio": {
+#         "ingredients": {
+#             "milk": 32640,
+#             "cream": 750,
+#             "sugar": 8250,
+#             "guar": 110,
+#             "dry milk": 2750,
+#             "yolks": 1000,
+#             "pistachio paste": 4500  # total weight from sub-recipe
+#         },
+#         "instructions": [
+#             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
+#             "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
+#         ],
+#         "subrecipes": {
+#             "pistachio paste": {
+#                 "ingredients": {
+#                     "roasted pistachios": 2967,
+#                     "pistachio oil": 1532
+#                 },
+#                 "instructions": [
+#                     "1) Roast the pistachios if raw.",
+#                     "2) Blend pistachios with pistachio oil until smooth and creamy."
+#                 ]
+#             }
+#         }
+#     }
+# }
 
 
 # # --- Recipes ---
