@@ -24,7 +24,7 @@ recipes = {
         "yolks": 500,
         "deulce de leche heladero": 90
     },
-        "creme_brulee": {
+        "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
             "cream": 6828,
@@ -48,17 +48,28 @@ recipes = {
                     "water": 500,
                     "honey": 50
                 },
-                # "instructions": [
-                #     "Weigh all caramel sauce ingredients.",
-                #     "Cook on medium-high (300°F+), stirring occasionally until sugar dissolves.",
-                #     "Continue cooking at high heat until it reaches 220°F.",
-                #     "Mix a small portion of the main mix into the caramel and stir on low heat until homogeneous.",
-                #     "Incorporate the caramel into the full mix."
-                # ]
-            }
-        }
-    }
-}
+
+        "Pistachio": {
+        "ingredients": {
+            "milk": 32640,
+            "cream": 750,
+            "sugar": 8250,
+            "guar": 110,
+            "dry milk": 2750,
+            "yolks": 1000,
+            "pistachio paste": 4500  # total weight from sub-recipe
+        },
+        "instructions": [
+            "1) If Pistachios are raw, roast them at 300 F for 8 minutes.",
+            "2) Mix the Rasted Pistachios and the Pistachio Oil on the robocoupe for 10 minutes and then on the blender for 15 minutes",
+            
+        ],
+        "subrecipes": {
+            "pistachio paste": {
+                "ingredients": {
+                    "roasted pistachios": 2967,
+                    "pistachio oil": 1532,
+                                    }
 
 # --- Scaling Functions ---
 def get_total_weight(recipe):
