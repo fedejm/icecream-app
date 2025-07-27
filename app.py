@@ -57,6 +57,49 @@ recipes = {
         }
     },
 
+
+    "Fresh Mint": {
+        "ingredients": {
+            "milk": 31140,
+            "cream": 6500,
+            "sugar": 8500,
+            "guar": 110,
+            "dry milk": 3000,
+            "yolks": 750,
+            "mint": 1250,
+            "blanched mint": 500  # total weight from sub-recipe
+        },
+        "instructions": [
+            "Day 1: Prepare Mint-Infused Milk",
+        "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
+        "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
+        "",
+        "Day 2: Prepare Blanched Mint Purée",
+        "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
+        "4) Bring 2 gallons of fresh water to a boil.",
+        "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
+        "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
+        "7) Drain the mint and blend until very fine and smooth.",
+        "",
+        "Final Steps:",
+        "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
+        "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+        ],
+        "subrecipes": {
+            "caramel sauce": {
+                "ingredients": {
+                    "sugar": 3200,
+                    "water": 500,
+                    "honey": 50
+                },
+                "instructions": [
+                    "1) Combine sugar, water, and honey.",
+                    "2) Cook on medium-high heat until sugar dissolves.",
+                    "3) Raise heat and cook until mixture reaches 220°F."
+                ]
+            }
+        }
+    },
     "Pistachio": {
         "ingredients": {
             "milk": 32640,
