@@ -24,28 +24,41 @@ recipes = {
         "yolks": 500,
         "deulce de leche heladero": 90
     },
-    "Creme Brulee": {
-        "milk": 20300,
-        "cream": 6828,
-        "sugar": 4400,
-        "guar": 72,
-        "dry milk": 2800,
-        "yolks": 2400,
-        "caramel sauce": 3200
+        "creme_brulee": {
+        "ingredients": {
+            "milk": 20300,
+            "cream": 6828,
+            "sugar": 4400,
+            "guar": 72,
+            "dry_milk": 2800,
+            "yolks": 2400,
+            "caramel_sauce": 3200  # total weight from sub-recipe
+        },
         "instructions": [
-            "1) Make a Caramel Sauce:",
-            "-Sugar 3200",
-            "-Water 500",
-            "-Honey 50",
-            "2) Cook on medium high (300+F), stirring occasionally until the sugar is dissolved",
-            "3) Once the sugar is dissolved, keep cooking in highest setting until it reaches 220 F",
-            "4) Mix the rest of the ingredients together",
-            "5) Incorporate some of the mix into the caramel sauce on low heat and stirr until homogeneous.",
-            "6) Incorporate the Caramel+Mix to the reminder of the mix.",
-            "7) Before batch freezing, burn some caramel crust pieces with the torch which will be the mix in."
-        ]
+            "Weigh and mix all base ingredients except caramel sauce.",
+            "Add caramel sauce according to the steps below.",
+            "Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+        ],
+        "subrecipes": {
+            "caramel_sauce": {
+                "ingredients": {
+                    "sugar": 3200,
+                    "water": 500,
+                    "honey": 50
+                },
+                "instructions": [
+                    "Weigh all caramel sauce ingredients.",
+                    "Cook on medium-high (300°F+), stirring occasionally until sugar dissolves.",
+                    "Continue cooking at high heat until it reaches 220°F.",
+                    "Mix a small portion of the main mix into the caramel and stir on low heat until homogeneous.",
+                    "Incorporate the caramel into the full mix."
+                ]
+            }
+        }
     }
-    }
+}
+
+    
 # --- Scaling Functions ---
 def get_total_weight(recipe):
     return sum(recipe.values())
