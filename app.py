@@ -33,9 +33,9 @@ recipes = {
         "yolks": 2400,
         "caramel sauce": 3200
         "instructions": [
-            "1) Make a Caramel Sauce:"
-            "-Sugar 3200"
-            "-Water 500
+            "1) Make a Caramel Sauce:",
+            "-Sugar 3200",
+            "-Water 500",
             "-Honey 50",
             "2) Cook on medium high (300+F), stirring occasionally until the sugar is dissolved",
             "3) Once the sugar is dissolved, keep cooking in highest setting until it reaches 220 F",
