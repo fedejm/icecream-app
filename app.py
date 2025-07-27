@@ -48,28 +48,55 @@ recipes = {
                     "water": 500,
                     "honey": 50
                 },
+"Pistachio": {
+    "ingredients": {
+        "milk": 32640,
+        "cream": 750,
+        "sugar": 8250,
+        "guar": 110,
+        "dry milk": 2750,
+        "yolks": 1000,
+        "pistachio paste": 4500  # total weight from sub-recipe
+    },
+    "instructions": [
+        "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
+        "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes."
+    ],
+    "subrecipes": {
+        "pistachio paste": {
+            "ingredients": {
+                "roasted pistachios": 2967,
+                "pistachio oil": 1532
+            },
+            "instructions": [
+                "1) Roast the pistachios if raw.",
+                "2) Blend pistachios with pistachio oil until smooth and creamy."
+            ]
+        }
+    }
+}
 
-        "Pistachio": {
-        "ingredients": {
-            "milk": 32640,
-            "cream": 750,
-            "sugar": 8250,
-            "guar": 110,
-            "dry milk": 2750,
-            "yolks": 1000,
-            "pistachio paste": 4500  # total weight from sub-recipe
-        },
-        "instructions": [
-            "1) If Pistachios are raw, roast them at 300 F for 8 minutes.",
-            "2) Mix the Rasted Pistachios and the Pistachio Oil on the robocoupe for 10 minutes and then on the blender for 15 minutes",
+        # "Pistachio": {
+        # "ingredients": {
+        #     "milk": 32640,
+        #     "cream": 750,
+        #     "sugar": 8250,
+        #     "guar": 110,
+        #     "dry milk": 2750,
+        #     "yolks": 1000,
+        #     "pistachio paste": 4500  # total weight from sub-recipe
+        # },
+        # "instructions": [
+        #     "1) If Pistachios are raw, roast them at 300 F for 8 minutes.",
+        #     "2) Mix the Rasted Pistachios and the Pistachio Oil on the robocoupe for 10 minutes and then on the blender for 15 minutes",
             
-        ],
-        "subrecipes": {
-            "pistachio paste": {
-                "ingredients": {
-                    "roasted pistachios": 2967,
-                    "pistachio oil": 1532,
-                                    }}
+        # ],
+        # "subrecipes": {
+        #     "pistachio paste": {
+        #         "ingredients": {
+        #             "roasted pistachios": 2967,
+        #             "pistachio oil": 1532,
+        #                             }}
 
 # --- Scaling Functions ---
 def get_total_weight(recipe):
