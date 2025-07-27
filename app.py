@@ -11,8 +11,8 @@ recipes = {
         "guar": 110,
         "dry_milk": 2500,
         "yolks": 500,
-        "vanilla_extract": 100,
-        "vanilla_seeds": 90
+        "vanilla extract": 100,
+        "vanilla seeds": 90
     },
     
     "Dulce de Leche": {
@@ -20,7 +20,7 @@ recipes = {
         "cream": 7500,
         "sugar": 2550,
         "guar": 75,
-        "dry_milk": 1000,
+        "dry milk": 1000,
         "yolks": 500,
         "deulce de leche heladero": 90
     }
