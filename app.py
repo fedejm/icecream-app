@@ -159,7 +159,6 @@ def scale_recipe_to_target_weight(recipe, target_weight):
             scaled["subrecipes"][name] = scaled_sub
 
     return scaled, scale_factor
-
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     base_ingredients = recipe.get("ingredients", {})
     ratios = []
@@ -167,6 +166,22 @@ def adjust_recipe_with_constraints(recipe, available_ingredients):
         if ing in base_ingredients and base_ingredients[ing] != 0:
             ratios.append(amt / base_ingredients[ing])
     scale_factor = min(ratios) if ratios else 1
+    adjusted = {
+        k: round(v * scale_factor) for k, v in base_ingredients.items()
+    }
+    return adjusted, scale_factor
+
+
+
+
+
+# def adjust_recipe_with_constraints(recipe, available_ingredients):
+#     base_ingredients = recipe.get("ingredients", {})
+#     ratios = []
+#     for ing, amt in available_ingredients.items():
+#         if ing in base_ingredients and base_ingredients[ing] != 0:
+#             ratios.append(amt / base_ingredients[ing])
+#     scale_factor = min(ratios) if ratios else 1
 
 
 
