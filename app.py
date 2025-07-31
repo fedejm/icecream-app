@@ -121,9 +121,23 @@ recipes = {
                     "1) Roast the pistachios if raw.",
                     "2) Blend pistachios with pistachio oil until smooth and creamy."
                 ]
-            }
-        }
+            },
+    "Strawberry Preserves": {
+        "ingredients": {
+            "strawberries": 1250,
+            "sugar": 1150,
+            "pectin": 11,
+            "lemon juice": 89,
+        },
+        "instructions": [
+            "1) combine s'berries and sugar and let stand for 3 hours.",
+            "2) bring to a boil stirring often until sugar is dissolved and cook to 220F.",
+             ""
+        ],
+        "subrecipes": {}
     }
+}
+}
 }
 
 # --- Scaling Functions ---
