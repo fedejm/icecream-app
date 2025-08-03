@@ -3,7 +3,7 @@ import streamlit as st
 
 # --- Recipes ---
 recipes = 
-    {
+    recipes = {
     "Dulce de Leche": {
         "ingredients": {
             "milk": 24775,
@@ -12,7 +12,7 @@ recipes =
             "guar": 75,
             "dry milk": 1000,
             "yolks": 500,
-            "deulce de leche heladero": 90
+            "dulce de leche heladero": 90
         },
         "instructions": [
             "1) Combine all ingredients.",
@@ -105,21 +105,25 @@ recipes =
                     "1) Roast the pistachios if raw.",
                     "2) Blend pistachios with pistachio oil until smooth and creamy."
                 ]
-            },
-        
+            }
+        }
+    },
     "vanilla": {
         "ingredients": {
             "milk": 28510,
             "cream": 10000,
             "sugar": 8250,
             "guar": 110,
-            "dry_milk": 2500,
+            "dry milk": 2500,
             "yolks": 500,
             "vanilla extract": 100,
             "vanilla seeds": 90
-        }
-    },
-        }
+        },
+        "instructions": [
+            "1) Combine all ingredients.",
+            "2) Pasteurize the mix.",
+            "3) Chill, batch freeze, and pack."
+        ]
     }
 }
 
@@ -1590,4 +1594,5 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
