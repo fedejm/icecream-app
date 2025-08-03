@@ -334,14 +334,10 @@ if "step_index" in st.session_state and scaled_recipe:
         if amount is None:
             st.markdown(f"### {label}")  # e.g., [crust]
         else:
-            st.markdown(f"### {round(amount)} grams of {label}")
+            st.markdown(f"### {label}: {round(amount)} grams")
 
         if st.button("Next"):
-            st.session_state.step_index += 1
-    else:
-        st.success("✅ All ingredients completed!")
-        if st.button("Restart"):
-            st.session_state.step_index = 0
+            st.session_state.step_i
 
 
 
@@ -379,6 +375,7 @@ if "step_index" in st.session_state and scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
