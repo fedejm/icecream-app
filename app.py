@@ -97,35 +97,40 @@ recipes = {
             
         ],
         "subrecipes": {}
+    }"Lemon Bar": {
+    "ingredients": {
+        "crust": 566,  # sum of crust: 225 + 240 + 100 + 1
+        "filling": 1362  # sum of filling: 12 eggs (assume 50g ea?) + 360 + 900 + 90
     },
-    "Lemon Bar": {
-        "ingredients": {
-            "crust":{
-            "butter": 225,
-            "flour": 240,
-            "sugar": 100,
-            "salt": 1
-                    },
-        "instructions": [
-            "1) process all ingredients on robocoupe until smooth.",
-            "2) on a greased pan, cook the crust for 15 minutes at 350 F."
-        ],
-        "subrecipes": {
-            "filling": {
-                "ingredients": {
-                    "eggs (each)": 12,
-                    "lemon juice": 360,
-                    "sugar": 900,
-                    "flout": 90,
-                },
-                "instructions": [
-                    "1) beat all the filling ingredients in a bowl until fully dissolved.",
-                    "2) pour on top of the crust and bake for 20 minutes at 350 F."
-                ]
-            }
+    "instructions": [...],
+    "subrecipes": {
+        "crust": {
+            "ingredients": {
+                "butter": 225,
+                "flour": 240,
+                "sugar": 100,
+                "salt": 1
+            },
+            "instructions": [
+                "1) Process all ingredients in a food processor until smooth.",
+                "2) On a greased pan, cook the crust for 15 minutes at 350°F."
+            ]
+        },
+        "filling": {
+            "ingredients": {
+                "eggs (each)": 12,
+                "lemon juice": 360,
+                "sugar": 900,
+                "flour": 90
+            },
+            "instructions": [
+                "1) Beat all the filling ingredients in a bowl until fully dissolved.",
+                "2) Pour on top of the crust and bake for 20 minutes at 350°F."
+            ]
         }
-        }      
-    },
+    }
+},
+
 
     "Pistachio": {
         "ingredients": {
@@ -1657,6 +1662,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
