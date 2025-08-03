@@ -331,7 +331,7 @@ if "step_index" in st.session_state and scaled_recipe:
     if step < len(all_ingredients):
         label, amount = all_ingredients[step]
         if amount is not None:
-            st.info(""}:  **{amount} grams** of **{label}**")
+            st.info("."}:  **{amount} grams** of **{label}**")
         else:
             st.markdown(f"### {label}")  # section header like [crust]
 
@@ -376,6 +376,7 @@ if "step_index" in st.session_state and scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
