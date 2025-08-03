@@ -97,7 +97,8 @@ recipes = {
             
         ],
         "subrecipes": {}
-    }"Lemon Bar": {
+    },
+    "Lemon Bar": {
     "ingredients": {
         "crust": 566,  # sum of crust: 225 + 240 + 100 + 1
         "filling": 1362  # sum of filling: 12 eggs (assume 50g ea?) + 360 + 900 + 90
@@ -1662,6 +1663,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
