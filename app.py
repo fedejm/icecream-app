@@ -100,10 +100,16 @@ recipes = {
     },
     "Lemon Bar": {
     "ingredients": {
-        "crust": 566,  # sum of crust: 225 + 240 + 100 + 1
-        "filling": 1362  # sum of filling: 12 eggs (assume 50g ea?) + 360 + 900 + 90
+        "crust": 566,  # butter + flour + sugar + salt
+        "filling": 1362  # estimated weight
     },
-    "instructions": [...],
+    "instructions": [
+        "1) Prepare the crust according to the subrecipe.",
+        "2) Bake the crust at 350°F for 15 minutes.",
+        "3) Prepare the filling according to the subrecipe.",
+        "4) Pour filling onto baked crust and bake at 350°F for 20 minutes.",
+        "5) Chill, cut into bars, and pack."
+    ],
     "subrecipes": {
         "crust": {
             "ingredients": {
@@ -113,8 +119,8 @@ recipes = {
                 "salt": 1
             },
             "instructions": [
-                "1) Process all ingredients in a food processor until smooth.",
-                "2) On a greased pan, cook the crust for 15 minutes at 350°F."
+                "1) Process all crust ingredients in a food processor until smooth.",
+                "2) Press into a greased pan and bake for 15 minutes at 350°F."
             ]
         },
         "filling": {
@@ -125,12 +131,13 @@ recipes = {
                 "flour": 90
             },
             "instructions": [
-                "1) Beat all the filling ingredients in a bowl until fully dissolved.",
-                "2) Pour on top of the crust and bake for 20 minutes at 350°F."
+                "1) Beat all filling ingredients in a bowl until fully dissolved.",
+                "2) Pour on top of the baked crust and bake for 20 minutes at 350°F."
             ]
         }
     }
-},
+}
+,
 
 
     "Pistachio": {
@@ -1663,6 +1670,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
