@@ -289,19 +289,43 @@ if scale_mode == "Available ingredient amounts":
             st.write(f"{ing}: {amt} g")
 
 if scaled_recipe:
+    st.markdown("---")
     st.success(f"Scaled recipe to {round(target_weight)} g")
-    st.subheader(f"Scaled {selected} Recipe:")
+    st.subheader(f"Scaled {selected} Recipe")
+
+    # --- Main Ingredients ---
+    st.subheader("Main Ingredients")
     for ing, amt in scaled_recipe["ingredients"].items():
-        st.write(f"{ing}: {amt} g")
-    if scaled_recipe.get("subrecipes"):
-        for name, sub in scaled_recipe["subrecipes"].items():
-            st.subheader(f"Subrecipe: {name}")
-            for ing, amt in sub["ingredients"].items():
-                st.write(f"{ing}: {amt} g")
+        st.write(f"• {ing}: {amt} g")
+
+    # --- Subrecipes ---
+    if "subrecipes" in scaled_recipe:
+        for subname, sub in scaled_recipe["subrecipes"].items():
+            st.subheader(f"Subrecipe: {subname}")
+            for ing, amt in sub.get("ingredients", {}).items():
+                st.write(f"• {ing}: {amt} g")
+
+    # --- Instructions ---
     if scaled_recipe.get("instructions"):
         st.subheader("Instructions")
         for step in scaled_recipe["instructions"]:
             st.markdown(f"- {step}")
+
+
+# if scaled_recipe:
+#     st.success(f"Scaled recipe to {round(target_weight)} g")
+#     st.subheader(f"Scaled {selected} Recipe:")
+#     for ing, amt in scaled_recipe["ingredients"].items():
+#         st.write(f"{ing}: {amt} g")
+#     if scaled_recipe.get("subrecipes"):
+#         for name, sub in scaled_recipe["subrecipes"].items():
+#             st.subheader(f"Subrecipe: {name}")
+#             for ing, amt in sub["ingredients"].items():
+#                 st.write(f"{ing}: {amt} g")
+#     if scaled_recipe.get("instructions"):
+#         st.subheader("Instructions")
+#         for step in scaled_recipe["instructions"]:
+#             st.markdown(f"- {step}")
 
 
 
@@ -321,6 +345,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
