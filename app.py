@@ -107,6 +107,23 @@ recipes = {
             }
         }
     },
+    "Toffee": {
+        "ingredients": {
+            "butter": 863,
+            "sugar": 779,
+            "honey": 17,
+            "salt": 4,
+            },
+        "instructions": [
+            "",
+            "1) Cook on medium heat, stirring constantly until sugar dissolves.",
+            "2) Once sugar is completely dissolved, stop stirring.",
+            "3) Continue cooking on high until 300 F."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
     "vanilla": {
         "ingredients": {
             "milk": 28510,
@@ -1593,6 +1610,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
