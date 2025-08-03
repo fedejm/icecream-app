@@ -314,10 +314,14 @@ if scaled_recipe:
 st.markdown("---")
 st.subheader("🧪 Step-by-Step Weighing")
 
+# Initialize step index safely
+if "step_index" not in st.session_state:
+    st.session_state.step_index = 0
+
 if st.button("Start Step-by-Step Mode"):
     st.session_state.step_index = 0
 
-if "step_index" in st.session_state and scaled_recipe:
+if scaled_recipe:
     # Flatten ingredients and subrecipes
     all_ingredients = list(scaled_recipe["ingredients"].items())
 
@@ -337,7 +341,11 @@ if "step_index" in st.session_state and scaled_recipe:
             st.markdown(f"### {label}: {round(amount)} grams")
 
         if st.button("Next"):
-            st.session_state.step_i
+            st.session_state.step_index += 1
+    else:
+        st.success("✅ All ingredients completed!")
+        if st.button("Restart"):
+            st.session_state.step_index = 0
 
 
 
@@ -375,6 +383,7 @@ if "step_index" in st.session_state and scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
