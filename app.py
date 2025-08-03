@@ -310,6 +310,37 @@ if scaled_recipe:
         st.subheader("Instructions")
         for step in scaled_recipe["instructions"]:
             st.markdown(f"- {step}")
+# --- Step-by-Step Mode ---
+st.markdown("---")
+st.subheader("🧑‍🍳 Step-by-Step Ingredient Walkthrough")
+
+if st.button("Start Step-by-Step Mode"):
+    st.session_state.step_index = 0
+
+if "step_index" in st.session_state and scaled_recipe:
+    all_ingredients = list(scaled_recipe["ingredients"].items())
+
+    # If subrecipes exist, flatten them into the list
+    if "subrecipes" in scaled_recipe:
+        for subname, sub in scaled_recipe["subrecipes"].items():
+            all_ingredients.append((f"[{subname}]", None))  # label
+            all_ingredients.extend(list(sub["ingredients"].items()))
+
+    step = st.session_state.step_index
+
+    if step < len(all_ingredients):
+        label, amount = all_ingredients[step]
+        if amount is not None:
+            st.info(f"Step {step + 1}: Weigh **{amount} g** of **{label}**")
+        else:
+            st.markdown(f"### {label}")  # section header like [crust]
+
+        if st.button("Next"):
+            st.session_state.step_index += 1
+    else:
+        st.success("✅ All ingredients completed!")
+        if st.button("Restart"):
+            st.session_state.step_index = 0
 
 
 # if scaled_recipe:
@@ -345,6 +376,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
