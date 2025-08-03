@@ -3,22 +3,7 @@ import streamlit as st
 
 # --- Recipes ---
 recipes = {
-    "Dulce de Leche": {
-        "ingredients": {
-            "milk": 24775,
-            "cream": 7500,
-            "sugar": 2550,
-            "guar": 75,
-            "dry milk": 1000,
-            "yolks": 500,
-            "dulce de leche heladero": 90
-        },
-        "instructions": [
-            "1) Combine all ingredients.",
-            "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."
-        ]
-    },
+    
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -50,6 +35,21 @@ recipes = {
                 ]
             }
         }
+    },"Dulce de Leche": {
+        "ingredients": {
+            "milk": 24775,
+            "cream": 7500,
+            "sugar": 2550,
+            "guar": 75,
+            "dry milk": 1000,
+            "yolks": 500,
+            "dulce de leche heladero": 90
+        },
+        "instructions": [
+            "1) Combine all ingredients.",
+            "2) Pasteurize the mix.",
+            "3) Chill, batch freeze, and pack."
+        ]
     },
     "Fresh Mint": {
         "ingredients": {
@@ -1593,6 +1593,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
