@@ -104,11 +104,8 @@ recipes = {
         "filling": 1362  # estimated weight
     },
     "instructions": [
-        "1) Prepare the crust according to the subrecipe.",
-        "2) Bake the crust at 350°F for 15 minutes.",
-        "3) Prepare the filling according to the subrecipe.",
-        "4) Pour filling onto baked crust and bake at 350°F for 20 minutes.",
-        "5) Chill, cut into bars, and pack."
+        "1) Bake the crust at 350°F for 15 minutes.",
+        "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
     ],
     "subrecipes": {
         "crust": {
@@ -1670,6 +1667,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
