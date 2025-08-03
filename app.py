@@ -3,7 +3,7 @@ import streamlit as st
 
 # --- Recipes ---
 recipes = 
-    recipes = {
+     {
     "Dulce de Leche": {
         "ingredients": {
             "milk": 24775,
@@ -1594,5 +1594,6 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
