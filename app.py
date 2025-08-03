@@ -98,6 +98,35 @@ recipes = {
         ],
         "subrecipes": {}
     },
+    "Lemon Bar": {
+        "ingredients": {
+            "crust":{
+            "butter": 225,
+            "flour": 240,
+            "sugar": 100,
+            "salt": 1
+                    },
+        "instructions": [
+            "1) process all ingredients on robocoupe until smooth.",
+            "2) on a greased pan, cook the crust for 15 minutes at 350 F."
+        ],
+        "subrecipes": {
+            "filling": {
+                "ingredients": {
+                    "eggs (each)": 12,
+                    "lemon juice": 360,
+                    "sugar": 900,
+                    "flout": 90,
+                },
+                "instructions": [
+                    "1) beat all the filling ingredients in a bowl until fully dissolved.",
+                    "2) pour on top of the crust and bake for 20 minutes at 350 F."
+                ]
+            }
+        }
+        }      
+    },
+
     "Pistachio": {
         "ingredients": {
             "milk": 32640,
@@ -1628,6 +1657,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
