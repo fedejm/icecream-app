@@ -90,9 +90,9 @@ recipes = {
         "instructions": [
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
-            "3) Continue cooking on high until 300 F."
-            "4) Add the baking soda and stir."
-            "4) Pour the rising honeycomb on previously greased trays and let cool."
+            "3) Continue cooking on high until 300 F.",
+            "4) Add the baking soda and stir.",
+            "5) Pour the rising honeycomb on previously greased trays and let cool."
             ""
             
         ],
@@ -1628,6 +1628,7 @@ if scaled_recipe:
 
 
 # #updated 072525
+
 
 
 
