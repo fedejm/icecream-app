@@ -310,30 +310,35 @@ if scaled_recipe:
         st.subheader("Instructions")
         for step in scaled_recipe["instructions"]:
             st.markdown(f"- {step}")
-# --- Step-by-Step Mode ---
+# --- Step-by-Step Ingredient Mode ---
 st.markdown("---")
-st.subheader("🧑‍🍳 Step-by-Step Ingredient Walkthrough")
+st.subheader("🧪 Step-by-Step Weighing")
 
 if st.button("Start Step-by-Step Mode"):
     st.session_state.step_index = 0
 
 if "step_index" in st.session_state and scaled_recipe:
-    all_ingredients = list(scaled_recipe["ingredients"].items())
+    # Flatten all ingredients including subrecipes
+    all_ingredients = []
 
-    # If subrecipes exist, flatten them into the list
+    # Add main ingredients
+    all_ingredients.extend(list(scaled_recipe["ingredients"].items()))
+
+    # Add subrecipe ingredients, separated by section headers
     if "subrecipes" in scaled_recipe:
         for subname, sub in scaled_recipe["subrecipes"].items():
-            all_ingredients.append((f"[{subname}]", None))  # label
+            all_ingredients.append((f"[{subname}]", None))  # Section label
             all_ingredients.extend(list(sub["ingredients"].items()))
 
     step = st.session_state.step_index
 
     if step < len(all_ingredients):
         label, amount = all_ingredients[step]
-        if amount is not None:
-            st.info(":  **{amount} grams** of **{label}**")
+
+        if amount is None:
+            st.markdown(f"### {label}")  # Subrecipe section header
         else:
-            st.markdown(f"### {label}")  # section header like [crust]
+            st.markdown(f"### {round(amount)} grams")
 
         if st.button("Next"):
             st.session_state.step_index += 1
@@ -341,6 +346,7 @@ if "step_index" in st.session_state and scaled_recipe:
         st.success("✅ All ingredients completed!")
         if st.button("Restart"):
             st.session_state.step_index = 0
+
 
 
 # if scaled_recipe:
@@ -376,6 +382,7 @@ if "step_index" in st.session_state and scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
