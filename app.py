@@ -197,6 +197,22 @@ recipes = {
         ],
         "subrecipes": {}
     },
+    "Peach Preserves": {
+        "ingredients": {
+            "peaches": 1350,
+            "sugar": 1250,
+            "lemon": 82
+            },
+        "instructions": [
+            
+            "1) combine cored peaches and sugar and let stand for 3 hours.",
+            "2) bring to boil, stirring occasionally.",
+            "3) cook until it reaches 220 F and syrup is thick."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
     "Pear Sorbet": {
         "ingredients": {
             "water": 5500,
@@ -486,6 +502,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
