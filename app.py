@@ -11,7 +11,8 @@ LINEUP_FILE = "weekly_lineup.json"
 INVENTORY_FILE = "inventory.json"
 
 # --- Recipe Database ---
-recipes = "Creme Brulee": {
+recipes = {
+    "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
             "cream": 6828,
@@ -49,17 +50,14 @@ recipes = "Creme Brulee": {
             "sugar": 388,
             "cinnamon": 8,
             "butter": 272
-            },
+        },
         "instructions": [
-            
             "1) Melt the butter.",
             "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
-            "3) Bake for 15 minmmutes at 350 F."
-            ""
-            
+            "3) Bake for 15 minutes at 350°F."
         ],
         "subrecipes": {}
-    }, 
+    },
     "Cookie Dough": {
         "ingredients": {
             "butter": 396,
@@ -70,14 +68,11 @@ recipes = "Creme Brulee": {
             "vanilla extract": 16,
             "flour": 646,
             "salt": 6
-            },
-        "instructions": [
-            
-            
-            
-        ],
-        "subrecipes": {},
-    },"Dulce de Leche": {
+        },
+        "instructions": [],
+        "subrecipes": {}
+    },
+    "Dulce de Leche": {
         "ingredients": {
             "milk": 24775,
             "cream": 7500,
@@ -87,9 +82,7 @@ recipes = "Creme Brulee": {
             "yolks": 500,
             "dulce de leche heladero": 90
         },
-        "instructions": [
-            
-        ]
+        "instructions": []
     },
     "Fresh Mint": {
         "ingredients": {
@@ -106,14 +99,12 @@ recipes = "Creme Brulee": {
             "Day 1: Prepare Mint-Infused Milk",
             "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
             "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
-            "",
             "Day 2: Prepare Blanched Mint Purée",
             "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
             "4) Bring 2 gallons of fresh water to a boil.",
             "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
             "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
             "7) Drain the mint and blend until very fine and smooth.",
-            "",
             "Final Steps:",
             "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
             "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
@@ -125,15 +116,12 @@ recipes = "Creme Brulee": {
             "graham cracker crumble": 338,
             "butter": 310,
             "sugar": 352
-            },
+        },
         "instructions": [
-            
             "1) Process graham crackers on the Robocoupe.",
             "2) Mix ingredients on the mixer.",
             "3) Press ingredients down on a flat pan.",
-            "4) Bake for 15 minmmutes at 325 F."
-            ""
-            
+            "4) Bake for 15 minutes at 325°F."
         ],
         "subrecipes": {}
     },
@@ -142,56 +130,53 @@ recipes = "Creme Brulee": {
             "sugar": 3000,
             "honey": 50,
             "water": 1450,
-            "baking soda": 250,
-            },
+            "baking soda": 250
+        },
         "instructions": [
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
-            "3) Continue cooking on high until 300 F.",
+            "3) Continue cooking on high until 300°F.",
             "4) Add the baking soda and stir.",
             "5) Pour the rising honeycomb on previously greased trays and let cool."
-            ""
-            
         ],
         "subrecipes": {}
     },
     "Lemon Bar": {
-    "ingredients": {
-        "crust": 566,  # butter + flour + sugar + salt
-        "filling": 1362  # estimated weight
-    },
-    "instructions": [
-        "1) Bake the crust at 350°F for 15 minutes.",
-        "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
-    ],
-    "subrecipes": {
-        "crust": {
-            "ingredients": {
-                "butter": 225,
-                "flour": 240,
-                "sugar": 100,
-                "salt": 1
-            },
-            "instructions": [
-                "1) Process all crust ingredients in a food processor until smooth.",
-                "2) Press into a greased pan and bake for 15 minutes at 350°F."
-            ]
+        "ingredients": {
+            "crust": 566,
+            "filling": 1362
         },
-        "filling": {
-            "ingredients": {
-                "eggs (each)": 12,
-                "lemon juice": 360,
-                "sugar": 900,
-                "flour": 90
+        "instructions": [
+            "1) Bake the crust at 350°F for 15 minutes.",
+            "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
+        ],
+        "subrecipes": {
+            "crust": {
+                "ingredients": {
+                    "butter": 225,
+                    "flour": 240,
+                    "sugar": 100,
+                    "salt": 1
+                },
+                "instructions": [
+                    "1) Process all crust ingredients in a food processor until smooth.",
+                    "2) Press into a greased pan and bake for 15 minutes at 350°F."
+                ]
             },
-            "instructions": [
-                "1) Beat all filling ingredients in a bowl until fully dissolved.",
-                "2) Pour on top of the baked crust and bake for 20 minutes at 350°F."
-            ]
+            "filling": {
+                "ingredients": {
+                    "eggs (each)": 12,
+                    "lemon juice": 360,
+                    "sugar": 900,
+                    "flour": 90
+                },
+                "instructions": [
+                    "1) Beat all filling ingredients in a bowl until fully dissolved.",
+                    "2) Pour on top of the baked crust and bake for 20 minutes at 350°F."
+                ]
+            }
         }
-    }
-}
-,
+    },
     "Lemon Sorbet": {
         "ingredients": {
             "water": 5442,
@@ -199,9 +184,8 @@ recipes = "Creme Brulee": {
             "pectin": 87,
             "guar gum": 12,
             "sugar": 2625
-            },
-        "instructions": [          
-        ],
+        },
+        "instructions": [],
         "subrecipes": {}
     },
     "Peach Preserves": {
@@ -209,14 +193,11 @@ recipes = "Creme Brulee": {
             "peaches": 1350,
             "sugar": 1250,
             "lemon": 82
-            },
+        },
         "instructions": [
-            
-            "1) combine cored peaches and sugar and let stand for 3 hours.",
-            "2) bring to boil, stirring occasionally.",
-            "3) cook until it reaches 220 F and syrup is thick."
-            ""
-            
+            "1) Combine cored peaches and sugar and let stand for 3 hours.",
+            "2) Bring to boil, stirring occasionally.",
+            "3) Cook until it reaches 220°F and syrup is thick."
         ],
         "subrecipes": {}
     },
@@ -227,25 +208,19 @@ recipes = "Creme Brulee": {
             "sugar": 3500,
             "pear": 10600,
             "lemon": 300
-            },
+        },
         "instructions": [
-            
             "1) Quarter the pears and remove their seeds.",
-            "2) Fill a put with the quwartered pears and weigh.",
-            "3) Add water to fill completely cover the pears.",
-            "4) weigh the water + pears on the pot.",
+            "2) Fill a pot with the quartered pears and weigh.",
+            "3) Add water to completely cover the pears.",
+            "4) Weigh the water + pears in the pot.",
             "5) Cook until pears are soft and translucent.",
             "6) Re-weigh cooked pear+water mix.",
-            "7) Add enough water to make up for the difference between weighs on spet 4) and 6).",
-            "8) Process all the ingredients on a blender until smooth."
-            ""
-            
+            "7) Add enough water to make up the difference between step 4 and 6.",
+            "8) Process all the ingredients in a blender until smooth."
         ],
         "subrecipes": {}
     },
-
-
-
     "Pistachio": {
         "ingredients": {
             "milk": 32640,
@@ -279,14 +254,11 @@ recipes = "Creme Brulee": {
             "sugar": 1150,
             "pectin": 11,
             "lemon": 89
-            },
+        },
         "instructions": [
-            
-            "1) combine strawberries and sugar and let stand for 3 hours.",
-            "2) bring to boil, stirring occasionally.",
-            "3) cook until it reaches 220 F and syrup is thick."
-            ""
-            
+            "1) Combine strawberries and sugar and let stand for 3 hours.",
+            "2) Bring to boil, stirring occasionally.",
+            "3) Cook until it reaches 220°F and syrup is thick."
         ],
         "subrecipes": {}
     },
@@ -295,15 +267,12 @@ recipes = "Creme Brulee": {
             "butter": 863,
             "sugar": 779,
             "honey": 17,
-            "salt": 4,
-            },
+            "salt": 4
+        },
         "instructions": [
-            
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
-            "3) Continue cooking on high until 300 F."
-            ""
-            
+            "3) Continue cooking on high until 300°F."
         ],
         "subrecipes": {}
     },
@@ -324,6 +293,7 @@ recipes = "Creme Brulee": {
             "3) Chill, batch freeze, and pack."
         ]
     }
+}
 
    
 
@@ -1084,6 +1054,7 @@ elif page == "Flavor Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
