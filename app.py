@@ -511,14 +511,14 @@ def flavor_inventory_section():
     #     lineup = [flavor.strip() for flavor in lineup_input.split(",") if flavor.strip()]
     #     save_inventory_data(lineup, inventory)
     #     st.success("Lineup updated.")
-if st.button("Update Lineup"):
-    lineup = [flavor.strip() for flavor in lineup_input.split(",") if flavor.strip()]
+    if st.button("Update Lineup"):
+        lineup = [flavor.strip() for flavor in lineup_input.split(",") if flavor.strip()]
     
-    # Remove inventory entries not in the new lineup
-    inventory = {flavor: data for flavor, data in inventory.items() if flavor in lineup}
+        # Remove inventory entries not in the new lineup
+        inventory = {flavor: data for flavor, data in inventory.items() if flavor in lineup}
     
-    save_inventory_data(lineup, inventory)
-    st.success("Lineup updated and inventory cleaned.")
+        save_inventory_data(lineup, inventory)
+        st.success("Lineup updated and inventory cleaned.")
 
 
     st.markdown("#### 2. Update Inventory ")
@@ -556,6 +556,7 @@ if page == "Batching System":
     pass  # Replace with your batching app logic
 elif page == "Flavor Inventory":
     flavor_inventory_section()
+
 
 
 
