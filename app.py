@@ -196,7 +196,7 @@ recipes = {
         "instructions": [          
         ],
         "subrecipes": {}
-    }
+    },
     "Pear Sorbet": {
         "ingredients": {
             "water": 5500,
@@ -486,6 +486,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
