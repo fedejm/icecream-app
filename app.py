@@ -35,7 +35,24 @@ recipes = {
                 ]
             }
         }
-    },"Dulce de Leche": {
+    },
+    "Crumble": {
+        "ingredients": {
+            "flour": 223,
+            "sugar": 388,
+            "cinnamon": 8,
+            "butter": 272
+            },
+        "instructions": [
+            
+            "1) Melt the butter.",
+            "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
+            "3) Bake for 15 minmmutes at 350 F."
+            ""
+            
+        ],
+        "subrecipes": {}
+    }, "Dulce de Leche": {
         "ingredients": {
             "milk": 24775,
             "cream": 7500,
@@ -400,6 +417,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
