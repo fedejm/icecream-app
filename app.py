@@ -70,7 +70,7 @@ recipes = {
             
         ],
         "subrecipes": {},
-    }"Dulce de Leche": {
+    },"Dulce de Leche": {
         "ingredients": {
             "milk": 24775,
             "cream": 7500,
@@ -450,6 +450,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
