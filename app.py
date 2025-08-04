@@ -80,6 +80,23 @@ recipes = {
         ],
         "subrecipes": {}
     },
+    "Graham Cracker Crust": {
+        "ingredients": {
+            "graham cracker crumble": 338,
+            "butter": 310,
+            "sugar": 352
+            },
+        "instructions": [
+            
+            "1) Process graham crackers on the Robocoupe.",
+            "2) Mix ingredients on the mixer.",
+            "3) Press ingredients down on a flat pan.",
+            "4) Bake for 15 minmmutes at 350 F."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
     "Honeycomb": {
         "ingredients": {
             "sugar": 3000,
@@ -383,6 +400,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
