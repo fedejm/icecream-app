@@ -1,6 +1,10 @@
 
 import streamlit as st
 
+# --- Sidebar navigation ---
+page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory"])
+
+
 # --- Recipes ---
 recipes = {
     
@@ -558,8 +562,21 @@ elif page == "Flavor Inventory":
     flavor_inventory_section()
 
 
+# --- Routing ---
+if page == "Batching System":
+    st.title("Ice Cream Recipe Adjuster")
+    recipe_adjuster_section()  # call your recipe adjuster function
+
+elif page == "Flavor Inventory":
+    flavor_inventory_section()
 
 
+def recipe_adjuster_section():
+    # all your existing batching code goes here
+    # e.g., dropdowns, weight inputs, scaling logic, display results
+    # Example:
+    st.markdown("### Select a recipe and scale it")
+    # ... your full recipe scaling UI logic ...
 
 
 
