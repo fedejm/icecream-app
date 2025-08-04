@@ -185,6 +185,30 @@ recipes = {
     }
 }
 ,
+    "Pear Sorbet": {
+        "ingredients": {
+            "water": 5500,
+            "pectin": 100,
+            "sugar": 3500,
+            "pear": 10600,
+            "lemon": 300
+            },
+        "instructions": [
+            
+            "1) Quarter the pears and remove their seeds.",
+            "2) Fill a put with the quwartered pears and weigh.",
+            "3) Add water to fill completely cover the pears.",
+            "4) weigh the water + pears on the pot.",
+            "5) Cook until pears are soft and translucent.",
+            "6) Re-weigh cooked pear+water mix.",
+            "7) Add enough water to make up for the difference between weighs on spet 4) and 6).",
+            "8) Process all the ingredients on a blender until smooth."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
+
 
 
     "Pistachio": {
@@ -450,6 +474,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
