@@ -469,43 +469,84 @@ if scaled_recipe:
 
 
 
-# if scaled_recipe:
-#     st.success(f"Scaled recipe to {round(target_weight)} g")
-#     st.subheader(f"Scaled {selected} Recipe:")
-#     for ing, amt in scaled_recipe["ingredients"].items():
-#         st.write(f"{ing}: {amt} g")
-#     if scaled_recipe.get("subrecipes"):
-#         for name, sub in scaled_recipe["subrecipes"].items():
-#             st.subheader(f"Subrecipe: {name}")
-#             for ing, amt in sub["ingredients"].items():
-#                 st.write(f"{ing}: {amt} g")
-#     if scaled_recipe.get("instructions"):
-#         st.subheader("Instructions")
-#         for step in scaled_recipe["instructions"]:
-#             st.markdown(f"- {step}")
+import os
+import json
+from datetime import datetime
 
+# --- Constants ---
+LINEUP_FILE = "weekly_lineup.json"
+INVENTORY_FILE = "inventory.json"
 
+# --- Load & Save ---
+def load_inventory_data():
+    if os.path.exists(LINEUP_FILE):
+        with open(LINEUP_FILE) as f:
+            lineup = json.load(f)
+    else:
+        lineup = []
 
-# # Display result
-# if scaled_recipe:
-#     st.subheader(f"Scaled Recipe: {selected}")
-#     for ing, amt in scaled_recipe["ingredients"].items():
-#         st.write(f"• {ing}: {amt} g")
+    if os.path.exists(INVENTORY_FILE):
+        with open(INVENTORY_FILE) as f:
+            inventory = json.load(f)
+    else:
+        inventory = {}
 
-#     if "subrecipes" in scaled_recipe:
-#         for subname, sub in scaled_recipe["subrecipes"].items():
-#             st.subheader(f"Subrecipe: {subname}")
-#             for ing, amt in sub["ingredients"].items():
-#                 st.write(f"  • {ing}: {amt} g")
+    return lineup, inventory
 
-#     if scaled_recipe.get("instructions"):
-#         st.subheader("Instructions")
-#         for step in scaled_recipe["instructions"]:
-#             st.markdown(f"- {step}")
+def save_inventory_data(lineup, inventory):
+    with open(LINEUP_FILE, "w") as f:
+        json.dump(lineup, f)
+    with open(INVENTORY_FILE, "w") as f:
+        json.dump(inventory, f)
 
+# --- Flavor Inventory UI ---
+def flavor_inventory_section():
+    st.subheader("🍦 Flavor & Topping Inventory Control")
 
+    lineup, inventory = load_inventory_data()
 
+    st.markdown("#### 1. Set Weekly Flavor Lineup (Manager Only)")
+    lineup_input = st.text_area("Flavors (comma-separated)", value=", ".join(lineup), key="lineup_input")
+    if st.button("Update Lineup"):
+        lineup = [flavor.strip() for flavor in lineup_input.split(",") if flavor.strip()]
+        save_inventory_data(lineup, inventory)
+        st.success("Lineup updated.")
 
+    st.markdown("#### 2. Update Inventory (Staff)")
+    if not lineup:
+        st.warning("Please set the weekly lineup first.")
+        return
+
+    flavor = st.selectbox("Select a flavor to update", lineup, key="flavor_select")
+    quarts = st.number_input("Enter quarts available", min_value=0, step=1, key="quarts_input")
+
+    if st.button("Submit Inventory"):
+        inventory[flavor] = {
+            "quarts": quarts,
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
+        save_inventory_data(lineup, inventory)
+        st.success(f"Inventory updated for {flavor}")
+
+    st.markdown("#### 3. Current Inventory")
+    if inventory:
+        sorted_inventory = sorted(inventory.items(), key=lambda x: x[1]['quarts'], reverse=True)
+        table = {
+            "Flavor": [k for k, _ in sorted_inventory],
+            "Quarts": [v["quarts"] for _, v in sorted_inventory],
+            "Last Updated": [v["last_updated"] for _, v in sorted_inventory],
+        }
+        st.dataframe(table)
+    else:
+        st.info("No inventory records yet.")
+# Add this at the bottom of your main file
+page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory"])
+
+if page == "Batching System":
+    # your existing batching code
+    pass  # Replace with your batching app logic
+elif page == "Flavor Inventory":
+    flavor_inventory_section()
 
 
 
