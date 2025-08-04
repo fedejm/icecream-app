@@ -326,7 +326,6 @@ recipes = "Creme Brulee": {
     }
 },
    
-}
 
 # --- Utility Functions ---
 def get_total_weight(recipe):
@@ -1085,6 +1084,7 @@ elif page == "Flavor Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
