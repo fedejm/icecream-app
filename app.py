@@ -108,7 +108,7 @@ recipes = {
             "1) Process graham crackers on the Robocoupe.",
             "2) Mix ingredients on the mixer.",
             "3) Press ingredients down on a flat pan.",
-            "4) Bake for 15 minmmutes at 350 F."
+            "4) Bake for 15 minmmutes at 325 F."
             ""
             
         ],
@@ -417,6 +417,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
