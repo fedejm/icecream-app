@@ -185,6 +185,18 @@ recipes = {
     }
 }
 ,
+    "Lemon Sorbet": {
+        "ingredients": {
+            "water": 5442,
+            "lemon": 3500,
+            "pectin": 87,
+            "guar gum": 12,
+            "sugar": 2625
+            },
+        "instructions": [          
+        ],
+        "subrecipes": {}
+    }
     "Pear Sorbet": {
         "ingredients": {
             "water": 5500,
@@ -474,6 +486,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
