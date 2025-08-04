@@ -11,7 +11,302 @@ LINEUP_FILE = "weekly_lineup.json"
 INVENTORY_FILE = "inventory.json"
 
 # --- Recipe Database ---
-recipes = {
+recipes = "Creme Brulee": {
+        "ingredients": {
+            "milk": 20300,
+            "cream": 6828,
+            "sugar": 4400,
+            "guar": 72,
+            "dry milk": 2800,
+            "yolks": 2400,
+            "caramel sauce": 3200
+        },
+        "instructions": [
+            "1) Weigh and mix all base ingredients except caramel sauce.",
+            "2) Weigh the caramel ingredients and cook on high until the sauce reaches 220°F.",
+            "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
+            "4) Incorporate the caramel/base mix into the remainder of the base and mix well.",
+            "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+        ],
+        "subrecipes": {
+            "caramel sauce": {
+                "ingredients": {
+                    "sugar": 3200,
+                    "water": 500,
+                    "honey": 50
+                },
+                "instructions": [
+                    "1) Combine sugar, water, and honey.",
+                    "2) Cook on medium-high heat until sugar dissolves.",
+                    "3) Raise heat and cook until mixture reaches 220°F."
+                ]
+            }
+        }
+    },
+    "Crumble": {
+        "ingredients": {
+            "flour": 223,
+            "sugar": 388,
+            "cinnamon": 8,
+            "butter": 272
+            },
+        "instructions": [
+            
+            "1) Melt the butter.",
+            "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
+            "3) Bake for 15 minmmutes at 350 F."
+            ""
+            
+        ],
+        "subrecipes": {}
+    }, 
+    "Cookie Dough": {
+        "ingredients": {
+            "butter": 396,
+            "sugar": 344,
+            "brown sugar": 386,
+            "pasteurized egg whites": 92,
+            "pasteurized egg yolks": 90,
+            "vanilla extract": 16,
+            "flour": 646,
+            "salt": 6
+            },
+        "instructions": [
+            
+            
+            
+        ],
+        "subrecipes": {},
+    },"Dulce de Leche": {
+        "ingredients": {
+            "milk": 24775,
+            "cream": 7500,
+            "sugar": 2550,
+            "guar": 75,
+            "dry milk": 1000,
+            "yolks": 500,
+            "dulce de leche heladero": 90
+        },
+        "instructions": [
+            
+        ]
+    },
+    "Fresh Mint": {
+        "ingredients": {
+            "milk": 31140,
+            "cream": 6500,
+            "sugar": 8500,
+            "guar": 110,
+            "dry milk": 3000,
+            "yolks": 750,
+            "mint": 1250,
+            "blanched mint": 500
+        },
+        "instructions": [
+            "Day 1: Prepare Mint-Infused Milk",
+            "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
+            "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
+            "",
+            "Day 2: Prepare Blanched Mint Purée",
+            "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
+            "4) Bring 2 gallons of fresh water to a boil.",
+            "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
+            "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
+            "7) Drain the mint and blend until very fine and smooth.",
+            "",
+            "Final Steps:",
+            "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
+            "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+        ],
+        "subrecipes": {}
+    },
+    "Graham Cracker Crust": {
+        "ingredients": {
+            "graham cracker crumble": 338,
+            "butter": 310,
+            "sugar": 352
+            },
+        "instructions": [
+            
+            "1) Process graham crackers on the Robocoupe.",
+            "2) Mix ingredients on the mixer.",
+            "3) Press ingredients down on a flat pan.",
+            "4) Bake for 15 minmmutes at 325 F."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
+    "Honeycomb": {
+        "ingredients": {
+            "sugar": 3000,
+            "honey": 50,
+            "water": 1450,
+            "baking soda": 250,
+            },
+        "instructions": [
+            "1) Cook on medium heat, stirring constantly until sugar dissolves.",
+            "2) Once sugar is completely dissolved, stop stirring.",
+            "3) Continue cooking on high until 300 F.",
+            "4) Add the baking soda and stir.",
+            "5) Pour the rising honeycomb on previously greased trays and let cool."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
+    "Lemon Bar": {
+    "ingredients": {
+        "crust": 566,  # butter + flour + sugar + salt
+        "filling": 1362  # estimated weight
+    },
+    "instructions": [
+        "1) Bake the crust at 350°F for 15 minutes.",
+        "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
+    ],
+    "subrecipes": {
+        "crust": {
+            "ingredients": {
+                "butter": 225,
+                "flour": 240,
+                "sugar": 100,
+                "salt": 1
+            },
+            "instructions": [
+                "1) Process all crust ingredients in a food processor until smooth.",
+                "2) Press into a greased pan and bake for 15 minutes at 350°F."
+            ]
+        },
+        "filling": {
+            "ingredients": {
+                "eggs (each)": 12,
+                "lemon juice": 360,
+                "sugar": 900,
+                "flour": 90
+            },
+            "instructions": [
+                "1) Beat all filling ingredients in a bowl until fully dissolved.",
+                "2) Pour on top of the baked crust and bake for 20 minutes at 350°F."
+            ]
+        }
+    }
+}
+,
+    "Lemon Sorbet": {
+        "ingredients": {
+            "water": 5442,
+            "lemon": 3500,
+            "pectin": 87,
+            "guar gum": 12,
+            "sugar": 2625
+            },
+        "instructions": [          
+        ],
+        "subrecipes": {}
+    },
+    "Peach Preserves": {
+        "ingredients": {
+            "peaches": 1350,
+            "sugar": 1250,
+            "lemon": 82
+            },
+        "instructions": [
+            
+            "1) combine cored peaches and sugar and let stand for 3 hours.",
+            "2) bring to boil, stirring occasionally.",
+            "3) cook until it reaches 220 F and syrup is thick."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
+    "Pear Sorbet": {
+        "ingredients": {
+            "water": 5500,
+            "pectin": 100,
+            "sugar": 3500,
+            "pear": 10600,
+            "lemon": 300
+            },
+        "instructions": [
+            
+            "1) Quarter the pears and remove their seeds.",
+            "2) Fill a put with the quwartered pears and weigh.",
+            "3) Add water to fill completely cover the pears.",
+            "4) weigh the water + pears on the pot.",
+            "5) Cook until pears are soft and translucent.",
+            "6) Re-weigh cooked pear+water mix.",
+            "7) Add enough water to make up for the difference between weighs on spet 4) and 6).",
+            "8) Process all the ingredients on a blender until smooth."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
+
+
+
+    "Pistachio": {
+        "ingredients": {
+            "milk": 32640,
+            "cream": 750,
+            "sugar": 8250,
+            "guar": 110,
+            "dry milk": 2750,
+            "yolks": 1000,
+            "pistachio paste": 4500
+        },
+        "instructions": [
+            "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
+            "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
+        ],
+        "subrecipes": {
+            "pistachio paste": {
+                "ingredients": {
+                    "roasted pistachios": 2967,
+                    "pistachio oil": 1532
+                },
+                "instructions": [
+                    "1) Roast the pistachios if raw.",
+                    "2) Blend pistachios with pistachio oil until smooth and creamy."
+                ]
+            }
+        }
+    },
+    "Strawberry Preserves": {
+        "ingredients": {
+            "strawberries": 1250,
+            "sugar": 1150,
+            "pectin": 11,
+            "lemon": 89
+            },
+        "instructions": [
+            
+            "1) combine strawberries and sugar and let stand for 3 hours.",
+            "2) bring to boil, stirring occasionally.",
+            "3) cook until it reaches 220 F and syrup is thick."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
+    "Toffee": {
+        "ingredients": {
+            "butter": 863,
+            "sugar": 779,
+            "honey": 17,
+            "salt": 4,
+            },
+        "instructions": [
+            
+            "1) Cook on medium heat, stirring constantly until sugar dissolves.",
+            "2) Once sugar is completely dissolved, stop stirring.",
+            "3) Continue cooking on high until 300 F."
+            ""
+            
+        ],
+        "subrecipes": {}
+    },
     "vanilla": {
         "ingredients": {
             "milk": 28510,
@@ -28,8 +323,9 @@ recipes = {
             "2) Pasteurize the mix.",
             "3) Chill, batch freeze, and pack."
         ]
-    },
-    # Add other recipes here if needed
+    }
+},
+   
 }
 
 # --- Utility Functions ---
@@ -789,6 +1085,7 @@ elif page == "Flavor Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
