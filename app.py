@@ -52,7 +52,25 @@ recipes = {
             
         ],
         "subrecipes": {}
-    }, "Dulce de Leche": {
+    }, 
+    "Cookie Dough": {
+        "ingredients": {
+            "butter": 396,
+            "sugar": 344,
+            "brown sugar": 386,
+            "pasteurized egg whites": 92,
+            "pasteurized egg yolks": 90,
+            "vanilla extract": 16,
+            "flour": 646,
+            "salt": 6
+            },
+        "instructions": [
+            
+            
+            
+        ],
+        "subrecipes": {},
+    }"Dulce de Leche": {
         "ingredients": {
             "milk": 24775,
             "cream": 7500,
@@ -63,9 +81,7 @@ recipes = {
             "dulce de leche heladero": 90
         },
         "instructions": [
-            "1) Combine all ingredients.",
-            "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."
+            
         ]
     },
     "Fresh Mint": {
@@ -434,6 +450,7 @@ if scaled_recipe:
 #         st.subheader("Instructions")
 #         for step in scaled_recipe["instructions"]:
 #             st.markdown(f"- {step}")
+
 
 
 
