@@ -475,7 +475,9 @@ def ingredient_inventory_section():
         "dry milk": "50 lb bags",
         "flour": "50 lb bags",
         "brown sugar": "50 lb bags",
-        "butter": "cases"
+        "butter": "cases",
+        "dulce de leche heladero": "cans",
+        "lemon": "cases"
     }
 
     all_ingredients = set()
@@ -1747,6 +1749,7 @@ elif page == "Ingredient Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
