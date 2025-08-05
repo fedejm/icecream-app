@@ -297,6 +297,8 @@ recipes = {
         ]
     }
 }
+
+
 # --- Utility Functions ---
 def get_total_weight(recipe):
     return sum(recipe["ingredients"].values())
@@ -316,7 +318,7 @@ def adjust_recipe_with_constraints(recipe, available_ingredients):
 
 # --- Ingredient Inventory Section ---
 def ingredient_inventory_section():
-    st.subheader("\U0001F4E6 Ingredient Inventory Control")
+    st.subheader("📦 Ingredient Inventory Control")
 
     bulk_units = {
         "milk": "gallons",
@@ -333,6 +335,7 @@ def ingredient_inventory_section():
         all_ingredients.update(recipe.get("ingredients", {}).keys())
         for sub in recipe.get("subrecipes", {}).values():
             all_ingredients.update(sub.get("ingredients", {}).keys())
+    all_ingredients = sorted(set(all_ingredients))  # de-duplicate and sort
 
     excluded_ingredients = []
     if os.path.exists(EXCLUDE_FILE):
@@ -340,8 +343,8 @@ def ingredient_inventory_section():
             excluded_ingredients = json.load(f)
 
     st.markdown("#### Exclude Ingredients from Inventory")
-    exclude_list = st.multiselect("Select ingredients to exclude", sorted(all_ingredients), default=excluded_ingredients, key="exclude_list")
-    if st.button("Save Exclusion List", key="save_exclusion"):
+    exclude_list = st.multiselect("Select ingredients to exclude", all_ingredients, default=excluded_ingredients, key="exclude_list")
+    if st.button("Save Exclusion List", key="save_exclude_btn"):
         with open(EXCLUDE_FILE, "w") as f:
             json.dump(exclude_list, f, indent=2)
         st.success("Excluded ingredients list saved.")
@@ -350,7 +353,7 @@ def ingredient_inventory_section():
     min_thresholds = {}
 
     st.markdown("#### Enter Inventory and Minimum Thresholds")
-    for ing in sorted(all_ingredients):
+    for ing in all_ingredients:
         if ing in exclude_list:
             continue
         unit = bulk_units.get(ing, "grams")
@@ -362,7 +365,7 @@ def ingredient_inventory_section():
         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
         min_thresholds[ing] = threshold
 
-    if st.button("Save Ingredient Inventory", key="save_inventory"):
+    if st.button("Save Ingredient Inventory", key="save_inventory_btn"):
         with open(INGREDIENT_FILE, "w") as f:
             json.dump(ingredient_inventory, f, indent=2)
         with open(THRESHOLD_FILE, "w") as f:
@@ -387,14 +390,120 @@ def ingredient_inventory_section():
             for ing in thresholds if ing not in exclude_list and ing in inventory and inventory[ing]["amount"] < thresholds[ing]
         }
         if needs_order:
-            st.error("\u26A0\uFE0F Order Needed:")
+            st.error("⚠️ Order Needed:")
             st.dataframe(needs_order)
         else:
-            st.success("\u2705 All ingredients above minimum thresholds.")
+            st.success("✅ All ingredients above minimum thresholds.")
 
-# --- Page Router ---
+# --- Routing Logic ---
 if page == "Ingredient Inventory":
     ingredient_inventory_section()
+
+elif page == "Flavor Inventory":
+    st.subheader("📋 Flavor Inventory Section")
+    st.info("This section is not yet implemented.")
+
+elif page == "Batching System":
+    st.subheader("⚙️ Batching System Section")
+    st.info("This section is not yet implemented.")
+# # --- Utility Functions ---
+# def get_total_weight(recipe):
+#     return sum(recipe["ingredients"].values())
+
+# def scale_recipe_to_target_weight(recipe, target_weight):
+#     original_weight = get_total_weight(recipe)
+#     scale_factor = target_weight / original_weight
+#     adjusted_main = {k: round(v * scale_factor) for k, v in recipe["ingredients"].items()}
+#     return {"ingredients": adjusted_main, "instructions": recipe.get("instructions", [])}, scale_factor
+
+# def adjust_recipe_with_constraints(recipe, available_ingredients):
+#     base_ingredients = recipe.get("ingredients", {})
+#     ratios = [amt / base_ingredients[ing] for ing, amt in available_ingredients.items() if ing in base_ingredients and base_ingredients[ing] != 0]
+#     scale_factor = min(ratios) if ratios else 1
+#     adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
+#     return adjusted, scale_factor
+
+# # --- Ingredient Inventory Section ---
+# def ingredient_inventory_section():
+#     st.subheader("\U0001F4E6 Ingredient Inventory Control")
+
+#     bulk_units = {
+#         "milk": "gallons",
+#         "cream": "half gallons",
+#         "sugar": "50 lb bags",
+#         "dry milk": "50 lb bags",
+#         "flour": "50 lb bags",
+#         "brown sugar": "50 lb bags",
+#         "butter": "cases"
+#     }
+
+#     all_ingredients = set()
+#     for recipe in recipes.values():
+#         all_ingredients.update(recipe.get("ingredients", {}).keys())
+#         for sub in recipe.get("subrecipes", {}).values():
+#             all_ingredients.update(sub.get("ingredients", {}).keys())
+
+#     excluded_ingredients = []
+#     if os.path.exists(EXCLUDE_FILE):
+#         with open(EXCLUDE_FILE) as f:
+#             excluded_ingredients = json.load(f)
+
+#     st.markdown("#### Exclude Ingredients from Inventory")
+#     exclude_list = st.multiselect("Select ingredients to exclude", sorted(all_ingredients), default=excluded_ingredients, key="exclude_list")
+#     if st.button("Save Exclusion List", key="save_exclusion"):
+#         with open(EXCLUDE_FILE, "w") as f:
+#             json.dump(exclude_list, f, indent=2)
+#         st.success("Excluded ingredients list saved.")
+
+#     ingredient_inventory = {}
+#     min_thresholds = {}
+
+#     st.markdown("#### Enter Inventory and Minimum Thresholds")
+#     for ing in sorted(all_ingredients):
+#         if ing in exclude_list:
+#             continue
+#         unit = bulk_units.get(ing, "grams")
+#         col1, col2 = st.columns(2)
+#         with col1:
+#             qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
+#         with col2:
+#             threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
+#         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
+#         min_thresholds[ing] = threshold
+
+#     if st.button("Save Ingredient Inventory", key="save_inventory"):
+#         with open(INGREDIENT_FILE, "w") as f:
+#             json.dump(ingredient_inventory, f, indent=2)
+#         with open(THRESHOLD_FILE, "w") as f:
+#             json.dump(min_thresholds, f, indent=2)
+#         st.success("Ingredient inventory and thresholds saved.")
+
+#     if os.path.exists(INGREDIENT_FILE):
+#         st.markdown("#### Current Ingredient Inventory")
+#         with open(INGREDIENT_FILE) as f:
+#             data = json.load(f)
+#         filtered_data = {k: f"{v['amount']} {v['unit']}" for k, v in data.items() if k not in exclude_list}
+#         st.dataframe(filtered_data, use_container_width=True)
+
+#     if os.path.exists(THRESHOLD_FILE):
+#         st.markdown("#### Ingredients Needing Reorder")
+#         with open(INGREDIENT_FILE) as f:
+#             inventory = json.load(f)
+#         with open(THRESHOLD_FILE) as f:
+#             thresholds = json.load(f)
+#         needs_order = {
+#             ing: f"{inventory[ing]['amount']} < {thresholds[ing]} {inventory[ing]['unit']}"
+#             for ing in thresholds if ing not in exclude_list and ing in inventory and inventory[ing]["amount"] < thresholds[ing]
+#         }
+#         if needs_order:
+#             st.error("\u26A0\uFE0F Order Needed:")
+#             st.dataframe(needs_order)
+#         else:
+#             st.success("\u2705 All ingredients above minimum thresholds.")
+
+# # --- Page Router ---
+# if page == "Ingredient Inventory":
+#     ingredient_inventory_section()
 
 # # --- Utility Functions ---
 # def get_total_weight(recipe):
@@ -2196,6 +2305,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
