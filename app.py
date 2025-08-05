@@ -295,6 +295,7 @@ recipes = {
         ]
     }
 }
+
 # --- Utility Functions ---
 def get_total_weight(recipe):
     return sum(recipe["ingredients"].values())
@@ -467,7 +468,6 @@ def flavor_inventory_section():
 def ingredient_inventory_section():
     st.subheader("📦 Ingredient Inventory Control")
 
-    # Define measurement units by category
     bulk_units = {
         "milk": "gallons",
         "cream": "half gallons",
@@ -478,7 +478,6 @@ def ingredient_inventory_section():
         "butter": "cases"
     }
 
-    # Gather all ingredients from all recipes
     all_ingredients = set()
     for recipe in recipes.values():
         all_ingredients.update(recipe.get("ingredients", {}).keys())
@@ -486,21 +485,47 @@ def ingredient_inventory_section():
             all_ingredients.update(sub.get("ingredients", {}).keys())
 
     ingredient_inventory = {}
+    min_thresholds = {}
+
+    st.markdown("#### Enter Inventory and Minimum Thresholds")
     for ing in sorted(all_ingredients):
         unit = bulk_units.get(ing, "grams")
-        qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f")
+        col1, col2 = st.columns(2)
+        with col1:
+            qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
+        with col2:
+            threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
+        min_thresholds[ing] = threshold
 
     if st.button("Save Ingredient Inventory"):
         with open(INGREDIENT_FILE, "w") as f:
             json.dump(ingredient_inventory, f, indent=2)
-        st.success("Ingredient inventory saved.")
+        with open(THRESHOLD_FILE, "w") as f:
+            json.dump(min_thresholds, f, indent=2)
+        st.success("Ingredient inventory and thresholds saved.")
 
     if os.path.exists(INGREDIENT_FILE):
         st.markdown("#### Current Ingredient Inventory")
         with open(INGREDIENT_FILE) as f:
             data = json.load(f)
         st.dataframe({k: f"{v['amount']} {v['unit']}" for k, v in data.items()}, use_container_width=True)
+
+    if os.path.exists(THRESHOLD_FILE):
+        st.markdown("#### Ingredients Needing Reorder")
+        with open(INGREDIENT_FILE) as f:
+            inventory = json.load(f)
+        with open(THRESHOLD_FILE) as f:
+            thresholds = json.load(f)
+        needs_order = {
+            ing: f"{inventory[ing]['amount']} < {thresholds[ing]} {inventory[ing]['unit']}"
+            for ing in thresholds if ing in inventory and inventory[ing]["amount"] < thresholds[ing]
+        }
+        if needs_order:
+            st.error("⚠️ Order Needed:")
+            st.dataframe(needs_order)
+        else:
+            st.success("✅ All ingredients above minimum thresholds.")
 
 # --- Routing ---
 if page == "Batching System":
@@ -509,6 +534,220 @@ elif page == "Flavor Inventory":
     flavor_inventory_section()
 elif page == "Ingredient Inventory":
     ingredient_inventory_section()
+# # --- Utility Functions ---
+# def get_total_weight(recipe):
+#     return sum(recipe["ingredients"].values())
+
+# def scale_recipe_to_target_weight(recipe, target_weight):
+#     original_weight = get_total_weight(recipe)
+#     scale_factor = target_weight / original_weight
+#     adjusted_main = {k: round(v * scale_factor) for k, v in recipe["ingredients"].items()}
+#     return {"ingredients": adjusted_main, "instructions": recipe.get("instructions", [])}, scale_factor
+
+# def adjust_recipe_with_constraints(recipe, available_ingredients):
+#     base_ingredients = recipe.get("ingredients", {})
+#     ratios = [amt / base_ingredients[ing] for ing, amt in available_ingredients.items() if ing in base_ingredients and base_ingredients[ing] != 0]
+#     scale_factor = min(ratios) if ratios else 1
+#     adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
+#     return adjusted, scale_factor
+
+# # --- Recipe Adjuster Section ---
+# def recipe_adjuster_section():
+#     st.title("Ice Cream Recipe Adjuster")
+#     selected = st.selectbox("Choose a recipe", list(recipes.keys()))
+#     recipe = recipes[selected]
+
+#     st.subheader("Choose how you want to scale the recipe:")
+#     scale_mode = st.selectbox("Scaling method", ["Total weight (grams)", "1.5 gallon tubs", "5 liter pans", "Mix of tubs and pans", "Available ingredient amounts"])
+
+#     target_weight = None
+#     scaled_recipe = None
+
+#     if scale_mode == "Total weight (grams)":
+#         w = st.text_input("Enter target total weight (g)", "")
+#         if w.strip():
+#             try:
+#                 target_weight = float(w)
+#             except ValueError:
+#                 st.error("Enter a valid number for total weight")
+
+#     elif scale_mode == "1.5 gallon tubs":
+#         tubs = st.number_input("Number of 1.5 gallon tubs", min_value=0, step=1)
+#         target_weight = tubs * 4275
+
+#     elif scale_mode == "5 liter pans":
+#         pans = st.number_input("Number of 5 liter pans", min_value=0, step=1)
+#         target_weight = pans * 3750
+
+#     elif scale_mode == "Mix of tubs and pans":
+#         tubs = st.number_input("Tubs", min_value=0, step=1)
+#         pans = st.number_input("Pans", min_value=0, step=1)
+#         target_weight = tubs * 4275 + pans * 3750
+
+#     if target_weight:
+#         scaled_recipe, scale_factor = scale_recipe_to_target_weight(recipe, target_weight)
+
+#     if scale_mode == "Available ingredient amounts":
+#         st.subheader("Enter available ingredient amounts (g):")
+#         available_inputs = {}
+#         for ing in recipe["ingredients"]:
+#             val = st.text_input(f"{ing}", "")
+#             if val.strip():
+#                 try:
+#                     available_inputs[ing] = float(val)
+#                 except ValueError:
+#                     st.error(f"Invalid input for {ing}")
+
+#         if st.button("Adjust Recipe Based on Ingredients"):
+#             adjusted, limit_scale = adjust_recipe_with_constraints(recipe, available_inputs)
+#             st.session_state.adjusted_recipe = adjusted
+#             st.session_state.adjusted_total = round(sum(adjusted.values()))
+#             st.success(f"Adjusted recipe (scale factor: {limit_scale:.2f})")
+#             st.subheader("Final Adjusted Recipe:")
+#             for ing, amt in adjusted.items():
+#                 st.write(f"{ing}: {amt} g")
+
+#     if scaled_recipe:
+#         st.markdown("---")
+#         st.success(f"Scaled recipe to {round(target_weight)} g")
+#         st.subheader("Scaled Ingredients")
+#         for ing, amt in scaled_recipe["ingredients"].items():
+#             st.write(f"• {ing}: {amt} g")
+
+#         if scaled_recipe.get("instructions"):
+#             st.subheader("Instructions")
+#             for step in scaled_recipe["instructions"]:
+#                 st.markdown(f"- {step}")
+
+#         st.markdown("---")
+#         st.subheader("🧪 Step-by-Step Weighing")
+#         if "step_index" not in st.session_state:
+#             st.session_state.step_index = 0
+
+#         if st.button("Start Step-by-Step Mode"):
+#             st.session_state.step_index = 0
+
+#         all_ingredients = list(scaled_recipe["ingredients"].items())
+#         step = st.session_state.step_index
+#         if step < len(all_ingredients):
+#             label, amount = all_ingredients[step]
+#             st.markdown(f"### {label}: {round(amount)} grams")
+#             if st.button("Next"):
+#                 st.session_state.step_index += 1
+#         else:
+#             st.success("✅ All ingredients completed!")
+#             if st.button("Restart"):
+#                 st.session_state.step_index = 0
+
+# # --- Inventory Functions ---
+# def load_inventory_data():
+#     if os.path.exists(LINEUP_FILE):
+#         with open(LINEUP_FILE) as f:
+#             lineup = json.load(f)
+#     else:
+#         lineup = []
+
+#     if os.path.exists(INVENTORY_FILE):
+#         with open(INVENTORY_FILE) as f:
+#             inventory = json.load(f)
+#     else:
+#         inventory = {}
+
+#     return lineup, inventory
+
+# def save_inventory_data(lineup, inventory):
+#     with open(LINEUP_FILE, "w") as f:
+#         json.dump(lineup, f)
+#     with open(INVENTORY_FILE, "w") as f:
+#         json.dump(inventory, f)
+
+# # --- Flavor Inventory Section ---
+# def flavor_inventory_section():
+#     st.subheader("🍦 Flavor & Topping Inventory Control")
+#     lineup, inventory = load_inventory_data()
+
+#     st.markdown("#### 1. Set Weekly Flavor Lineup")
+#     lineup_input = st.text_area("Flavors (comma-separated)", value=", ".join(lineup), key="lineup_input")
+#     if st.button("Update Lineup"):
+#         lineup = [flavor.strip() for flavor in lineup_input.split(",") if flavor.strip()]
+#         inventory = {flavor: data for flavor, data in inventory.items() if flavor in lineup}
+#         save_inventory_data(lineup, inventory)
+#         st.success("Lineup updated and inventory cleaned.")
+
+#     st.markdown("#### 2. Update Inventory")
+#     if not lineup:
+#         st.warning("Please set the weekly lineup first.")
+#         return
+
+#     flavor = st.selectbox("Select a flavor to update", lineup, key="flavor_select")
+#     quarts = st.number_input("Enter quarts available", min_value=0, step=1, key="quarts_input")
+
+#     if st.button("Submit Inventory"):
+#         inventory[flavor] = {
+#             "quarts": quarts,
+#             "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+#         }
+#         save_inventory_data(lineup, inventory)
+#         st.success(f"Inventory updated for {flavor}")
+
+#     st.markdown("#### 3. Current Inventory")
+#     if inventory:
+#         sorted_inventory = sorted(inventory.items(), key=lambda x: x[1]['quarts'], reverse=True)
+#         table = {
+#             "Flavor": [k for k, _ in sorted_inventory],
+#             "Quarts": [v["quarts"] for _, v in sorted_inventory],
+#             "Last Updated": [v["last_updated"] for _, v in sorted_inventory],
+#         }
+#         st.dataframe(table)
+#     else:
+#         st.info("No inventory records yet.")
+
+# # --- Ingredient Inventory Section ---
+# def ingredient_inventory_section():
+#     st.subheader("📦 Ingredient Inventory Control")
+
+#     # Define measurement units by category
+#     bulk_units = {
+#         "milk": "gallons",
+#         "cream": "half gallons",
+#         "sugar": "50 lb bags",
+#         "dry milk": "50 lb bags",
+#         "flour": "50 lb bags",
+#         "brown sugar": "50 lb bags",
+#         "butter": "cases"
+#     }
+
+#     # Gather all ingredients from all recipes
+#     all_ingredients = set()
+#     for recipe in recipes.values():
+#         all_ingredients.update(recipe.get("ingredients", {}).keys())
+#         for sub in recipe.get("subrecipes", {}).values():
+#             all_ingredients.update(sub.get("ingredients", {}).keys())
+
+#     ingredient_inventory = {}
+#     for ing in sorted(all_ingredients):
+#         unit = bulk_units.get(ing, "grams")
+#         qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f")
+#         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
+
+#     if st.button("Save Ingredient Inventory"):
+#         with open(INGREDIENT_FILE, "w") as f:
+#             json.dump(ingredient_inventory, f, indent=2)
+#         st.success("Ingredient inventory saved.")
+
+#     if os.path.exists(INGREDIENT_FILE):
+#         st.markdown("#### Current Ingredient Inventory")
+#         with open(INGREDIENT_FILE) as f:
+#             data = json.load(f)
+#         st.dataframe({k: f"{v['amount']} {v['unit']}" for k, v in data.items()}, use_container_width=True)
+
+# # --- Routing ---
+# if page == "Batching System":
+#     recipe_adjuster_section()
+# elif page == "Flavor Inventory":
+#     flavor_inventory_section()
+# elif page == "Ingredient Inventory":
+#     ingredient_inventory_section()
 
    
 
@@ -1269,6 +1508,7 @@ elif page == "Ingredient Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
