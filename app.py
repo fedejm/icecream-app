@@ -422,24 +422,68 @@ def batching_system_section():
             st.session_state.step_i += 1
     else:
         st.success("🎉 All ingredients completed!")
+####
+
+####
+
+###
+def flavor_inventory_section():
+    st.subheader("📋 Flavor Inventory")
+
+    LINEUP_FILE = "weekly_lineup.json"
+
+    # Load saved lineup if exists
+    current_lineup = []
+    if os.path.exists(LINEUP_FILE):
+        with open(LINEUP_FILE) as f:
+            current_lineup = json.load(f)
+
+    st.markdown("### 🧁 Weekly Flavor Lineup")
+    st.markdown("You can select from any recipes listed in the system.")
+
+    all_recipe_names = list(recipes.keys())
+
+    selected_flavors = st.multiselect(
+        "Select flavors for this week's lineup:",
+        all_recipe_names,
+        default=current_lineup,
+        key="weekly_flavor_picker"
+    )
+
+    if st.button("Save Weekly Lineup", key="save_weekly_lineup_btn"):
+        with open(LINEUP_FILE, "w") as f:
+            json.dump(selected_flavors, f, indent=2)
+        st.success("✅ Weekly lineup saved!")
+
+    if selected_flavors:
+        st.markdown("### 📋 Selected Flavors and Their Ingredients")
+        for flavor in selected_flavors:
+            st.markdown(f"#### 🍨 {flavor}")
+            for ing, amt in recipes[flavor]["ingredients"].items():
+                st.write(f"- {amt} grams {ing}")
+    else:
+        st.info("No flavors selected yet.")
+###
+###
+###
 
 # # --- Flavor Inventory Placeholder ---
 # def flavor_inventory_section():
 #     st.subheader("📋 Flavor Inventory Section")
 #     st.info("This section is not yet implemented.")
 
-def flavor_inventory_section():
-    st.subheader("📋 Flavor Inventory Section")
-    st.write("Placeholder content.")
+# def flavor_inventory_section():
+#     st.subheader("📋 Flavor Inventory Section")
+#     st.write("Placeholder content.")
 
 
-# --- Routing ---
-if page == "Ingredient Inventory":
-    ingredient_inventory_section()
-elif page == "Batching System":
-    batching_system_section()
-elif page == "Flavor Inventory":
-    flavor_inventory_section()
+# # --- Routing ---
+# if page == "Ingredient Inventory":
+#     ingredient_inventory_section()
+# elif page == "Batching System":
+#     batching_system_section()
+# elif page == "Flavor Inventory":
+#     flavor_inventory_section()
 
 # # --- Utility Functions ---
 # def get_total_weight(recipe):
@@ -2447,6 +2491,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
