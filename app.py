@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 # --- Sidebar navigation ---
-page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingredient Inventory"])
+page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingredient Inventory"], key="main_page_selector")
 
 # --- File Constants ---
 LINEUP_FILE = "weekly_lineup.json"
@@ -2098,6 +2098,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
