@@ -10,6 +10,7 @@ page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingred
 LINEUP_FILE = "weekly_lineup.json"
 INVENTORY_FILE = "inventory.json"
 INGREDIENT_FILE = "ingredient_inventory.json"
+THRESHOLD_FILE = "ingredient_thresholds.json"
 
 # --- Recipe Database ---
 recipes = {
@@ -1746,6 +1747,7 @@ elif page == "Ingredient Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
