@@ -429,8 +429,8 @@ def batching_system_section():
 #     st.info("This section is not yet implemented.")
 
 def flavor_inventory_section():
-    st.subheader("📋 Flavor Inventory Section", key="flavor_inventory_subheader")
-    st.write("Placeholder content.", key="flavor_placeholder")
+    st.subheader("📋 Flavor Inventory Section")
+    st.write("Placeholder content.")
 
 
 # --- Routing ---
@@ -2447,6 +2447,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
