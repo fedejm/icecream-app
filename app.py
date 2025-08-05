@@ -297,8 +297,6 @@ recipes = {
         ]
     }
 }
-
-
 # --- Utility Functions ---
 def get_total_weight(recipe):
     return sum(recipe["ingredients"].values())
@@ -335,7 +333,7 @@ def ingredient_inventory_section():
         all_ingredients.update(recipe.get("ingredients", {}).keys())
         for sub in recipe.get("subrecipes", {}).values():
             all_ingredients.update(sub.get("ingredients", {}).keys())
-    all_ingredients = sorted(set(all_ingredients))  # de-duplicate and sort
+    all_ingredients = sorted(set(all_ingredients))
 
     excluded_ingredients = []
     if os.path.exists(EXCLUDE_FILE):
@@ -395,17 +393,156 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 
-# --- Routing Logic ---
-if page == "Ingredient Inventory":
-    ingredient_inventory_section()
+# --- Batching System Section ---
+def batching_system_section():
+    st.subheader("⚙️ Manual Batching System")
+    recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
+    recipe = recipes[recipe_name]
 
-elif page == "Flavor Inventory":
+    st.markdown("### Scale by Target Weight")
+    target_weight = st.number_input("Target total weight (grams)", min_value=100.0, step=100.0, key="batch_target_weight")
+    if target_weight:
+        scaled_recipe, factor = scale_recipe_to_target_weight(recipe, target_weight)
+        st.markdown(f"#### Scaled Ingredients ({round(factor * 100)}%)")
+        for ing, amt in scaled_recipe["ingredients"].items():
+            st.write(f"- {amt} grams {ing}")
+
+    st.markdown("### Step-by-Step Mode")
+    if "step_i" not in st.session_state:
+        st.session_state.step_i = 0
+
+    if st.button("Start Over", key="reset_step_btn"):
+        st.session_state.step_i = 0
+
+    steps = list(scaled_recipe["ingredients"].items())
+    if st.session_state.step_i < len(steps):
+        ing, amt = steps[st.session_state.step_i]
+        st.markdown(f"**Weigh:** {amt} grams of {ing}")
+        if st.button("Next Ingredient", key=f"next_{st.session_state.step_i}"):
+            st.session_state.step_i += 1
+    else:
+        st.success("🎉 All ingredients completed!")
+
+# --- Flavor Inventory Placeholder ---
+def flavor_inventory_section():
     st.subheader("📋 Flavor Inventory Section")
     st.info("This section is not yet implemented.")
 
+# --- Routing ---
+if page == "Ingredient Inventory":
+    ingredient_inventory_section()
 elif page == "Batching System":
-    st.subheader("⚙️ Batching System Section")
-    st.info("This section is not yet implemented.")
+    batching_system_section()
+elif page == "Flavor Inventory":
+    flavor_inventory_section()
+
+# # --- Utility Functions ---
+# def get_total_weight(recipe):
+#     return sum(recipe["ingredients"].values())
+
+# def scale_recipe_to_target_weight(recipe, target_weight):
+#     original_weight = get_total_weight(recipe)
+#     scale_factor = target_weight / original_weight
+#     adjusted_main = {k: round(v * scale_factor) for k, v in recipe["ingredients"].items()}
+#     return {"ingredients": adjusted_main, "instructions": recipe.get("instructions", [])}, scale_factor
+
+# def adjust_recipe_with_constraints(recipe, available_ingredients):
+#     base_ingredients = recipe.get("ingredients", {})
+#     ratios = [amt / base_ingredients[ing] for ing, amt in available_ingredients.items() if ing in base_ingredients and base_ingredients[ing] != 0]
+#     scale_factor = min(ratios) if ratios else 1
+#     adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
+#     return adjusted, scale_factor
+
+# # --- Ingredient Inventory Section ---
+# def ingredient_inventory_section():
+#     st.subheader("📦 Ingredient Inventory Control")
+
+#     bulk_units = {
+#         "milk": "gallons",
+#         "cream": "half gallons",
+#         "sugar": "50 lb bags",
+#         "dry milk": "50 lb bags",
+#         "flour": "50 lb bags",
+#         "brown sugar": "50 lb bags",
+#         "butter": "cases"
+#     }
+
+#     all_ingredients = set()
+#     for recipe in recipes.values():
+#         all_ingredients.update(recipe.get("ingredients", {}).keys())
+#         for sub in recipe.get("subrecipes", {}).values():
+#             all_ingredients.update(sub.get("ingredients", {}).keys())
+#     all_ingredients = sorted(set(all_ingredients))  # de-duplicate and sort
+
+#     excluded_ingredients = []
+#     if os.path.exists(EXCLUDE_FILE):
+#         with open(EXCLUDE_FILE) as f:
+#             excluded_ingredients = json.load(f)
+
+#     st.markdown("#### Exclude Ingredients from Inventory")
+#     exclude_list = st.multiselect("Select ingredients to exclude", all_ingredients, default=excluded_ingredients, key="exclude_list")
+#     if st.button("Save Exclusion List", key="save_exclude_btn"):
+#         with open(EXCLUDE_FILE, "w") as f:
+#             json.dump(exclude_list, f, indent=2)
+#         st.success("Excluded ingredients list saved.")
+
+#     ingredient_inventory = {}
+#     min_thresholds = {}
+
+#     st.markdown("#### Enter Inventory and Minimum Thresholds")
+#     for ing in all_ingredients:
+#         if ing in exclude_list:
+#             continue
+#         unit = bulk_units.get(ing, "grams")
+#         col1, col2 = st.columns(2)
+#         with col1:
+#             qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
+#         with col2:
+#             threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
+#         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
+#         min_thresholds[ing] = threshold
+
+#     if st.button("Save Ingredient Inventory", key="save_inventory_btn"):
+#         with open(INGREDIENT_FILE, "w") as f:
+#             json.dump(ingredient_inventory, f, indent=2)
+#         with open(THRESHOLD_FILE, "w") as f:
+#             json.dump(min_thresholds, f, indent=2)
+#         st.success("Ingredient inventory and thresholds saved.")
+
+#     if os.path.exists(INGREDIENT_FILE):
+#         st.markdown("#### Current Ingredient Inventory")
+#         with open(INGREDIENT_FILE) as f:
+#             data = json.load(f)
+#         filtered_data = {k: f"{v['amount']} {v['unit']}" for k, v in data.items() if k not in exclude_list}
+#         st.dataframe(filtered_data, use_container_width=True)
+
+#     if os.path.exists(THRESHOLD_FILE):
+#         st.markdown("#### Ingredients Needing Reorder")
+#         with open(INGREDIENT_FILE) as f:
+#             inventory = json.load(f)
+#         with open(THRESHOLD_FILE) as f:
+#             thresholds = json.load(f)
+#         needs_order = {
+#             ing: f"{inventory[ing]['amount']} < {thresholds[ing]} {inventory[ing]['unit']}"
+#             for ing in thresholds if ing not in exclude_list and ing in inventory and inventory[ing]["amount"] < thresholds[ing]
+#         }
+#         if needs_order:
+#             st.error("⚠️ Order Needed:")
+#             st.dataframe(needs_order)
+#         else:
+#             st.success("✅ All ingredients above minimum thresholds.")
+
+# # --- Routing Logic ---
+# if page == "Ingredient Inventory":
+#     ingredient_inventory_section()
+
+# elif page == "Flavor Inventory":
+#     st.subheader("📋 Flavor Inventory Section")
+#     st.info("This section is not yet implemented.")
+
+# elif page == "Batching System":
+#     st.subheader("⚙️ Batching System Section")
+#     st.info("This section is not yet implemented.")
 # # --- Utility Functions ---
 # def get_total_weight(recipe):
 #     return sum(recipe["ingredients"].values())
@@ -2305,6 +2442,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
