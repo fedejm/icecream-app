@@ -392,36 +392,131 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
-
-# --- Batching System Section ---
 def batching_system_section():
     st.subheader("⚙️ Manual Batching System")
+
     recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
     recipe = recipes[recipe_name]
 
-    st.markdown("### Scale by Target Weight")
-    target_weight = st.number_input("Target total weight (grams)", min_value=100.0, step=100.0, key="batch_target_weight")
-    if target_weight:
-        scaled_recipe, factor = scale_recipe_to_target_weight(recipe, target_weight)
-        st.markdown(f"#### Scaled Ingredients ({round(factor * 100)}%)")
+    # --- Scaling method selection ---
+    st.markdown("### 🔧 Choose Scaling Method")
+    scale_mode = st.selectbox(
+        "Scale recipe by:",
+        ["Total weight (grams)", "1.5 gallon tubs", "5 liter pans", "Mix of tubs and pans", "Available ingredient amounts"],
+        key="scaling_method"
+    )
+
+    scaled_recipe = None
+    scale_factor = None
+    target_weight = None
+
+    # --- 1. Total weight ---
+    if scale_mode == "Total weight (grams)":
+        target_weight = st.number_input("Enter total target weight (g)", min_value=100.0, step=100.0, key="weight_input")
+
+    # --- 2. 1.5 gallon tubs (approx. 4275g per tub) ---
+    elif scale_mode == "1.5 gallon tubs":
+        tubs = st.number_input("Number of 1.5 gallon tubs", min_value=0, step=1, key="tub_input")
+        target_weight = tubs * 4275
+
+    # --- 3. 5 liter pans (approx. 3750g per pan) ---
+    elif scale_mode == "5 liter pans":
+        pans = st.number_input("Number of 5L pans", min_value=0, step=1, key="pan_input")
+        target_weight = pans * 3750
+
+    # --- 4. Mix of tubs and pans ---
+    elif scale_mode == "Mix of tubs and pans":
+        tubs = st.number_input("Number of 1.5 gallon tubs", min_value=0, step=1, key="mixed_tub_input")
+        pans = st.number_input("Number of 5L pans", min_value=0, step=1, key="mixed_pan_input")
+        target_weight = tubs * 4275 + pans * 3750
+
+    # --- 5. Available ingredients ---
+    elif scale_mode == "Available ingredient amounts":
+        st.markdown("Enter available amounts (in grams):")
+        available_ingredients = {}
+        for ing in recipe["ingredients"].keys():
+            val = st.text_input(f"{ing}:", key=f"available_{ing}")
+            if val.strip():
+                try:
+                    available_ingredients[ing] = float(val)
+                except ValueError:
+                    st.error(f"Invalid number for {ing}")
+        if st.button("Adjust Based on Ingredients", key="adjust_by_available"):
+            adjusted, scale_factor = adjust_recipe_with_constraints(recipe, available_ingredients)
+            scaled_recipe = {
+                "ingredients": adjusted,
+                "instructions": recipe.get("instructions", [])
+            }
+            target_weight = sum(adjusted.values())
+            st.success(f"Recipe scaled to {round(target_weight)} g (scale factor: {round(scale_factor * 100)}%)")
+
+    # --- Perform scaling ---
+    if scale_mode != "Available ingredient amounts" and target_weight:
+        scaled_recipe, scale_factor = scale_recipe_to_target_weight(recipe, target_weight)
+        st.success(f"Recipe scaled to {round(target_weight)} g (scale factor: {round(scale_factor * 100)}%)")
+
+    # --- Display ingredients ---
+    if scaled_recipe:
+        st.markdown("### 📋 Scaled Ingredients")
         for ing, amt in scaled_recipe["ingredients"].items():
             st.write(f"- {amt} grams {ing}")
 
-    st.markdown("### Step-by-Step Mode")
-    if "step_i" not in st.session_state:
-        st.session_state.step_i = 0
+        # --- Display instructions if any ---
+        if scaled_recipe.get("instructions"):
+            st.markdown("### 🧾 Instructions")
+            for step in scaled_recipe["instructions"]:
+                st.markdown(f"- {step}")
 
-    if st.button("Start Over", key="reset_step_btn"):
-        st.session_state.step_i = 0
+        # --- Step-by-step mode ---
+        st.markdown("---")
+        st.markdown("### 🧪 Step-by-Step Weighing")
 
-    steps = list(scaled_recipe["ingredients"].items())
-    if st.session_state.step_i < len(steps):
-        ing, amt = steps[st.session_state.step_i]
-        st.markdown(f"**Weigh:** {amt} grams of {ing}")
-        if st.button("Next Ingredient", key=f"next_{st.session_state.step_i}"):
-            st.session_state.step_i += 1
-    else:
-        st.success("🎉 All ingredients completed!")
+        if "step_index" not in st.session_state:
+            st.session_state.step_index = 0
+
+        if st.button("Start Over", key="reset_step"):
+            st.session_state.step_index = 0
+
+        steps = list(scaled_recipe["ingredients"].items())
+        i = st.session_state.step_index
+
+        if i < len(steps):
+            ing, amt = steps[i]
+            st.markdown(f"**Step {i+1}/{len(steps)}:** Weigh `{amt} grams of {ing}`")
+            if st.button("Next Ingredient", key=f"next_step_{i}"):
+                st.session_state.step_index += 1
+        else:
+            st.success("✅ All ingredients completed!")
+
+# --- Batching System Section ---
+# def batching_system_section():
+#     st.subheader("⚙️ Manual Batching System")
+#     recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
+#     recipe = recipes[recipe_name]
+
+#     st.markdown("### Scale by Target Weight")
+#     target_weight = st.number_input("Target total weight (grams)", min_value=100.0, step=100.0, key="batch_target_weight")
+#     if target_weight:
+#         scaled_recipe, factor = scale_recipe_to_target_weight(recipe, target_weight)
+#         st.markdown(f"#### Scaled Ingredients ({round(factor * 100)}%)")
+#         for ing, amt in scaled_recipe["ingredients"].items():
+#             st.write(f"- {amt} grams {ing}")
+
+#     st.markdown("### Step-by-Step Mode")
+#     if "step_i" not in st.session_state:
+#         st.session_state.step_i = 0
+
+#     if st.button("Start Over", key="reset_step_btn"):
+#         st.session_state.step_i = 0
+
+#     steps = list(scaled_recipe["ingredients"].items())
+#     if st.session_state.step_i < len(steps):
+#         ing, amt = steps[st.session_state.step_i]
+#         st.markdown(f"**Weigh:** {amt} grams of {ing}")
+#         if st.button("Next Ingredient", key=f"next_{st.session_state.step_i}"):
+#             st.session_state.step_i += 1
+#     else:
+#         st.success("🎉 All ingredients completed!")
 ####
 def flavor_inventory_section():
     st.subheader("🍦 Flavor & Topping Inventory Control")
@@ -2549,6 +2644,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
