@@ -1868,6 +1868,8 @@ def ingredient_inventory_section():
 # --- Routing ---
 if page == "Ingredient Inventory":
     ingredient_inventory_section()
+elif page == "Flavor Inventory":
+    flavor_inventory_section()
 elif page == "Batching System":
     batching_system_section()
 
@@ -2547,6 +2549,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
