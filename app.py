@@ -423,46 +423,104 @@ def batching_system_section():
     else:
         st.success("🎉 All ingredients completed!")
 ####
+def flavor_inventory_section():
+    st.subheader("🍦 Flavor & Topping Inventory Control")
+
+    # --- Load data ---
+    if os.path.exists(LINEUP_FILE):
+        with open(LINEUP_FILE) as f:
+            lineup = json.load(f)
+    else:
+        lineup = []
+
+    if os.path.exists(INVENTORY_FILE):
+        with open(INVENTORY_FILE) as f:
+            inventory = json.load(f)
+    else:
+        inventory = {}
+
+    # --- 1. Weekly Lineup ---
+    st.markdown("#### 1. Set Weekly Flavor Lineup")
+    lineup_input = st.text_area("Flavors (comma-separated)", value=", ".join(lineup), key="lineup_input")
+    if st.button("Update Lineup", key="update_lineup_btn"):
+        lineup = [flavor.strip() for flavor in lineup_input.split(",") if flavor.strip()]
+        inventory = {flavor: data for flavor, data in inventory.items() if flavor in lineup}
+        with open(LINEUP_FILE, "w") as f:
+            json.dump(lineup, f)
+        with open(INVENTORY_FILE, "w") as f:
+            json.dump(inventory, f)
+        st.success("✅ Lineup updated and inventory cleaned.")
+
+    # --- 2. Update Inventory ---
+    st.markdown("#### 2. Update Inventory")
+    if not lineup:
+        st.warning("⚠️ Please set the weekly lineup first.")
+        return
+
+    selected_flavor = st.selectbox("Select a flavor to update", lineup, key="flavor_select")
+    quarts = st.number_input("Enter quarts available", min_value=0, step=1, key="quarts_input")
+
+    if st.button("Submit Inventory", key="submit_inventory_btn"):
+        inventory[selected_flavor] = {
+            "quarts": quarts,
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
+        with open(INVENTORY_FILE, "w") as f:
+            json.dump(inventory, f)
+        st.success(f"✅ Inventory updated for {selected_flavor}")
+
+    # --- 3. Show Inventory Table ---
+    st.markdown("#### 3. Current Inventory")
+    if inventory:
+        sorted_inventory = sorted(inventory.items(), key=lambda x: x[1]["quarts"], reverse=True)
+        table = {
+            "Flavor": [flavor for flavor, _ in sorted_inventory],
+            "Quarts": [info["quarts"] for _, info in sorted_inventory],
+            "Last Updated": [info["last_updated"] for _, info in sorted_inventory],
+        }
+        st.dataframe(table, use_container_width=True)
+    else:
+        st.info("No inventory records yet.")
 
 ####
 
 ###
-def flavor_inventory_section():
-    st.subheader("📋 Flavor Inventory")
+# def flavor_inventory_section():
+#     st.subheader("📋 Flavor Inventory")
 
-    LINEUP_FILE = "weekly_lineup.json"
+#     LINEUP_FILE = "weekly_lineup.json"
 
-    # Load saved lineup if exists
-    current_lineup = []
-    if os.path.exists(LINEUP_FILE):
-        with open(LINEUP_FILE) as f:
-            current_lineup = json.load(f)
+#     # Load saved lineup if exists
+#     current_lineup = []
+#     if os.path.exists(LINEUP_FILE):
+#         with open(LINEUP_FILE) as f:
+#             current_lineup = json.load(f)
 
-    st.markdown("### 🧁 Weekly Flavor Lineup")
-    st.markdown("You can select from any recipes listed in the system.")
+#     st.markdown("### 🧁 Weekly Flavor Lineup")
+#     st.markdown("You can select from any recipes listed in the system.")
 
-    all_recipe_names = list(recipes.keys())
+#     all_recipe_names = list(recipes.keys())
 
-    selected_flavors = st.multiselect(
-        "Select flavors for this week's lineup:",
-        all_recipe_names,
-        default=current_lineup,
-        key="weekly_flavor_picker"
-    )
+#     selected_flavors = st.multiselect(
+#         "Select flavors for this week's lineup:",
+#         all_recipe_names,
+#         default=current_lineup,
+#         key="weekly_flavor_picker"
+#     )
 
-    if st.button("Save Weekly Lineup", key="save_weekly_lineup_btn"):
-        with open(LINEUP_FILE, "w") as f:
-            json.dump(selected_flavors, f, indent=2)
-        st.success("✅ Weekly lineup saved!")
+#     if st.button("Save Weekly Lineup", key="save_weekly_lineup_btn"):
+#         with open(LINEUP_FILE, "w") as f:
+#             json.dump(selected_flavors, f, indent=2)
+#         st.success("✅ Weekly lineup saved!")
 
-    if selected_flavors:
-        st.markdown("### 📋 Selected Flavors and Their Ingredients")
-        for flavor in selected_flavors:
-            st.markdown(f"#### 🍨 {flavor}")
-            for ing, amt in recipes[flavor]["ingredients"].items():
-                st.write(f"- {amt} grams {ing}")
-    else:
-        st.info("No flavors selected yet.")
+#     if selected_flavors:
+#         st.markdown("### 📋 Selected Flavors and Their Ingredients")
+#         for flavor in selected_flavors:
+#             st.markdown(f"#### 🍨 {flavor}")
+#             for ing, amt in recipes[flavor]["ingredients"].items():
+#                 st.write(f"- {amt} grams {ing}")
+#     else:
+#         st.info("No flavors selected yet.")
 ###
 ###
 ###
@@ -2489,6 +2547,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
