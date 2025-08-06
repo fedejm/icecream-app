@@ -2002,6 +2002,9 @@ elif page == "Flavor Inventory":
     flavor_inventory_section()
 elif page == "Batching System":
     batching_system_section()
+if page == "Set Min Inventory":
+    set_min_inventory_section()
+
 
 # # --- Utility Functions ---
 # def get_total_weight(recipe):
@@ -2679,6 +2682,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
