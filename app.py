@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 # --- Sidebar navigation ---
-page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingredient Inventory"], key="sidebar_nav")
+page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingredient Inventory", "Set Min Inventory"], key="sidebar_nav")
 
 # --- File Constants ---
 LINEUP_FILE = "weekly_lineup.json"
@@ -1566,6 +1566,41 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
+# new section
+def set_min_inventory_section():
+    st.subheader("📉 Set Minimum Inventory Levels")
+
+    # Load existing thresholds
+    thresholds = {}
+    if os.path.exists(THRESHOLD_FILE):
+        with open(THRESHOLD_FILE, "r") as f:
+            thresholds = json.load(f)
+
+    # Load existing inventory to get ingredient names
+    inventory = {}
+    if os.path.exists(INGREDIENT_FILE):
+        with open(INGREDIENT_FILE, "r") as f:
+            inventory = json.load(f)
+
+    st.markdown("### Set thresholds for each ingredient")
+
+    for ingredient in sorted(inventory.keys()):
+        current_threshold = thresholds.get(ingredient, 0)
+        new_threshold = st.number_input(
+            f"Minimum for {ingredient}",
+            min_value=0,
+            value=current_threshold,
+            step=100
+        )
+        thresholds[ingredient] = new_threshold
+
+    if st.button("💾 Save Minimum Thresholds"):
+        with open(THRESHOLD_FILE, "w") as f:
+            json.dump(thresholds, f, indent=2)
+        st.success("Minimum thresholds saved.")
+
+
 import streamlit as st
 import os
 import json
@@ -2644,6 +2679,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
