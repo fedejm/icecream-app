@@ -1810,10 +1810,8 @@ def ingredient_inventory_section():
 # --- Routing ---
 if page == "Ingredient Inventory":
     ingredient_inventory_section()
-elif page == "Flavor Inventory":
-    st.write("Flavor inventory page placeholder (implement or call your function here)")
 elif page == "Batching System":
-    st.write("Batching system page placeholder (implement or call your function here)")
+    batching_system_section()
 
 # # --- Utility Functions ---
 # def get_total_weight(recipe):
@@ -2491,6 +2489,7 @@ elif page == "Batching System":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
