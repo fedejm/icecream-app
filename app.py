@@ -127,7 +127,8 @@ recipes = {
             "4) Bake for 15 minutes at 325°F."
         ],
         "subrecipes": {}
-    }, "green tea": {
+    }, 
+    "green tea": {
         "ingredients": {
             "milk": 8853,
             "cream": 2172,
@@ -2734,6 +2735,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
