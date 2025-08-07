@@ -307,6 +307,17 @@ recipes = {
         "instructions": [
             
         ]
+    }, "vegan peanut butter cup": {
+        "ingredients": {
+            "water": 3085,
+            "pectin": 18,
+            "sugar": 939,
+            "guar": 11,
+            "peanut butter": 447
+        },
+        "instructions": [
+            
+        ]
     }
 }
 # --- Utility Functions ---
@@ -2735,6 +2746,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
