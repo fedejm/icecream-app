@@ -128,7 +128,7 @@ recipes = {
         ],
         "subrecipes": {}
     }, 
-    "green tea": {
+    "Green Tea": {
         "ingredients": {
             "milk": 8853,
             "cream": 2172,
@@ -307,7 +307,7 @@ recipes = {
         "instructions": [
             
         ]
-    }, "vegan peanut butter cup": {
+    }, "Vegan Peanut Butter": {
         "ingredients": {
             "water": 3085,
             "pectin": 18,
@@ -2746,6 +2746,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
