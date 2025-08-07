@@ -127,7 +127,20 @@ recipes = {
             "4) Bake for 15 minutes at 325°F."
         ],
         "subrecipes": {}
-    },
+    }, "green tea": {
+        "ingredients": {
+            "milk": 8853,
+            "cream": 2172,
+            "sugar": 2389,
+            "guar": 29,
+            "dry milk": 724,
+            "yolks": 145,
+            "matcha powder": 166
+        },
+        "instructions": [
+            
+        ]
+    }
     "Honeycomb": {
         "ingredients": {
             "sugar": 3000,
@@ -291,9 +304,7 @@ recipes = {
             "vanilla seeds": 90
         },
         "instructions": [
-            "1) Combine all ingredients.",
-            "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."
+            
         ]
     }
 }
@@ -2723,6 +2734,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
