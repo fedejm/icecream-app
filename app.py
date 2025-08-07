@@ -140,7 +140,7 @@ recipes = {
         "instructions": [
             
         ]
-    }
+    },
     "Honeycomb": {
         "ingredients": {
             "sugar": 3000,
@@ -2734,6 +2734,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
