@@ -55,7 +55,7 @@ recipes = {
             "butter": 272
         },
         "instructions": [
-            "1) Melt the butter.",
+            "1) Melt the butter!.",
             "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
             "3) Bake for 15 minutes at 350°F."
         ],
@@ -2746,6 +2746,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
