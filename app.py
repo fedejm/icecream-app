@@ -321,7 +321,6 @@ recipes = {
     }
 }
 
-st.write("Recipes in dropdown:", list(recipes.keys()))
 
 # --- Utility Functions ---
 def get_total_weight(recipe):
@@ -421,7 +420,7 @@ def ingredient_inventory_section():
 def batching_system_section():
     st.subheader("⚙️ Manual Batching System")
 
-    recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
+    recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select_v2")
     recipe = recipes[recipe_name]
 
     # --- Scaling method selection ---
@@ -2749,6 +2748,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
