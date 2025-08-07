@@ -320,6 +320,9 @@ recipes = {
         ]
     }
 }
+
+st.write("Recipes in dropdown:", list(recipes.keys()))
+
 # --- Utility Functions ---
 def get_total_weight(recipe):
     return sum(recipe["ingredients"].values())
@@ -2746,6 +2749,7 @@ if page == "Set Min Inventory":
 #     # Example:
 #     st.markdown("### Select a recipe and scale it")
 #     # ... your full recipe scaling UI logic ...
+
 
 
 
