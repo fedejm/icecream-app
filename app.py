@@ -330,13 +330,175 @@ recipes = {
 }
 
 
-
 def batching_system_section():
-    st.subheader("Batching System")  # placeholder
+    st.header("Batching System")
+
+    # Pick recipe (optionally filter to weekly lineup)
+    lineup = load_json(LINEUP_FILE, [])
+    all_recipe_names = sorted(recipes.keys())
+    show_only_lineup = st.checkbox(
+        "Show only weekly lineup",
+        value=bool(lineup),
+        key="bs_show_only_lineup"
+    )
+    if show_only_lineup and lineup:
+        recipe_options = [r for r in all_recipe_names if r in lineup]
+        if not recipe_options:
+            st.warning("No recipes in lineup. Showing all recipes.")
+            recipe_options = all_recipe_names
+    else:
+        recipe_options = all_recipe_names
+
+    selected_recipe = st.selectbox("Recipe", recipe_options, key="bs_recipe_select")
+    base_ings = recipes[selected_recipe].get("ingredients", {})
+    original_weight = sum(base_ings.values()) if base_ings else 0
+
+    # Scaling method
+    st.subheader("Scale")
+    scale_mode = st.radio(
+        "Method",
+        ["Target batch weight (g)", "Multiplier x"],
+        horizontal=True,
+        key="bs_scale_mode"
+    )
+
+    if scale_mode == "Target batch weight (g)":
+        target_weight = st.number_input(
+            "Target weight (g)",
+            min_value=1.0,
+            value=float(original_weight or 1000),
+            step=100.0,
+            key="bs_target_weight"
+        )
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    else:
+        scale_factor = st.number_input(
+            "Multiplier",
+            min_value=0.01,
+            value=1.0,
+            step=0.1,
+            key="bs_multiplier"
+        )
+
+    scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
+    total_scaled = round(sum(scaled.values()), 2)
+
+    st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+    with st.expander("📋 Scaled ingredients (all)"):
+        for ing, grams in scaled.items():
+            st.write(f"- {ing}: {grams:.0f} g")
+
+    # ---------- Step-by-step execution ----------
+    st.subheader("Execute batch (step-by-step)")
+    key_prefix = f"bs_{selected_recipe}"
+
+    # Initialize step state
+    if f"{key_prefix}_step" not in st.session_state:
+        st.session_state[f"{key_prefix}_step"] = None
+        st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
+
+    # Start / Continue flow
+    start_clicked = st.button("▶️ Start batch", key=f"{key_prefix}_start")
+    if start_clicked:
+        st.session_state[f"{key_prefix}_step"] = 0
+        st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
+
+    step = st.session_state[f"{key_prefix}_step"]
+    order = st.session_state[f"{key_prefix}_order"]
+
+    if step is not None:
+        if step < len(order):
+            ing = order[step]
+            grams = scaled.get(ing, 0)
+            # exact phrasing: "ingredient amount grams"
+            st.info(f"**{ing} {grams:.0f} grams**")
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                if st.button("⬅️ Back", key=f"{key_prefix}_back", disabled=(step == 0)):
+                    st.session_state[f"{key_prefix}_step"] = max(0, step - 1)
+                    st.stop()
+            with col2:
+                if st.button("⏹ Reset", key=f"{key_prefix}_reset"):
+                    st.session_state[f"{key_prefix}_step"] = None
+                    st.stop()
+            with col3:
+                if st.button("Next ➡️", key=f"{key_prefix}_next"):
+                    st.session_state[f"{key_prefix}_step"] = step + 1
+                    st.stop()
+        else:
+            st.success("✅ Batch complete")
+            if st.button("Start over", key=f"{key_prefix}_restart"):
+                st.session_state[f"{key_prefix}_step"] = 0
+                st.stop()
+
 
 def flavor_inventory_section():
-    st.subheader("Flavor Inventory")  # placeholder
+    st.header("Flavor Inventory")
 
+    # Pick files safely even if constants are missing elsewhere
+    flavor_inventory_file = INVENTORY_FILE if "INVENTORY_FILE" in globals() else "flavor_inventory.json"
+    lineup_file = LINEUP_FILE if "LINEUP_FILE" in globals() else "weekly_lineup.json"
+
+    lineup = load_json(lineup_file, [])               # expects a list of flavor names
+    all_flavors = sorted(recipes.keys())
+
+    show_only_lineup = st.checkbox(
+        "Show only weekly lineup",
+        value=bool(lineup),
+        key="fi_show_only_lineup"
+    )
+    flavors = [f for f in all_flavors if (not show_only_lineup or f in lineup)]
+    if not flavors:
+        st.warning("No lineup found. Showing all recipes.")
+        flavors = all_flavors
+
+    # Load current flavor inventory; ensure all flavors are present
+    current = load_json(flavor_inventory_file, {name: 0 for name in flavors})
+    for name in flavors:
+        current.setdefault(name, 0)
+
+    # Filter UI
+    filter_text = st.text_input("Filter flavors", "", key="fi_filter").strip().lower()
+    display_flavors = [f for f in flavors if filter_text in f.lower()]
+
+    # Editable grid (3 columns)
+    cols = st.columns(3)
+    updated = {}
+    for i, name in enumerate(display_flavors):
+        with cols[i % 3]:
+            updated[name] = st.number_input(
+                name,
+                min_value=0.0,
+                value=float(current.get(name, 0)),
+                step=1.0,
+                key=f"fi_qty_{name.replace(' ', '_')}"
+            )
+
+    # Add/Remove flavors (optional)
+    with st.expander("➕➖ Add or remove flavors"):
+        new_name = st.text_input("Add a flavor", "", key="fi_add_name").strip()
+        if st.button("Add flavor", key="fi_add_btn") and new_name:
+            if new_name not in current:
+                current[new_name] = 0
+                save_json(flavor_inventory_file, current)
+                st.info("Flavor added. Press Save or reload to see it in the grid.")
+
+        to_remove = st.selectbox("Remove a flavor", [""] + sorted(current.keys()), key="fi_remove_sel")
+        if st.button("Remove selected", key="fi_remove_btn") and to_remove:
+            current.pop(to_remove, None)
+            save_json(flavor_inventory_file, current)
+            st.info("Flavor removed. Press Save or reload to update the grid.")
+
+    # Save
+    if st.button("💾 Save flavor inventory", key="fi_save_btn"):
+        current.update(updated)
+        save_json(flavor_inventory_file, current)
+        st.success("Flavor inventory saved.")
+
+    with st.expander("⚙️ Files"):
+        st.write(f"Flavor inventory file: `{flavor_inventory_file}`")
+        st.write(f"Weekly lineup file: `{lineup_file}`")
 def ingredient_inventory_section():
     st.subheader("📦 Ingredient Inventory Control")
 
@@ -950,6 +1112,7 @@ elif page == "Batching System":
     batching_system_section()
 if page == "Set Min Inventory":
     set_min_inventory_section()
+
 
 
 
