@@ -581,8 +581,18 @@ recipes = {
     }
 }
 
+if page == "Batching System":
+    batching_system_section()
+
+elif page == "Flavor Inventory":
+    flavor_inventory_section()
+
+elif page == "Ingredient Inventory":
+    ingredient_inventory_section()
+
 elif page == "Set Min Inventory":
     set_min_inventory_section(recipes)
+
 
 # --- Utility Functions ---
 def get_total_weight(recipe):
@@ -905,5 +915,6 @@ elif page == "Batching System":
     batching_system_section()
 if page == "Set Min Inventory":
     set_min_inventory_section()
+
 
 
