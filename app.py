@@ -328,98 +328,98 @@ recipes = {
         ]
     }
 }
---- Batching System Section ---
-def batching_system_section():
-    st.subheader("⚙️ Manual Batching System")
-    recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
-    recipe = recipes[recipe_name]
-
-    st.markdown("### Scale by Target Weight")
-    target_weight = st.number_input("Target total weight (grams)", min_value=100.0, step=100.0, key="batch_target_weight")
-    if target_weight:
-        scaled_recipe, factor = scale_recipe_to_target_weight(recipe, target_weight)
-        st.markdown(f"#### Scaled Ingredients ({round(factor * 100)}%)")
-        for ing, amt in scaled_recipe["ingredients"].items():
-            st.write(f"- {amt} grams {ing}")
-
-    st.markdown("### Step-by-Step Mode")
-    if "step_i" not in st.session_state:
-        st.session_state.step_i = 0
-
-    if st.button("Start Over", key="reset_step_btn"):
-        st.session_state.step_i = 0
-
-    steps = list(scaled_recipe["ingredients"].items())
-    if st.session_state.step_i < len(steps):
-        ing, amt = steps[st.session_state.step_i]
-        st.markdown(f"**Weigh:** {amt} grams of {ing}")
-        if st.button("Next Ingredient", key=f"next_{st.session_state.step_i}"):
-            st.session_state.step_i += 1
-    else:
-        st.success("🎉 All ingredients completed!")
-###
-def flavor_inventory_section():
-    st.subheader("🍦 Flavor & Topping Inventory Control")
-
-###
-
+# --- Batching System Section ---
 # def batching_system_section():
-#     st.header("Batching System")
+#     st.subheader("⚙️ Manual Batching System")
+#     recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
+#     recipe = recipes[recipe_name]
 
-#     # Pick recipe (optionally filter to weekly lineup)
-#     lineup = load_json(LINEUP_FILE, [])
-#     all_recipe_names = sorted(recipes.keys())
-#     show_only_lineup = st.checkbox(
-#         "Show only weekly lineup",
-#         value=bool(lineup),
-#         key="bs_show_only_lineup"
-#     )
-#     if show_only_lineup and lineup:
-#         recipe_options = [r for r in all_recipe_names if r in lineup]
-#         if not recipe_options:
-#             st.warning("No recipes in lineup. Showing all recipes.")
-#             recipe_options = all_recipe_names
+#     st.markdown("### Scale by Target Weight")
+#     target_weight = st.number_input("Target total weight (grams)", min_value=100.0, step=100.0, key="batch_target_weight")
+#     if target_weight:
+#         scaled_recipe, factor = scale_recipe_to_target_weight(recipe, target_weight)
+#         st.markdown(f"#### Scaled Ingredients ({round(factor * 100)}%)")
+#         for ing, amt in scaled_recipe["ingredients"].items():
+#             st.write(f"- {amt} grams {ing}")
+
+#     st.markdown("### Step-by-Step Mode")
+#     if "step_i" not in st.session_state:
+#         st.session_state.step_i = 0
+
+#     if st.button("Start Over", key="reset_step_btn"):
+#         st.session_state.step_i = 0
+
+#     steps = list(scaled_recipe["ingredients"].items())
+#     if st.session_state.step_i < len(steps):
+#         ing, amt = steps[st.session_state.step_i]
+#         st.markdown(f"**Weigh:** {amt} grams of {ing}")
+#         if st.button("Next Ingredient", key=f"next_{st.session_state.step_i}"):
+#             st.session_state.step_i += 1
 #     else:
-#         recipe_options = all_recipe_names
+#         st.success("🎉 All ingredients completed!")
+# ###
+# def flavor_inventory_section():
+#     st.subheader("🍦 Flavor & Topping Inventory Control")
 
-#     selected_recipe = st.selectbox("Recipe", recipe_options, key="bs_recipe_select")
-#     base_ings = recipes[selected_recipe].get("ingredients", {})
-#     original_weight = sum(base_ings.values()) if base_ings else 0
+###
 
-#     # Scaling method
-#     st.subheader("Scale")
-#     scale_mode = st.radio(
-#         "Method",
-#         ["Target batch weight (g)", "Multiplier x"],
-#         horizontal=True,
-#         key="bs_scale_mode"
-#     )
+def batching_system_section():
+    st.header("Batching System")
 
-#     if scale_mode == "Target batch weight (g)":
-#         target_weight = st.number_input(
-#             "Target weight (g)",
-#             min_value=1.0,
-#             value=float(original_weight or 1000),
-#             step=100.0,
-#             key="bs_target_weight"
-#         )
-#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
-#     else:
-#         scale_factor = st.number_input(
-#             "Multiplier",
-#             min_value=0.01,
-#             value=1.0,
-#             step=0.1,
-#             key="bs_multiplier"
-#         )
+    # Pick recipe (optionally filter to weekly lineup)
+    lineup = load_json(LINEUP_FILE, [])
+    all_recipe_names = sorted(recipes.keys())
+    show_only_lineup = st.checkbox(
+        "Show only weekly lineup",
+        value=bool(lineup),
+        key="bs_show_only_lineup"
+    )
+    if show_only_lineup and lineup:
+        recipe_options = [r for r in all_recipe_names if r in lineup]
+        if not recipe_options:
+            st.warning("No recipes in lineup. Showing all recipes.")
+            recipe_options = all_recipe_names
+    else:
+        recipe_options = all_recipe_names
 
-#     scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
-#     total_scaled = round(sum(scaled.values()), 2)
+    selected_recipe = st.selectbox("Recipe", recipe_options, key="bs_recipe_select")
+    base_ings = recipes[selected_recipe].get("ingredients", {})
+    original_weight = sum(base_ings.values()) if base_ings else 0
 
-#     st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
-#     with st.expander("📋 Scaled ingredients (all)"):
-#         for ing, grams in scaled.items():
-#             st.write(f"- {ing}: {grams:.0f} g")
+    # Scaling method
+    st.subheader("Scale")
+    scale_mode = st.radio(
+        "Method",
+        ["Target batch weight (g)", "Multiplier x"],
+        horizontal=True,
+        key="bs_scale_mode"
+    )
+
+    if scale_mode == "Target batch weight (g)":
+        target_weight = st.number_input(
+            "Target weight (g)",
+            min_value=1.0,
+            value=float(original_weight or 1000),
+            step=100.0,
+            key="bs_target_weight"
+        )
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    else:
+        scale_factor = st.number_input(
+            "Multiplier",
+            min_value=0.01,
+            value=1.0,
+            step=0.1,
+            key="bs_multiplier"
+        )
+
+    scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
+    total_scaled = round(sum(scaled.values()), 2)
+
+    st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+    with st.expander("📋 Scaled ingredients (all)"):
+        for ing, grams in scaled.items():
+            st.write(f"- {ing}: {grams:.0f} g")
 
     # ---------- Step-by-step execution ----------
     st.subheader("Execute batch (step-by-step)")
@@ -1146,6 +1146,7 @@ elif page == "Batching System":
     batching_system_section()
 if page == "Set Min Inventory":
     set_min_inventory_section()
+
 
 
 
