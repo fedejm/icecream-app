@@ -361,45 +361,136 @@ recipes = {
 # def flavor_inventory_section():
 #     st.subheader("🍦 Flavor & Topping Inventory Control")
 
-###
 def batching_system_section():
+    import math
     st.header("Batching System")
-    ns = "bs2"  # change this string if you ever hit a duplicate again
+    ns = "bs3"  # namespace for widget keys
 
-    lineup = load_json(LINEUP_FILE, [])
+    # Files/lineup (fallbacks if constants missing)
+    lineup_file = LINEUP_FILE if "LINEUP_FILE" in globals() else "weekly_lineup.json"
+    lineup = load_json(lineup_file, [])
     all_recipe_names = sorted(recipes.keys())
+
+    # Filter to weekly lineup
     show_only_lineup = st.checkbox(
         "Show only weekly lineup",
         value=bool(lineup),
         key=f"{ns}_show_only_lineup",
     )
-    if show_only_lineup and lineup:
-        recipe_options = [r for r in all_recipe_names if r in lineup] or all_recipe_names
-    else:
-        recipe_options = all_recipe_names
+    recipe_options = [r for r in all_recipe_names if (not show_only_lineup or r in lineup)] or all_recipe_names
 
+    # Pick recipe
     selected_recipe = st.selectbox("Recipe", recipe_options, key=f"{ns}_recipe_select")
     base_ings = recipes[selected_recipe].get("ingredients", {})
-    original_weight = sum(base_ings.values()) if base_ings else 0
+    original_weight = float(sum(base_ings.values())) if base_ings else 0.0
 
+    # ---------------------------
+    # Scaling modes
+    # ---------------------------
     st.subheader("Scale")
     scale_mode = st.radio(
         "Method",
-        ["Target batch weight (g)", "Multiplier x"],
+        [
+            "Target batch weight (g)",
+            "Container: 5 L",
+            "Container: 1.5 gal",
+            "Containers: combo (5 L + 1.5 gal)",
+            "Scale by ingredient weight",
+            "Multiplier x",
+        ],
         horizontal=True,
         key=f"{ns}_scale_mode",
     )
+
+    # Volume → grams needs density
+    # Default ~1.03 g/mL for liquid ice-cream mix; adjust if you track per-recipe densities.
+    if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+        density_g_per_ml = st.number_input(
+            "Mix density (g/mL)",
+            min_value=0.5,
+            max_value=1.5,
+            value=1.03,
+            step=0.01,
+            key=f"{ns}_density",
+        )
+    else:
+        density_g_per_ml = None
+
+    # Constants
+    GAL_TO_L = 3.785411784
+    VOL_5L_L = 5.0
+    VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+
+    scale_factor = 1.0
+    target_weight = None
+    info_lines = []
 
     if scale_mode == "Target batch weight (g)":
         target_weight = st.number_input(
             "Target weight (g)",
             min_value=1.0,
-            value=float(original_weight or 1000),
+            value=float(original_weight or 1000.0),
             step=100.0,
             key=f"{ns}_target_weight",
         )
         scale_factor = (target_weight / original_weight) if original_weight else 1.0
-    else:
+        info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+    elif scale_mode == "Container: 5 L":
+        n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=f"{ns}_n5l")
+        total_l = n_5l * VOL_5L_L
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+    elif scale_mode == "Container: 1.5 gal":
+        n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=f"{ns}_n15")
+        total_l = n_15 * VOL_1_5GAL_L
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+    elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+        col_a, col_b = st.columns(2)
+        with col_a:
+            n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=f"{ns}_n5l_combo")
+        with col_b:
+            n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=f"{ns}_n15_combo")
+
+        total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+        if total_l <= 0:
+            st.warning("Set at least one container.")
+            total_l = 0.0
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [
+            f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+            f"Total volume: {total_l:,.2f} L",
+            f"Target weight: {target_weight:,.0f} g",
+        ]
+
+    elif scale_mode == "Scale by ingredient weight":
+        if not base_ings:
+            st.warning("This recipe has no ingredients.")
+        else:
+            ing_names = list(base_ings.keys())
+            anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=f"{ns}_anchor_ing")
+            available_g = st.number_input(
+                f"Available {anchor_ing} (g)",
+                min_value=0.0,
+                value=float(base_ings.get(anchor_ing, 0.0)),
+                step=10.0,
+                key=f"{ns}_available_anchor",
+            )
+            base_req = float(base_ings.get(anchor_ing, 0.0))
+            if base_req <= 0:
+                st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+                scale_factor = 1.0
+            else:
+                scale_factor = available_g / base_req
+                info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+    else:  # "Multiplier x"
         scale_factor = st.number_input(
             "Multiplier",
             min_value=0.01,
@@ -407,15 +498,28 @@ def batching_system_section():
             step=0.1,
             key=f"{ns}_multiplier",
         )
+        info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
 
+    # Apply scaling
     scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
     total_scaled = round(sum(scaled.values()), 2)
 
+    # Display summary
     st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+    if density_g_per_ml and total_scaled > 0:
+        est_l = total_scaled / (density_g_per_ml * 1000.0)
+        st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+    for line in info_lines:
+        st.caption(line)
+
     with st.expander("📋 Scaled ingredients (all)"):
         for ing, grams in scaled.items():
             st.write(f"- {ing}: {grams:.0f} g")
 
+    # ---------------------------
+    # Step-by-step execution
+    # ---------------------------
     st.subheader("Execute batch (step-by-step)")
     key_prefix = f"{ns}_{selected_recipe}"
 
@@ -423,8 +527,7 @@ def batching_system_section():
         st.session_state[f"{key_prefix}_step"] = None
         st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
 
-    start_clicked = st.button("▶️ Start batch", key=f"{key_prefix}_start")
-    if start_clicked:
+    if st.button("▶️ Start batch", key=f"{key_prefix}_start"):
         st.session_state[f"{key_prefix}_step"] = 0
         st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
 
@@ -437,24 +540,117 @@ def batching_system_section():
             grams = scaled.get(ing, 0)
             st.info(f"**{ing} {grams:.0f} grams**")
 
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                if st.button("⬅️ Back", key=f"{key_prefix}_back", disabled=(step == 0)):
-                    st.session_state[f"{key_prefix}_step"] = max(0, step - 1)
-                    st.stop()
-            with col2:
-                if st.button("⏹ Reset", key=f"{key_prefix}_reset"):
-                    st.session_state[f"{key_prefix}_step"] = None
-                    st.stop()
-            with col3:
-                if st.button("Next ➡️", key=f"{key_prefix}_next"):
-                    st.session_state[f"{key_prefix}_step"] = step + 1
-                    st.stop()
+            c1, c2, c3 = st.columns(3)
+            if c1.button("⬅️ Back", key=f"{key_prefix}_back", disabled=(step == 0)):
+                st.session_state[f"{key_prefix}_step"] = max(0, step - 1)
+                st.stop()
+            if c2.button("⏹ Reset", key=f"{key_prefix}_reset"):
+                st.session_state[f"{key_prefix}_step"] = None
+                st.stop()
+            if c3.button("Next ➡️", key=f"{key_prefix}_next"):
+                st.session_state[f"{key_prefix}_step"] = step + 1
+                st.stop()
         else:
             st.success("✅ Batch complete")
             if st.button("Start over", key=f"{key_prefix}_restart"):
                 st.session_state[f"{key_prefix}_step"] = 0
                 st.stop()
+
+
+###
+# def batching_system_section():
+#     st.header("Batching System")
+#     ns = "bs2"  # change this string if you ever hit a duplicate again
+
+#     lineup = load_json(LINEUP_FILE, [])
+#     all_recipe_names = sorted(recipes.keys())
+#     show_only_lineup = st.checkbox(
+#         "Show only weekly lineup",
+#         value=bool(lineup),
+#         key=f"{ns}_show_only_lineup",
+#     )
+#     if show_only_lineup and lineup:
+#         recipe_options = [r for r in all_recipe_names if r in lineup] or all_recipe_names
+#     else:
+#         recipe_options = all_recipe_names
+
+#     selected_recipe = st.selectbox("Recipe", recipe_options, key=f"{ns}_recipe_select")
+#     base_ings = recipes[selected_recipe].get("ingredients", {})
+#     original_weight = sum(base_ings.values()) if base_ings else 0
+
+#     st.subheader("Scale")
+#     scale_mode = st.radio(
+#         "Method",
+#         ["Target batch weight (g)", "Multiplier x"],
+#         horizontal=True,
+#         key=f"{ns}_scale_mode",
+#     )
+
+#     if scale_mode == "Target batch weight (g)":
+#         target_weight = st.number_input(
+#             "Target weight (g)",
+#             min_value=1.0,
+#             value=float(original_weight or 1000),
+#             step=100.0,
+#             key=f"{ns}_target_weight",
+#         )
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     else:
+#         scale_factor = st.number_input(
+#             "Multiplier",
+#             min_value=0.01,
+#             value=1.0,
+#             step=0.1,
+#             key=f"{ns}_multiplier",
+#         )
+
+#     scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
+#     total_scaled = round(sum(scaled.values()), 2)
+
+#     st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+#     with st.expander("📋 Scaled ingredients (all)"):
+#         for ing, grams in scaled.items():
+#             st.write(f"- {ing}: {grams:.0f} g")
+
+#     st.subheader("Execute batch (step-by-step)")
+#     key_prefix = f"{ns}_{selected_recipe}"
+
+#     if f"{key_prefix}_step" not in st.session_state:
+#         st.session_state[f"{key_prefix}_step"] = None
+#         st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
+
+#     start_clicked = st.button("▶️ Start batch", key=f"{key_prefix}_start")
+#     if start_clicked:
+#         st.session_state[f"{key_prefix}_step"] = 0
+#         st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
+
+#     step = st.session_state[f"{key_prefix}_step"]
+#     order = st.session_state[f"{key_prefix}_order"]
+
+#     if step is not None:
+#         if step < len(order):
+#             ing = order[step]
+#             grams = scaled.get(ing, 0)
+#             st.info(f"**{ing} {grams:.0f} grams**")
+
+#             col1, col2, col3 = st.columns(3)
+#             with col1:
+#                 if st.button("⬅️ Back", key=f"{key_prefix}_back", disabled=(step == 0)):
+#                     st.session_state[f"{key_prefix}_step"] = max(0, step - 1)
+#                     st.stop()
+#             with col2:
+#                 if st.button("⏹ Reset", key=f"{key_prefix}_reset"):
+#                     st.session_state[f"{key_prefix}_step"] = None
+#                     st.stop()
+#             with col3:
+#                 if st.button("Next ➡️", key=f"{key_prefix}_next"):
+#                     st.session_state[f"{key_prefix}_step"] = step + 1
+#                     st.stop()
+#         else:
+#             st.success("✅ Batch complete")
+#             if st.button("Start over", key=f"{key_prefix}_restart"):
+#                 st.session_state[f"{key_prefix}_step"] = 0
+#                 st.stop()
 
 ###
 # def batching_system_section():
@@ -1240,6 +1436,7 @@ def ingredient_inventory_section():
 #     batching_system_section()
 # if page == "Set Min Inventory":
 #     set_min_inventory_section()
+
 
 
 
