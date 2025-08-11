@@ -1232,14 +1232,15 @@ def ingredient_inventory_section():
             st.success("✅ All ingredients above minimum thresholds.")
 
 # --- Routing ---
-if page == "Ingredient Inventory":
-    ingredient_inventory_section()
-elif page == "Flavor Inventory":
-    flavor_inventory_section()
-elif page == "Batching System":
-    batching_system_section()
-if page == "Set Min Inventory":
-    set_min_inventory_section()
+# if page == "Ingredient Inventory":
+#     ingredient_inventory_section()
+# elif page == "Flavor Inventory":
+#     flavor_inventory_section()
+# elif page == "Batching System":
+#     batching_system_section()
+# if page == "Set Min Inventory":
+#     set_min_inventory_section()
+
 
 
 
