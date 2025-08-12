@@ -825,7 +825,7 @@ def flavor_inventory_section():
         st.write(f"Weekly lineup file: `{lineup_file}`")
 ####
 # ingredient inventory code 
-    def ingredient_inventory_section():
+def ingredient_inventory_section():
     st.header("Ingredient Inventory")
     ns = "ii4"  # namespace to avoid duplicate widget keys
 
@@ -900,6 +900,7 @@ def flavor_inventory_section():
         for k, v in items.items()
     }
     st.dataframe(summary, use_container_width=True)
+
 
 ####
 # def ingredient_inventory_section():
@@ -1515,6 +1516,7 @@ def ingredient_inventory_section():
 #     batching_system_section()
 # if page == "Set Min Inventory":
 #     set_min_inventory_section()
+
 
 
 
