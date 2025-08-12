@@ -823,52 +823,131 @@ def flavor_inventory_section():
     with st.expander("⚙️ Files"):
         st.write(f"Flavor inventory file: `{flavor_inventory_file}`")
         st.write(f"Weekly lineup file: `{lineup_file}`")
-def ingredient_inventory_section():
-    st.subheader("📦 Ingredient Inventory Control")
+####
+# ingredient inventory code 
+    def ingredient_inventory_section():
+    st.header("Ingredient Inventory")
+    ns = "ii4"  # namespace to avoid duplicate widget keys
 
-    bulk_units = {
-        "milk": "gallons",
-        "cream": "half gallons",
-        "sugar": "50 lb bags",
-        "dry milk": "50 lb bags",
-        "flour": "50 lb bags",
-        "brown sugar": "50 lb bags",
-        "butter": "cases"
-    }
-
+    # --- Collect all ingredients from recipes + subrecipes ---
     all_ingredients = set()
     for recipe in recipes.values():
         all_ingredients.update(recipe.get("ingredients", {}).keys())
         for sub in recipe.get("subrecipes", {}).values():
             all_ingredients.update(sub.get("ingredients", {}).keys())
+    all_ingredients = sorted({ing.strip() for ing in all_ingredients})
 
-    excluded_ingredients = []
-    if os.path.exists(EXCLUDE_FILE):
-        with open(EXCLUDE_FILE) as f:
-            excluded_ingredients = json.load(f)
-
-    st.markdown("#### Exclude Ingredients from Inventory")
-    exclude_list = st.multiselect("Select ingredients to exclude", sorted(all_ingredients), default=excluded_ingredients)
-    if st.button("Save Exclusion List"):
-        with open(EXCLUDE_FILE, "w") as f:
-            json.dump(exclude_list, f, indent=2)
+    # --- Exclude list (load, edit, save) ---
+    excluded_ingredients = load_json(EXCLUDE_FILE, [])
+    st.subheader("Exclude Ingredients from Inventory")
+    exclude_list = st.multiselect(
+        "Select ingredients to exclude",
+        all_ingredients,
+        default=[e for e in excluded_ingredients if e in all_ingredients],
+        key=f"{ns}_exclude",
+    )
+    if st.button("Save Exclusion List", key=f"{ns}_save_exclude"):
+        save_json(EXCLUDE_FILE, exclude_list)
         st.success("Excluded ingredients list saved.")
 
-    ingredient_inventory = {}
-    min_thresholds = {}
+    # --- Load & normalize inventory file (auto-migrate numbers -> {amount, unit}) ---
+    raw_inv = load_json(INGREDIENT_FILE, {})
+    inv, changed = normalize_inventory_schema(raw_inv)
+    # Ensure every known ingredient exists in the file
+    for ing in all_ingredients:
+        inv.setdefault(ing, {"amount": 0.0, "unit": "g"})
+    if changed:
+        save_json(INGREDIENT_FILE, inv)  # one-time migration
 
-    st.markdown("#### Enter Inventory and Minimum Thresholds")
-    for ing in sorted(all_ingredients):
-        if ing in exclude_list:
-            continue
-        unit = bulk_units.get(ing, "grams")
-        col1, col2 = st.columns(2)
-        with col1:
-            qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
-        with col2:
-            threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
-        ingredient_inventory[ing] = {"amount": qty, "unit": unit}
-        min_thresholds[ing] = threshold
+    # --- Filter UI ---
+    q = st.text_input("Filter ingredients", "", key=f"{ns}_filter").strip().lower()
+    items = {k: v for k, v in inv.items() if (k in all_ingredients) and (k not in exclude_list) and (q in k.lower())}
+
+    # --- Editable grid (3 columns) ---
+    cols = st.columns(3)
+    unit_options = ["g", "kg", "lb", "oz"]
+    updated = {}
+    for i, (name, item) in enumerate(sorted(items.items())):
+        with cols[i % 3]:
+            amt = st.number_input(
+                name,
+                min_value=0.0,
+                value=float(item.get("amount", 0.0)),
+                step=1.0,
+                key=f"{ns}_amt_{name}",
+            )
+            try:
+                unit_idx = unit_options.index((item.get("unit") or "g").lower())
+            except ValueError:
+                unit_idx = 0
+            unit = st.selectbox(
+                "Unit",
+                unit_options,
+                index=unit_idx,
+                key=f"{ns}_unit_{name}",
+            )
+            updated[name] = {"amount": amt, "unit": unit}
+
+    # --- Save ---
+    if st.button("💾 Save ingredient inventory", key=f"{ns}_save"):
+        inv.update(updated)
+        save_json(INGREDIENT_FILE, inv)
+        st.success("Ingredient inventory saved.")
+
+    # --- Summary table (shows entered unit + grams) ---
+    summary = {
+        k: f"{v['amount']:.2f} {v['unit']}  ({to_grams(v['amount'], v['unit']):,.0f} g)"
+        for k, v in items.items()
+    }
+    st.dataframe(summary, use_container_width=True)
+
+####
+# def ingredient_inventory_section():
+#     st.subheader("📦 Ingredient Inventory Control")
+
+#     bulk_units = {
+#         "milk": "gallons",
+#         "cream": "half gallons",
+#         "sugar": "50 lb bags",
+#         "dry milk": "50 lb bags",
+#         "flour": "50 lb bags",
+#         "brown sugar": "50 lb bags",
+#         "butter": "cases"
+#     }
+
+#     all_ingredients = set()
+#     for recipe in recipes.values():
+#         all_ingredients.update(recipe.get("ingredients", {}).keys())
+#         for sub in recipe.get("subrecipes", {}).values():
+#             all_ingredients.update(sub.get("ingredients", {}).keys())
+
+#     excluded_ingredients = []
+#     if os.path.exists(EXCLUDE_FILE):
+#         with open(EXCLUDE_FILE) as f:
+#             excluded_ingredients = json.load(f)
+
+#     st.markdown("#### Exclude Ingredients from Inventory")
+#     exclude_list = st.multiselect("Select ingredients to exclude", sorted(all_ingredients), default=excluded_ingredients)
+#     if st.button("Save Exclusion List"):
+#         with open(EXCLUDE_FILE, "w") as f:
+#             json.dump(exclude_list, f, indent=2)
+#         st.success("Excluded ingredients list saved.")
+
+#     ingredient_inventory = {}
+#     min_thresholds = {}
+
+#     st.markdown("#### Enter Inventory and Minimum Thresholds")
+#     for ing in sorted(all_ingredients):
+#         if ing in exclude_list:
+#             continue
+#         unit = bulk_units.get(ing, "grams")
+#         col1, col2 = st.columns(2)
+#         with col1:
+#             qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
+#         with col2:
+#             threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
+#         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
+#         min_thresholds[ing] = threshold
 
     if st.button("Save Ingredient Inventory"):
         with open(INGREDIENT_FILE, "w") as f:
@@ -1436,6 +1515,7 @@ def ingredient_inventory_section():
 #     batching_system_section()
 # if page == "Set Min Inventory":
 #     set_min_inventory_section()
+
 
 
 
