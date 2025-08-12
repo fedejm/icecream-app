@@ -25,30 +25,33 @@ def load_json(path: str, default):
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
             try:
-                return json.load(f)
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
             except json.JSONDecodeError:
                 return default
     return default
 
-def save_json(path: path, data):
+def save_json(path: str, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-def normalize_inventory_schema(raw):
-    """Accept numeric or {amount, unit}; return ({amount, unit} dict, changed_flag)."""
+
+def normalize_inventory_schema(raw: dict) -> tuple[dict, bool]:
     inv, changed = {}, False
     for k, v in (raw or {}).items():
         if isinstance(v, dict):
             amt = float(v.get("amount", 0))
             unit = (v.get("unit") or "g").lower()
         else:
-            amt = float(v or 0)   # old numeric format -> assume grams
+            amt = float(v or 0)
             unit = "g"
             changed = True
         inv[k] = {"amount": amt, "unit": unit}
     return inv, changed
 
-def to_grams(amount, unit):
+
+def to_grams(amount: float, unit: str) -> float:
     return float(amount) * UNIT_FACTORS.get((unit or "g").lower(), 1.0)
+
 def ensure_inventory_files(recipes: dict):
     """If files don't exist, initialize from recipes."""
     all_ings = get_all_ingredients(recipes)
@@ -1535,6 +1538,7 @@ def ingredient_inventory_section():
 #     batching_system_section()
 # if page == "Set Min Inventory":
 #     set_min_inventory_section()
+
 
 
 
