@@ -10,12 +10,16 @@ INGREDIENT_FILE = "ingredient_inventory.json"
 THRESHOLD_FILE = "ingredient_thresholds.json"
 EXCLUDE_FILE = "excluded_ingredients.json"
 # --- Helpers ---
+
+
 def get_all_ingredients(recipes: dict) -> list[str]:
     seen = set()
     for r in recipes.values():
         for ing in r.get("ingredients", {}).keys():
             seen.add(ing.strip())
     return sorted(seen)
+
+UNIT_FACTORS = {"g": 1.0, "kg": 1000.0, "lb": 453.59237, "oz": 28.349523125}
 
 def load_json(path: str, default):
     if os.path.exists(path):
@@ -26,10 +30,25 @@ def load_json(path: str, default):
                 return default
     return default
 
-def save_json(path: str, data):
+def save_json(path: path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+def normalize_inventory_schema(raw):
+    """Accept numeric or {amount, unit}; return ({amount, unit} dict, changed_flag)."""
+    inv, changed = {}, False
+    for k, v in (raw or {}).items():
+        if isinstance(v, dict):
+            amt = float(v.get("amount", 0))
+            unit = (v.get("unit") or "g").lower()
+        else:
+            amt = float(v or 0)   # old numeric format -> assume grams
+            unit = "g"
+            changed = True
+        inv[k] = {"amount": amt, "unit": unit}
+    return inv, changed
 
+def to_grams(amount, unit):
+    return float(amount) * UNIT_FACTORS.get((unit or "g").lower(), 1.0)
 def ensure_inventory_files(recipes: dict):
     """If files don't exist, initialize from recipes."""
     all_ings = get_all_ingredients(recipes)
@@ -1516,6 +1535,7 @@ def ingredient_inventory_section():
 #     batching_system_section()
 # if page == "Set Min Inventory":
 #     set_min_inventory_section()
+
 
 
 
