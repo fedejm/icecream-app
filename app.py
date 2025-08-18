@@ -131,8 +131,6 @@ recipes = {"Brownies": {
             "1) Bake at 350°F for 30 minutes."
             
         ],
-        
-           
             }
         }
     },
@@ -1741,6 +1739,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
