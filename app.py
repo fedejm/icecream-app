@@ -118,7 +118,8 @@ def ensure_inventory_files(recipes: dict):
         save_json(THRESHOLD_FILE, thresholds)
 
 # --- Recipe Database ---
-recipes = {"Brownies": {
+recipes = recipes = {
+    "Brownies": {
         "ingredients": {
             "molding solitaire": 483,
             "butter": 380,
@@ -129,10 +130,10 @@ recipes = {"Brownies": {
         },
         "instructions": [
             "1) Bake at 350°F for 30 minutes."
-            
         ]
-            }
-        },
+    }
+}
+,
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -1738,6 +1739,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
