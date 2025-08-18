@@ -117,6 +117,44 @@ def ensure_inventory_files(recipes: dict):
         thresholds = {ing: 0 for ing in all_ings}
         save_json(THRESHOLD_FILE, thresholds)
 
+### helpers to display instructions
+def _coerce_recipe_object(recipe_like):
+    """Accepts a recipe dict or a (recipe_dict, scale_factor) tuple and returns just the dict."""
+    if isinstance(recipe_like, tuple) and recipe_like and isinstance(recipe_like[0], dict):
+        return recipe_like[0]
+    return recipe_like
+
+def render_recipe_instructions(recipe_name: str, recipe_like):
+    import streamlit as st
+    r = _coerce_recipe_object(recipe_like)
+    if not isinstance(r, dict):
+        st.info("No instructions available.")
+        return
+
+    # Gather subrecipe instructions
+    sub = r.get("subrecipes", {}) or {}
+    any_steps = False
+
+    # Show subrecipes first (if any)
+    for sub_name, sub_obj in sub.items():
+        steps = (sub_obj or {}).get("instructions", []) or []
+        if steps:
+            any_steps = True
+            with st.expander(f"👩‍🍳 Subrecipe: {sub_name}", expanded=False):
+                for i, step in enumerate(steps, start=1):
+                    st.markdown(f"**{i}.** {step}")
+
+    # Then show main instructions
+    main_steps = r.get("instructions", []) or []
+    if main_steps:
+        any_steps = True
+        with st.expander(f"📋 Instructions: {recipe_name}", expanded=True):
+            for i, step in enumerate(main_steps, start=1):
+                st.markdown(f"**{i}.** {step}")
+
+    if not any_steps:
+        st.info("This recipe has no instructions yet.")
+###
 # --- Recipe Database ---
 recipes = {
     "Brownies": {
@@ -1740,6 +1778,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
