@@ -125,6 +125,61 @@ def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
         "instructions": base_recipe.get("instructions", []),
         "subrecipes": base_recipe.get("subrecipes", {}),
     }
+def _unwrap_recipe(obj):
+    """Accept dict or (dict, scale_factor) and return the dict."""
+    if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
+        return obj[0]
+    return obj if isinstance(obj, dict) else {}
+
+def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+    """Ensure scaled recipe carries instructions/subrecipes forward."""
+    return {
+        "ingredients": new_ingredients,
+        "instructions": base_recipe.get("instructions", []),
+        "subrecipes": base_recipe.get("subrecipes", {}),
+    }
+
+def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
+    """
+    Prints the ingredients AND instructions no matter what shape your scaler returns.
+    If instructions are missing, it re-attaches them from the base recipe.
+    """
+    import streamlit as st
+    base = recipes_dict.get(selected_name, {})
+    rec = _unwrap_recipe(scaled_result)
+
+    # If scaler returned only ingredients, reattach instructions/subrecipes
+    if rec and "ingredients" in rec and ("instructions" not in rec or rec.get("instructions") is None):
+        rec = make_scaled_recipe(base, rec["ingredients"])
+
+    # Last fallback: if rec is empty, just use base
+    if not rec:
+        rec = base
+
+    # ----- INGREDIENTS -----
+    ing = rec.get("ingredients", {})
+    if ing:
+        st.markdown("### 📋 Scaled ingredients (all)")
+        for k, v in ing.items():
+            st.write(f"{k}: {v} g")
+
+    # ----- SUBRECIPE INSTRUCTIONS (first) -----
+    sub = rec.get("subrecipes") or {}
+    for sub_name, sub_obj in sub.items():
+        steps = (sub_obj or {}).get("instructions") or []
+        if steps:
+            st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
+            for i, step in enumerate(steps, 1):
+                st.markdown(f"**{i}.** {step}")
+
+    # ----- MAIN INSTRUCTIONS -----
+    steps = rec.get("instructions") or []
+    if steps:
+        st.markdown(f"### 🧾 Instructions: {selected_name}")
+        for i, step in enumerate(steps, 1):
+            st.markdown(f"**{i}.** {step}")
+    elif not sub:
+        st.info("This recipe has no instructions yet.")
 
 
 ###
@@ -1763,6 +1818,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
