@@ -132,8 +132,7 @@ recipes = {"Brownies": {
             
         ],
             }
-        }
-    },
+        },
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -1739,6 +1738,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
