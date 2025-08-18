@@ -1178,10 +1178,22 @@ def scale_recipe_to_target_weight(recipe, target_weight):
 
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     base_ingredients = recipe.get("ingredients", {})
-    ratios = [amt / base_ingredients[ing] for ing, amt in available_ingredients.items() if ing in base_ingredients and base_ingredients[ing] != 0]
+    ratios = [amt / base_ingredients[ing] for ing, amt in available_ingredients.items()
+              if ing in base_ingredients and base_ingredients[ing] != 0]
     scale_factor = min(ratios) if ratios else 1
     adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
-    return adjusted, scale_factor
+
+    # 🔧 Ensure we keep instructions/subrecipes in the result:
+    scaled_recipe = make_scaled_recipe(recipe, adjusted)
+    return scaled_recipe, scale_factor
+
+
+# def adjust_recipe_with_constraints(recipe, available_ingredients):
+#     base_ingredients = recipe.get("ingredients", {})
+#     ratios = [amt / base_ingredients[ing] for ing, amt in available_ingredients.items() if ing in base_ingredients and base_ingredients[ing] != 0]
+#     scale_factor = min(ratios) if ratios else 1
+#     adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
+#     return adjusted, scale_factor
 
 # --- Ingredient Inventory Section ---
 def ingredient_inventory_section():
@@ -1751,6 +1763,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
