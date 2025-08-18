@@ -9,6 +9,56 @@ INVENTORY_FILE = "inventory.json"
 INGREDIENT_FILE = "ingredient_inventory.json"
 THRESHOLD_FILE = "ingredient_thresholds.json"
 EXCLUDE_FILE = "excluded_ingredients.json"
+
+# Helpers for inventory 
+# Canonical unit keys to avoid typos in saved JSON
+UNIT_OPTIONS = [
+    "cans",
+    "50lbs bags",   # keep exact label you requested
+    "grams",
+    "liters",
+    "gallons",
+]
+
+def load_json(path: str, default):
+    if not os.path.exists(path):
+        return default
+    try:
+        with open(path, "r") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+def save_json(path: str, data: Any):
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+
+def get_all_ingredients_from_recipes(recipes: Dict[str, Any]) -> list[str]:
+    names = set()
+    for r in recipes.values():
+        for ing in r.get("ingredients", {}).keys():
+            names.add(ing)
+    return sorted(names)
+
+def normalize_thresholds_schema(thresholds: Dict[str, Any]) -> Dict[str, Any]:
+    """Upgrade old schema (value-only) to {'min': number, 'unit': 'grams'}."""
+    upgraded = {}
+    for ing, val in thresholds.items():
+        if isinstance(val, dict):
+            # ensure both keys
+            min_val = val.get("min", 0)
+            unit    = val.get("unit", "grams")
+            if unit not in UNIT_OPTIONS:
+                unit = "grams"
+            upgraded[ing] = {"min": min_val, "unit": unit}
+        else:
+            upgraded[ing] = {"min": float(val) if val is not None else 0.0, "unit": "grams"}
+    return upgraded
+
+##
+
+
 # --- Helpers ---
 
 
@@ -1002,27 +1052,75 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 
+import streamlit as st
 
-
-def set_min_inventory_section(recipes: dict):
+def set_min_inventory_section(recipes: Dict[str, Any]):
     st.header("Set Minimum Inventory Levels")
-    ensure_inventory_files(recipes)
-    all_ings = get_all_ingredients(recipes)
-    current = load_json(THRESHOLD_FILE, {ing: 0 for ing in all_ings})
-    for ing in all_ings:
-        current.setdefault(ing, 0)
 
-    cols = st.columns(3)
-    updated = {}
-    for i, ing in enumerate(all_ings):
-        with cols[i % 3]:
-            updated[ing] = st.number_input(
-                ing, min_value=0.0, value=float(current.get(ing, 0)), step=1.0, key=f"min_inv_{ing}"
+    # Build the ingredient list from recipes (your request)
+    all_ingredients = get_all_ingredients_from_recipes(recipes)
+    if not all_ingredients:
+        st.info("No ingredients found in recipes.")
+        return
+
+    # Load & normalize existing thresholds
+    thresholds_raw = load_json(THRESHOLD_FILE, {})
+    thresholds = normalize_thresholds_schema(thresholds_raw)
+
+    st.caption("Pick a minimum level and unit for each ingredient. Units are informational — no conversion is applied.")
+
+    # Editable grid
+    cols = st.columns([3, 2, 2])
+    cols[0].markdown("**Ingredient**")
+    cols[1].markdown("**Min Level**")
+    cols[2].markdown("**Unit**")
+
+    # Collect edits (avoid duplicate keys using ingredient names)
+    edited = {}
+    for ing in all_ingredients:
+        current_min  = thresholds.get(ing, {}).get("min", 0.0)
+        current_unit = thresholds.get(ing, {}).get("unit", "grams")
+        with st.container():
+            c1, c2, c3 = st.columns([3, 2, 2])
+            c1.write(ing)
+            new_min = c2.number_input(
+                "min_"+ing, value=float(current_min), min_value=0.0, step=1.0, format="%.2f", label_visibility="collapsed"
             )
+            new_unit = c3.selectbox(
+                "unit_"+ing, options=UNIT_OPTIONS,
+                index=UNIT_OPTIONS.index(current_unit) if current_unit in UNIT_OPTIONS else UNIT_OPTIONS.index("grams"),
+                label_visibility="collapsed",
+            )
+            edited[ing] = {"min": new_min, "unit": new_unit}
 
-    if st.button("💾 Save minimum thresholds"):
-        save_json(THRESHOLD_FILE, updated)
-        st.success("Minimum thresholds saved.")
+    if st.button("💾 Save Minimums & Units", type="primary"):
+        save_json(THRESHOLD_FILE, edited)
+        st.success("Minimum inventory levels and units saved.")
+
+
+
+
+
+####
+# def set_min_inventory_section(recipes: dict):
+#     st.header("Set Minimum Inventory Levels")
+#     ensure_inventory_files(recipes)
+#     all_ings = get_all_ingredients(recipes)
+#     current = load_json(THRESHOLD_FILE, {ing: 0 for ing in all_ings})
+#     for ing in all_ings:
+#         current.setdefault(ing, 0)
+
+#     cols = st.columns(3)
+#     updated = {}
+#     for i, ing in enumerate(all_ings):
+#         with cols[i % 3]:
+#             updated[ing] = st.number_input(
+#                 ing, min_value=0.0, value=float(current.get(ing, 0)), step=1.0, key=f"min_inv_{ing}"
+#             )
+
+#     if st.button("💾 Save minimum thresholds"):
+#         save_json(THRESHOLD_FILE, updated)
+#         st.success("Minimum thresholds saved.")
 
 # --- Sidebar navigation ---
 page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingredient Inventory", "Set Min Inventory"], key="sidebar_nav")
@@ -1061,80 +1159,177 @@ def adjust_recipe_with_constraints(recipe, available_ingredients):
 def ingredient_inventory_section():
     st.subheader("📦 Ingredient Inventory Control")
 
-    bulk_units = {
-        "milk": "gallons",
-        "cream": "half gallons",
-        "sugar": "50 lb bags",
-        "dry milk": "50 lb bags",
-        "flour": "50 lb bags",
-        "brown sugar": "50 lb bags",
-        "butter": "cases"
-    }
-
+    # Collect all ingredients from recipes and subrecipes
     all_ingredients = set()
     for recipe in recipes.values():
         all_ingredients.update(recipe.get("ingredients", {}).keys())
         for sub in recipe.get("subrecipes", {}).values():
             all_ingredients.update(sub.get("ingredients", {}).keys())
-    all_ingredients = sorted(set(all_ingredients))
+    all_ingredients = sorted(all_ingredients)
 
+    # Load exclusion list
     excluded_ingredients = []
     if os.path.exists(EXCLUDE_FILE):
         with open(EXCLUDE_FILE) as f:
             excluded_ingredients = json.load(f)
 
     st.markdown("#### Exclude Ingredients from Inventory")
-    exclude_list = st.multiselect("Select ingredients to exclude", all_ingredients, default=excluded_ingredients, key="exclude_list")
+    exclude_list = st.multiselect(
+        "Select ingredients to exclude",
+        all_ingredients,
+        default=excluded_ingredients,
+        key="exclude_list"
+    )
     if st.button("Save Exclusion List", key="save_exclude_btn"):
         with open(EXCLUDE_FILE, "w") as f:
             json.dump(exclude_list, f, indent=2)
         st.success("Excluded ingredients list saved.")
 
-    ingredient_inventory = {}
-    min_thresholds = {}
+    # Load thresholds (mins + units) and existing inventory
+    thresholds = normalize_thresholds_schema(load_json(THRESHOLD_FILE, {}))
+    existing_inventory = load_json(INGREDIENT_FILE, {})  # {ing: {"amount": x, "unit": "..."}}
 
-    st.markdown("#### Enter Inventory and Minimum Thresholds")
+    st.markdown("#### Enter Inventory (units come from Set Min Inventory)")
+    ingredient_inventory = {}
+
+    # Inputs for inventory only; labels show the unit chosen in Set Min page
     for ing in all_ingredients:
         if ing in exclude_list:
             continue
-        unit = bulk_units.get(ing, "grams")
-        col1, col2 = st.columns(2)
-        with col1:
-            qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
-        with col2:
-            threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
+        unit = thresholds.get(ing, {}).get("unit", "grams")
+        prev_amount = 0.0
+        if isinstance(existing_inventory.get(ing), dict):
+            prev_amount = float(existing_inventory[ing].get("amount", 0.0))
+
+        qty = st.number_input(
+            f"{ing} ({unit})",
+            min_value=0.0,
+            step=1.0,
+            format="%f",
+            key=f"inv_{ing}",
+            value=prev_amount
+        )
         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
-        min_thresholds[ing] = threshold
 
     if st.button("Save Ingredient Inventory", key="save_inventory_btn"):
         with open(INGREDIENT_FILE, "w") as f:
             json.dump(ingredient_inventory, f, indent=2)
-        with open(THRESHOLD_FILE, "w") as f:
-            json.dump(min_thresholds, f, indent=2)
-        st.success("Ingredient inventory and thresholds saved.")
+        st.success("Ingredient inventory saved.")
 
+    # Show current inventory
     if os.path.exists(INGREDIENT_FILE):
         st.markdown("#### Current Ingredient Inventory")
         with open(INGREDIENT_FILE) as f:
             data = json.load(f)
-        filtered_data = {k: f"{v['amount']} {v['unit']}" for k, v in data.items() if k not in exclude_list}
+        filtered_data = {k: f"{v.get('amount', 0)} {v.get('unit', '')}"
+                         for k, v in data.items() if k not in exclude_list}
         st.dataframe(filtered_data, use_container_width=True)
 
-    if os.path.exists(THRESHOLD_FILE):
+    # Reorder check using mins + units from thresholds
+    if os.path.exists(INGREDIENT_FILE):
         st.markdown("#### Ingredients Needing Reorder")
         with open(INGREDIENT_FILE) as f:
             inventory = json.load(f)
-        with open(THRESHOLD_FILE) as f:
-            thresholds = json.load(f)
-        needs_order = {
-            ing: f"{inventory[ing]['amount']} < {thresholds[ing]} {inventory[ing]['unit']}"
-            for ing in thresholds if ing not in exclude_list and ing in inventory and inventory[ing]["amount"] < thresholds[ing]
-        }
+
+        needs_order = {}
+        for ing, th in thresholds.items():
+            if ing in exclude_list or ing not in inventory:
+                continue
+            amount = float(inventory[ing].get("amount", 0.0))
+            min_level = float(th.get("min", 0.0))
+            unit = th.get("unit", inventory[ing].get("unit", ""))
+            if amount < min_level:
+                needs_order[ing] = f"{amount} {unit} < {min_level} {unit}"
+
         if needs_order:
             st.error("⚠️ Order Needed:")
-            st.dataframe(needs_order)
+            st.dataframe(needs_order, use_container_width=True)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
+# def ingredient_inventory_section():
+#     st.subheader("📦 Ingredient Inventory Control")
+
+#     bulk_units = {
+#         "milk": "gallons",
+#         "cream": "half gallons",
+#         "sugar": "50 lb bags",
+#         "dry milk": "50 lb bags",
+#         "flour": "50 lb bags",
+#         "brown sugar": "50 lb bags",
+#         "butter": "cases"
+#     }
+
+#     all_ingredients = set()
+#     for recipe in recipes.values():
+#         all_ingredients.update(recipe.get("ingredients", {}).keys())
+#         for sub in recipe.get("subrecipes", {}).values():
+#             all_ingredients.update(sub.get("ingredients", {}).keys())
+#     all_ingredients = sorted(set(all_ingredients))
+
+#     excluded_ingredients = []
+#     if os.path.exists(EXCLUDE_FILE):
+#         with open(EXCLUDE_FILE) as f:
+#             excluded_ingredients = json.load(f)
+
+#     st.markdown("#### Exclude Ingredients from Inventory")
+#     exclude_list = st.multiselect("Select ingredients to exclude", all_ingredients, default=excluded_ingredients, key="exclude_list")
+#     if st.button("Save Exclusion List", key="save_exclude_btn"):
+#         with open(EXCLUDE_FILE, "w") as f:
+#             json.dump(exclude_list, f, indent=2)
+#         st.success("Excluded ingredients list saved.")
+
+#     ingredient_inventory = {}
+#     min_thresholds = {}
+
+#     st.markdown("#### Enter Inventory and Minimum Thresholds")
+#     for ing in all_ingredients:
+#         if ing in exclude_list:
+#             continue
+#         unit = bulk_units.get(ing, "grams")
+#         col1, col2 = st.columns(2)
+#         with col1:
+#             qty = st.number_input(f"{ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"inv_{ing}")
+#         with col2:
+#             threshold = st.number_input(f"Min {ing} ({unit})", min_value=0.0, step=1.0, format="%f", key=f"min_{ing}")
+#         ingredient_inventory[ing] = {"amount": qty, "unit": unit}
+#         min_thresholds[ing] = threshold
+
+#     if st.button("Save Ingredient Inventory", key="save_inventory_btn"):
+#         with open(INGREDIENT_FILE, "w") as f:
+#             json.dump(ingredient_inventory, f, indent=2)
+#         with open(THRESHOLD_FILE, "w") as f:
+#             json.dump(min_thresholds, f, indent=2)
+#         st.success("Ingredient inventory and thresholds saved.")
+
+#     if os.path.exists(INGREDIENT_FILE):
+#         st.markdown("#### Current Ingredient Inventory")
+#         with open(INGREDIENT_FILE) as f:
+#             data = json.load(f)
+#         filtered_data = {k: f"{v['amount']} {v['unit']}" for k, v in data.items() if k not in exclude_list}
+#         st.dataframe(filtered_data, use_container_width=True)
+
+#     if os.path.exists(THRESHOLD_FILE):
+#         st.markdown("#### Ingredients Needing Reorder")
+#         with open(INGREDIENT_FILE) as f:
+#             inventory = json.load(f)
+#         with open(THRESHOLD_FILE) as f:
+#             thresholds = json.load(f)
+#         needs_order = {
+#             ing: f"{inventory[ing]['amount']} < {thresholds[ing]} {inventory[ing]['unit']}"
+#             for ing in thresholds if ing not in exclude_list and ing in inventory and inventory[ing]["amount"] < thresholds[ing]
+#         }
+#         if needs_order:
+#             st.error("⚠️ Order Needed:")
+#             st.dataframe(needs_order)
+#         else:
+#             st.success("✅ All ingredients above minimum thresholds.")
+
+
+
+
+
+
 # # def batching_system_section():
 # #     st.subheader("⚙️ Manual Batching System")
 
@@ -1529,15 +1724,8 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 
-# --- Routing ---
-# if page == "Ingredient Inventory":
-#     ingredient_inventory_section()
-# elif page == "Flavor Inventory":
-#     flavor_inventory_section()
-# elif page == "Batching System":
-#     batching_system_section()
-# if page == "Set Min Inventory":
-#     set_min_inventory_section()
+
+
 
 
 
