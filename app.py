@@ -415,7 +415,7 @@ recipes = recipes = {
             "3) Chill, batch freeze, and pack."
         ]
     }
-}
+
 # --- Batching System Section ---
 # def ():
 #     st.subheader("⚙️ Manual Batching System")
@@ -1739,6 +1739,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
