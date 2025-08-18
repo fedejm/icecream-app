@@ -118,28 +118,14 @@ def ensure_inventory_files(recipes: dict):
         save_json(THRESHOLD_FILE, thresholds)
 
 ### helpers to display instructions
-def _coerce_recipe_object(recipe_like):
-    """
-    Return a recipe dict from various shapes:
-      - dict -> dict
-      - (dict, scale_factor) -> dict
-      - {"recipe": dict, "scale_factor": x} -> dict
-      - None / anything else -> {}
-    """
-    # (dict, scale_factor) tuple
-    if isinstance(recipe_like, tuple) and recipe_like and isinstance(recipe_like[0], dict):
-        return recipe_like[0]
+def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+    """Return a full recipe dict (ingredients + instructions + subrecipes) after scaling."""
+    return {
+        "ingredients": new_ingredients,
+        "instructions": base_recipe.get("instructions", []),
+        "subrecipes": base_recipe.get("subrecipes", {}),
+    }
 
-    # {"recipe": dict, ...} mapping
-    if isinstance(recipe_like, dict) and "recipe" in recipe_like and isinstance(recipe_like["recipe"], dict):
-        return recipe_like["recipe"]
-
-    # already a dict (assume it's the recipe)
-    if isinstance(recipe_like, dict):
-        return recipe_like
-
-    # fallback
-    return {}
 
 ###
 # --- Recipe Database ---
@@ -1765,6 +1751,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
