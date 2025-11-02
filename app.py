@@ -179,7 +179,7 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
         for i, step in enumerate(steps, 1):
             st.markdown(f"**{i}.** {step}")
     elif not sub:
-        st.info("This recipe has no instructions yet.")
+        st.info("This recipe has no instruction yet.")
 
 
 ###
@@ -194,7 +194,7 @@ recipes = {
             "flour": 161,
             "salt": 4
         },
-        "instructions": [
+        "instruction": [
             "1) Bake at 350°F for 30 minutes."
         ]
     }
@@ -210,7 +210,7 @@ recipes = {
             "yolks": 2400,
             "caramel sauce": 3200
         },
-        "instructions": [
+        "instruction": [
             "1) Weigh and mix all base ingredients except caramel sauce.",
             "2) Weigh the caramel ingredients and cook on high until the sauce reaches 220°F.",
             "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
@@ -224,7 +224,7 @@ recipes = {
                     "water": 500,
                     "honey": 50
                 },
-                "instructions": [
+                "instruction": [
                     "1) Combine sugar, water, and honey.",
                     "2) Cook on medium-high heat until sugar dissolves.",
                     "3) Raise heat and cook until mixture reaches 220°F."
@@ -239,7 +239,7 @@ recipes = {
             "cinnamon": 8,
             "butter": 272
         },
-        "instructions": [
+        "instruction": [
             "1) Melt the butter.",
             "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
             "3) Bake for 15 minutes at 350°F."
@@ -257,7 +257,7 @@ recipes = {
             "flour": 646,
             "salt": 6
         },
-        "instructions": [],
+        "instruction": [],
         "subrecipes": {}
     },
     "Dulce de Leche": {
@@ -270,7 +270,7 @@ recipes = {
             "yolks": 500,
             "dulce de leche heladero": 90
         },
-        "instructions": []
+        "instruction": []
     },
     "Fresh Mint": {
         "ingredients": {
@@ -283,7 +283,7 @@ recipes = {
             "mint": 1250,
             "blanched mint": 500
         },
-        "instructions": [
+        "instruction": [
             "Day 1: Prepare Mint-Infused Milk",
             "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
             "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
@@ -305,7 +305,7 @@ recipes = {
             "butter": 310,
             "sugar": 352
         },
-        "instructions": [
+        "instruction": [
             "1) Process graham crackers on the Robocoupe.",
             "2) Mix ingredients on the mixer.",
             "3) Press ingredients down on a flat pan.",
@@ -320,7 +320,7 @@ recipes = {
             "water": 1450,
             "baking soda": 250
         },
-        "instructions": [
+        "instruction": [
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
             "3) Continue cooking on high until 300°F.",
@@ -334,7 +334,7 @@ recipes = {
             "crust": 566,
             "filling": 1362
         },
-        "instructions": [
+        "instruction": [
             "1) Bake the crust at 350°F for 15 minutes.",
             "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
         ],
@@ -346,7 +346,7 @@ recipes = {
                     "sugar": 100,
                     "salt": 1
                 },
-                "instructions": [
+                "instruction": [
                     "1) Process all crust ingredients in a food processor until smooth.",
                     "2) Press into a greased pan and bake for 15 minutes at 325°F."
                 ]
@@ -358,7 +358,7 @@ recipes = {
                     "sugar": 900,
                     "flour": 90
                 },
-                "instructions": [
+                "instruction": [
                     "1) Beat all filling ingredients in a bowl until fully dissolved.",
                     "2) Pour on top of the baked crust and bake for 20 minutes at 325°F."
                 ]
@@ -373,7 +373,7 @@ recipes = {
             "guar gum": 12,
             "sugar": 2625
         },
-        "instructions": [],
+        "instruction": [],
         "subrecipes": {}
     },
     "Peach Preserves": {
@@ -382,7 +382,7 @@ recipes = {
             "sugar": 1250,
             "lemon": 82
         },
-        "instructions": [
+        "instruction": [
             "1) Combine cored peaches and sugar and let stand for 3 hours.",
             "2) Bring to boil, stirring occasionally.",
             "3) Cook until it reaches 220°F and syrup is thick."
@@ -397,7 +397,7 @@ recipes = {
             "pear": 10600,
             "lemon": 300
         },
-        "instructions": [
+        "instruction": [
             "1) Quarter the pears and remove their seeds.",
             "2) Fill a pot with the quartered pears and weigh.",
             "3) Add water to completely cover the pears.",
@@ -419,7 +419,7 @@ recipes = {
             "yolks": 1000,
             "pistachio paste": 4500
         },
-        "instructions": [
+        "instruction": [
             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
             "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
         ],
@@ -429,7 +429,7 @@ recipes = {
                     "roasted pistachios": 2967,
                     "pistachio oil": 1532
                 },
-                "instructions": [
+                "instruction": [
                     "1) Roast the pistachios if raw.",
                     "2) Blend pistachios with pistachio oil until smooth and creamy."
                 ]
@@ -443,7 +443,7 @@ recipes = {
             "pectin": 11,
             "lemon": 89
         },
-        "instructions": [
+        "instruction": [
             "1) Combine strawberries and sugar and let stand for 3 hours.",
             "2) Bring to boil, stirring occasionally.",
             "3) Cook until it reaches 220°F and syrup is thick."
@@ -457,7 +457,7 @@ recipes = {
             "honey": 17,
             "salt": 4
         },
-        "instructions": [
+        "instruction": [
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
             "3) Continue cooking on high until 300°F."
@@ -475,7 +475,7 @@ recipes = {
             "vanilla extract": 100,
             "vanilla seeds": 90
         },
-        "instructions": [
+        "instruction": [
             "1) Combine all ingredients.",
             "2) Pasteurize the mix.",
             "3) Chill, batch freeze, and pack."
@@ -1229,7 +1229,7 @@ def scale_recipe_to_target_weight(recipe, target_weight):
     original_weight = get_total_weight(recipe)
     scale_factor = target_weight / original_weight
     adjusted_main = {k: round(v * scale_factor) for k, v in recipe["ingredients"].items()}
-    return {"ingredients": adjusted_main, "instructions": recipe.get("instructions", [])}, scale_factor
+    return {"ingredients": adjusted_main, "instruction": recipe.get("instruction", [])}, scale_factor
 
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     base_ingredients = recipe.get("ingredients", {})
@@ -1238,7 +1238,7 @@ def adjust_recipe_with_constraints(recipe, available_ingredients):
     scale_factor = min(ratios) if ratios else 1
     adjusted = {k: round(v * scale_factor) for k, v in base_ingredients.items()}
 
-    # 🔧 Ensure we keep instructions/subrecipes in the result:
+    # 🔧 Ensure we keep instruction/subrecipes in the result:
     scaled_recipe = make_scaled_recipe(recipe, adjusted)
     return scaled_recipe, scale_factor
 
@@ -1478,7 +1478,7 @@ def ingredient_inventory_section():
 #             adjusted, scale_factor = adjust_recipe_with_constraints(recipe, available_ingredients)
 #             scaled_recipe = {
 #                 "ingredients": adjusted,
-#                 "instructions": recipe.get("instructions", [])
+#                 "instruction": recipe.get("instruction", [])
 #             }
 #             target_weight = sum(adjusted.values())
 #             st.success(f"Recipe scaled to {round(target_weight)} g (scale factor: {round(scale_factor * 100)}%)")
@@ -1494,10 +1494,10 @@ def ingredient_inventory_section():
 #         for ing, amt in scaled_recipe["ingredients"].items():
 #             st.write(f"- {amt} grams {ing}")
 
-#         # --- Display instructions if any ---
-#         if scaled_recipe.get("instructions"):
-#             st.markdown("### 🧾 Instructions")
-#             for step in scaled_recipe["instructions"]:
+#         # --- Display instruction if any ---
+#         if scaled_recipe.get("instruction"):
+#             st.markdown("### 🧾 instruction")
+#             for step in scaled_recipe["instruction"]:
 #                 st.markdown(f"- {step}")
 
 #         # --- Step-by-step mode ---
@@ -1624,7 +1624,7 @@ def scale_recipe_to_target_weight(recipe, target_weight):
     original_weight = get_total_weight(recipe)
     scale_factor = target_weight / original_weight
     adjusted_main = {k: round(v * scale_factor) for k, v in recipe["ingredients"].items()}
-    return {"ingredients": adjusted_main, "instructions": recipe.get("instructions", [])}, scale_factor
+    return {"ingredients": adjusted_main, "instruction": recipe.get("instruction", [])}, scale_factor
 
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     base_ingredients = recipe.get("ingredients", {})
@@ -1732,7 +1732,7 @@ def scale_recipe_to_target_weight(recipe, target_weight):
     original_weight = get_total_weight(recipe)
     scale_factor = target_weight / original_weight
     adjusted_main = {k: round(v * scale_factor) for k, v in recipe["ingredients"].items()}
-    return {"ingredients": adjusted_main, "instructions": recipe.get("instructions", [])}, scale_factor
+    return {"ingredients": adjusted_main, "instruction": recipe.get("instruction", [])}, scale_factor
 
 def adjust_recipe_with_constraints(recipe, available_ingredients):
     base_ingredients = recipe.get("ingredients", {})
@@ -1818,6 +1818,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
