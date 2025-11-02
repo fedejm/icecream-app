@@ -162,35 +162,6 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
         st.markdown("### 📋 Scaled ingredients (all)")
         for k, v in ing.items():
             st.write(f"{k}: {v} g")
-# ---- DIAGNOSTIC: what recipe did we select? ----
-st.write("selected_name =", repr(globals().get("selected_name")))
-st.write("type(rec) =", type(globals().get("rec")))
-st.write("rec is None?", globals().get("rec") is None)
-
-# If rec exists, show keys and the raw instruction value
-if isinstance(globals().get("rec"), dict):
-    st.write("rec.keys() =", list(rec.keys()))
-    st.write("'instruction' in rec?", "instruction" in rec)
-    st.write("type(rec['instruction']) =", type(rec.get("instruction")))
-    st.code(repr(rec.get("instruction")))
-
-    # Subrecipes quick peek
-    st.write("Has subrecipes?", bool(rec.get("subrecipes")))
-    if rec.get("subrecipes"):
-        st.write("Subrecipe names:", list((rec.get("subrecipes") or {}).keys()))
-        for k, v in (rec.get("subrecipes") or {}).items():
-            st.write(f"{k!r} has 'instruction' key?", isinstance(v, dict) and "instruction" in v)
-            st.code(repr((v or {}).get("instruction")))
-else:
-    st.error("`rec` is not a dict. Check how you assign `rec` from recipes/selection.")
-    # ----- SUBRECIPE INSTRUCTION (first) -----
-    sub = rec.get("subrecipes") or {}
-    for sub_name, sub_obj in sub.items():
-        steps = (sub_obj or {}).get("instruction") or []
-        if steps:
-            st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
-            for i, step in enumerate(steps, 1):
-                st.markdown(f"**{i}.** {step}")
 
     # ----- MAIN INSTRUCTION -----
     steps = rec.get("instruction") or []
@@ -202,6 +173,60 @@ else:
         st.info("This recipe has no instruction yet.")
 
 
+###
+# --- Selection UI + safe defaults ---
+recipe_names = sorted(recipes.keys())
+if not recipe_names:
+    st.warning("No recipes found.")
+    st.stop()
+
+# Keep state stable across reruns
+selected_name = st.session_state.get("selected_recipe")
+
+# If nothing selected yet, default to the first recipe
+if not selected_name:
+    selected_name = recipe_names[0]
+    st.session_state["selected_recipe"] = selected_name
+
+# Render the selectbox (will update session_state on change)
+selected_name = st.selectbox(
+    "Choose a recipe",
+    recipe_names,
+    index=recipe_names.index(st.session_state["selected_recipe"]),
+    key="selected_recipe",
+)
+
+# --- Resolve recipe object + guard ---
+rec = recipes.get(selected_name)
+if not isinstance(rec, dict):
+    st.info("Pick a recipe to view details.")
+    st.stop()
+
+
+# --- Helpers ---
+def as_steps(obj):
+    v = (obj or {}).get("instruction")
+    if v is None:
+        return []
+    return v if isinstance(v, list) else [str(v)]
+
+# ----- SUBRECIPE INSTRUCTIONS -----
+sub = rec.get("subrecipes") or {}
+for sub_name, sub_obj in sub.items():
+    steps = as_steps(sub_obj)
+    if steps:
+        st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
+        for i, step in enumerate(steps, 1):
+            st.markdown(f"**{i}.** {step}")
+
+# ----- MAIN INSTRUCTION -----
+steps = as_steps(rec)
+if steps:
+    st.markdown(f"### 🧾 Instructions: {selected_name}")
+    for i, step in enumerate(steps, 1):
+        st.markdown(f"**{i}.** {step}")
+elif not sub:
+    st.info("This recipe has no instruction yet.")
 ###
 # --- Recipe Database ---
 recipes = {
@@ -1838,6 +1863,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
