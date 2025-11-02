@@ -162,7 +162,27 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
         st.markdown("### 📋 Scaled ingredients (all)")
         for k, v in ing.items():
             st.write(f"{k}: {v} g")
+# ---- DIAGNOSTIC: what recipe did we select? ----
+st.write("selected_name =", repr(globals().get("selected_name")))
+st.write("type(rec) =", type(globals().get("rec")))
+st.write("rec is None?", globals().get("rec") is None)
 
+# If rec exists, show keys and the raw instruction value
+if isinstance(globals().get("rec"), dict):
+    st.write("rec.keys() =", list(rec.keys()))
+    st.write("'instruction' in rec?", "instruction" in rec)
+    st.write("type(rec['instruction']) =", type(rec.get("instruction")))
+    st.code(repr(rec.get("instruction")))
+
+    # Subrecipes quick peek
+    st.write("Has subrecipes?", bool(rec.get("subrecipes")))
+    if rec.get("subrecipes"):
+        st.write("Subrecipe names:", list((rec.get("subrecipes") or {}).keys()))
+        for k, v in (rec.get("subrecipes") or {}).items():
+            st.write(f"{k!r} has 'instruction' key?", isinstance(v, dict) and "instruction" in v)
+            st.code(repr((v or {}).get("instruction")))
+else:
+    st.error("`rec` is not a dict. Check how you assign `rec` from recipes/selection.")
     # ----- SUBRECIPE INSTRUCTION (first) -----
     sub = rec.get("subrecipes") or {}
     for sub_name, sub_obj in sub.items():
@@ -1818,6 +1838,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
