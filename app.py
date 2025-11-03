@@ -466,6 +466,21 @@ recipes = {
             "3) Continue cooking on high until 300°F."
         ],
         "subrecipes": {}
+    }, 
+    "ricotta": {
+        "ingredients": {
+            "milk": 15822,
+            "cream": 2420,
+            "sugar": 5143,
+            "guar": 61,
+            "dry milk": 1664,
+            "yolks": 605,
+            "ricotta": 4538
+        },
+        "instruction": [
+            "1) Combine all ingredients.",
+            "2) Pasteurize the mix.",
+            "3) Chill, batch freeze, and pack."]
     },
     "vanilla": {
         "ingredients": {
@@ -483,7 +498,7 @@ recipes = {
             "2) Pasteurize the mix.",
             "3) Chill, batch freeze, and pack."]
     } ,
-    "Whisky": {
+    "whisky": {
         "ingredients": {
             "milk": 1016,
             "cream": 440,
@@ -1890,6 +1905,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
