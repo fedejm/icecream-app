@@ -498,7 +498,7 @@ recipes = {
             "2) Pasteurize the mix.",
             "3) Chill, batch freeze, and pack."
         ]
-    }
+    }}
 
 ###
 # --- Selection UI + safe defaults ---
@@ -1890,6 +1890,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
