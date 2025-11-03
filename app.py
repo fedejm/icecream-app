@@ -482,6 +482,21 @@ recipes = {
             "1) Combine all ingredients.",
             "2) Pasteurize the mix.",
             "3) Chill, batch freeze, and pack."
+            ,
+    "Whisky": {
+        "ingredients": {
+            "milk": 1016,
+            "cream": 440,
+            "sugar": 320,
+            "guar": 4,
+            "dry milk": 120,
+            "yolks": 60,
+            "whisky": 40,
+                    },
+        "instruction": [
+            "1) Combine all ingredients.",
+            "2) Pasteurize the mix.",
+            "3) Chill, batch freeze, and pack."
         ]
     }
 }
@@ -1875,6 +1890,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
