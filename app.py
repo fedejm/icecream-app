@@ -4,6 +4,13 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List
 
+if "selected_recipe" in st.session_state and st.session_state["selected_recipe"] in recipe_names:
+    index = recipe_names.index(st.session_state["selected_recipe"])
+else:
+    index = 0  # default to first recipe or a placeholder
+
+
+
 # --- File Constants ---
 LINEUP_FILE = "weekly_lineup.json"
 INVENTORY_FILE = "inventory.json"
@@ -1905,6 +1912,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
