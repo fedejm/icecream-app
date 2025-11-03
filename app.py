@@ -481,11 +481,7 @@ recipes = {
             "yolks": 605,
             "ricotta": 4538
         },
-        "instruction": [
-            "1) Combine all ingredients.",
-            "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."]
-    },
+        
     "vanilla": {
         "ingredients": {
             "milk": 28510,
@@ -520,10 +516,7 @@ recipes = {
     }}
 
 ###
-if "selected_recipe" in st.session_state and st.session_state["selected_recipe"] in recipe_names:
-    index = recipe_names.index(st.session_state["selected_recipe"])
-else:
-    index = 0  # default to first recipe or a placeholder
+
 
 
 # --- Selection UI + safe defaults ---
@@ -1915,6 +1908,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
