@@ -4,10 +4,7 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List
 
-if "selected_recipe" in st.session_state and st.session_state["selected_recipe"] in recipe_names:
-    index = recipe_names.index(st.session_state["selected_recipe"])
-else:
-    index = 0  # default to first recipe or a placeholder
+
 
 
 
@@ -523,6 +520,12 @@ recipes = {
     }}
 
 ###
+if "selected_recipe" in st.session_state and st.session_state["selected_recipe"] in recipe_names:
+    index = recipe_names.index(st.session_state["selected_recipe"])
+else:
+    index = 0  # default to first recipe or a placeholder
+
+
 # --- Selection UI + safe defaults ---
 recipe_names = sorted(recipes.keys())
 if not recipe_names:
@@ -1912,6 +1915,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
