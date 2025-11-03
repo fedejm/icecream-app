@@ -481,7 +481,7 @@ recipes = {
         "instruction": [
             "1) Combine all ingredients.",
             "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."
+            "3) Chill, batch freeze, and pack."]
             ,
     "Whisky": {
         "ingredients": {
@@ -1890,6 +1890,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
