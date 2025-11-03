@@ -480,7 +480,7 @@ recipes = {
             "dry milk": 1664,
             "yolks": 605,
             "ricotta": 4538
-        },
+        }},
         
     "vanilla": {
         "ingredients": {
@@ -1908,6 +1908,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
