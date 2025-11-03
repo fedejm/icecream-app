@@ -532,14 +532,37 @@ selected_name = st.session_state.get("selected_recipe")
 if not selected_name:
     selected_name = recipe_names[0]
     st.session_state["selected_recipe"] = selected_name
+####
+# --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
+# If there are no recipes, bail out gracefully.
+if not recipe_names:
+    st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
+    st.stop()
 
-# Render the selectbox (will update session_state on change)
+# Heal session value if it points to a recipe that no longer exists
+current_sel = st.session_state.get("selected_recipe")
+if current_sel not in recipe_names:
+    st.session_state["selected_recipe"] = recipe_names[0]
+    current_sel = recipe_names[0]
+
+# Compute a safe index (now guaranteed to exist)
+safe_index = recipe_names.index(current_sel)
+
+# Render the selectbox (updates session_state on change)
 selected_name = st.selectbox(
     "Choose a recipe",
     recipe_names,
-    index=recipe_names.index(st.session_state["selected_recipe"]),
+    index=safe_index,
     key="selected_recipe",
 )
+###
+# # Render the selectbox (will update session_state on change)
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(st.session_state["selected_recipe"]),
+#     key="selected_recipe",
+# )
 
 # --- Resolve recipe object + guard ---
 rec = recipes.get(selected_name)
@@ -1908,6 +1931,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
