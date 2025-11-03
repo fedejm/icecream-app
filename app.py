@@ -263,6 +263,18 @@ recipes = {
         },
         "instruction": []
     },
+    "Earl Grey": {
+        "ingredients": {
+            "milk": 11016,
+            "cream": 4000,
+            "sugar": 3300,
+            "guar": 44,
+            "dry milk": 800,
+            "yolks": 500,
+            "earl grey": 400
+        },
+        "instruction": []
+    },
     "Fresh Mint": {
         "ingredients": {
             "milk": 31140,
@@ -1863,6 +1875,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
