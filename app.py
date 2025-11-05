@@ -548,19 +548,11 @@ if current_sel not in recipe_names:
 # Compute a safe index (now guaranteed to exist)
 safe_index = recipe_names.index(current_sel)
 
-# Render the selectbox (updates session_state on change)
-selected_name = st.selectbox(
-    "Choose a recipe",
-    recipe_names,
-    index=safe_index,
-    key="selected_recipe",
-)
-###
-# # Render the selectbox (will update session_state on change)
+# # Render the selectbox (updates session_state on change)
 # selected_name = st.selectbox(
 #     "Choose a recipe",
 #     recipe_names,
-#     index=recipe_names.index(st.session_state["selected_recipe"]),
+#     index=safe_index,
 #     key="selected_recipe",
 # )
 
@@ -596,38 +588,7 @@ if steps:
 elif not sub:
     st.info("This recipe has no instruction yet.")
 ###
-# --- Batching System Section ---
-# def ():
-#     st.subheader("⚙️ Manual Batching System")
-#     recipe_name = st.selectbox("Select Recipe", list(recipes.keys()), key="batch_recipe_select")
-#     recipe = recipes[recipe_name]
 
-#     st.markdown("### Scale by Target Weight")
-#     target_weight = st.number_input("Target total weight (grams)", min_value=100.0, step=100.0, key="batch_target_weight")
-#     if target_weight:
-#         scaled_recipe, factor = scale_recipe_to_target_weight(recipe, target_weight)
-#         st.markdown(f"#### Scaled Ingredients ({round(factor * 100)}%)")
-#         for ing, amt in scaled_recipe["ingredients"].items():
-#             st.write(f"- {amt} grams {ing}")
-
-#     st.markdown("### Step-by-Step Mode")
-#     if "step_i" not in st.session_state:
-#         st.session_state.step_i = 0
-
-#     if st.button("Start Over", key="reset_step_btn"):
-#         st.session_state.step_i = 0
-
-#     steps = list(scaled_recipe["ingredients"].items())
-#     if st.session_state.step_i < len(steps):
-#         ing, amt = steps[st.session_state.step_i]
-#         st.markdown(f"**Weigh:** {amt} grams of {ing}")
-#         if st.button("Next Ingredient", key=f"next_{st.session_state.step_i}"):
-#             st.session_state.step_i += 1
-#     else:
-#         st.success("🎉 All ingredients completed!")
-# ###
-# def flavor_inventory_section():
-#     st.subheader("🍦 Flavor & Topping Inventory Control")
 
 def batching_system_section():
     import math
@@ -1931,6 +1892,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
