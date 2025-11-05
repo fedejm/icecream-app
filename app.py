@@ -192,7 +192,8 @@ recipes = {
         "instruction": [
             "1) Bake at 350°F for 30 minutes."
         ]
-    }},
+    }
+},
     "Chai": {
         "ingredients": {
             "cardamom mix": 2000,
@@ -1713,6 +1714,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
