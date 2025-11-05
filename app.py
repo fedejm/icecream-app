@@ -952,7 +952,15 @@ def ingredient_inventory_section():
         for k, v in items.items()
     }
     st.dataframe(summary, use_container_width=True)
-
+###
+# ----- SUBRECIPE INSTRUCTIONS -----
+sub = rec.get("subrecipes") or {}
+for sub_name, sub_obj in sub.items():
+    steps = as_steps(sub_obj)
+    if steps:
+        st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
+        for i, step in enumerate(steps, 1):
+            st.markdown(f"**{i}.** {step}")
 
 ####
 # def ingredient_inventory_section():
@@ -1715,6 +1723,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
