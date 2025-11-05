@@ -195,6 +195,16 @@ recipes = {
     }
 
 ,
+    "Chai": {
+        "ingredients": {
+            "cardamom mix": 2000,
+            "dry ginger": 4,
+            "cinnamon": 4,
+            "nutmeg": 2,
+            "all spice": 2,
+            "black pepper": 2,
+            "clove": 1
+        },
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -1705,6 +1715,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
