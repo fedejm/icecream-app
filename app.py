@@ -961,7 +961,14 @@ for sub_name, sub_obj in sub.items():
         st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
         for i, step in enumerate(steps, 1):
             st.markdown(f"**{i}.** {step}")
-
+# ----- MAIN INSTRUCTION -----
+steps = as_steps(rec)
+if steps:
+    st.markdown(f"### 🧾 Instructions: {selected_name}")
+    for i, step in enumerate(steps, 1):
+        st.markdown(f"**{i}.** {step}")
+elif not sub:
+    st.info("This recipe has no instruction yet.")
 ####
 # def ingredient_inventory_section():
 #     st.subheader("📦 Ingredient Inventory Control")
@@ -1723,6 +1730,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
