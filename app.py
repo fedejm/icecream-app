@@ -580,23 +580,7 @@ def as_steps(obj):
         return []
     return v if isinstance(v, list) else [str(v)]
 
-# # ----- SUBRECIPE INSTRUCTIONS -----
-# sub = rec.get("subrecipes") or {}
-# for sub_name, sub_obj in sub.items():
-#     steps = as_steps(sub_obj)
-#     if steps:
-#         st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
-#         for i, step in enumerate(steps, 1):
-#             st.markdown(f"**{i}.** {step}")
 
-# # ----- MAIN INSTRUCTION -----
-# steps = as_steps(rec)
-# if steps:
-#     st.markdown(f"### 🧾 Instructions: {selected_name}")
-#     for i, step in enumerate(steps, 1):
-#         st.markdown(f"**{i}.** {step}")
-# elif not sub:
-#     st.info("This recipe has no instruction yet.")
 ###
 
 
@@ -756,22 +740,57 @@ def batching_system_section():
         for ing, grams in scaled.items():
             st.write(f"- {ing}: {grams:.0f} g")
 ###
-# ----- SUBRECIPE INSTRUCTIONS -----
+    # ----- MAIN/ SUBRECIPE INSTRUCTIONS (re-bind to current selection) -----
+selected_name = st.session_state.get("selected_recipe", selected_name)
+rec = (recipes or {}).get(selected_name, {}) or {}
+
+def _as_steps(obj):
+    if not isinstance(obj, dict):
+        return []
+    steps = obj.get("instruction")
+    if steps is None:
+        steps = obj.get("instructions")
+    if isinstance(steps, str):
+        steps = [s for s in steps.splitlines() if s.strip()]
+    elif not isinstance(steps, list):
+        steps = []
+    return steps
+
+# Subrecipes
 sub = rec.get("subrecipes") or {}
 for sub_name, sub_obj in sub.items():
-    steps = as_steps(sub_obj)
+    steps = _as_steps(sub_obj)
     if steps:
         st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
         for i, step in enumerate(steps, 1):
             st.markdown(f"**{i}.** {step}")
-# ----- MAIN INSTRUCTION -----
-steps = as_steps(rec)
+
+# Main
+steps = _as_steps(rec)
 if steps:
     st.markdown(f"### 🧾 Instructions: {selected_name}")
     for i, step in enumerate(steps, 1):
         st.markdown(f"**{i}.** {step}")
 elif not sub:
     st.info("This recipe has no instruction yet.")
+
+###
+# # ----- SUBRECIPE INSTRUCTIONS -----
+# sub = rec.get("subrecipes") or {}
+# for sub_name, sub_obj in sub.items():
+#     steps = as_steps(sub_obj)
+#     if steps:
+#         st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
+#         for i, step in enumerate(steps, 1):
+#             st.markdown(f"**{i}.** {step}")
+# # ----- MAIN INSTRUCTION -----
+# steps = as_steps(rec)
+# if steps:
+#     st.markdown(f"### 🧾 Instructions: {selected_name}")
+#     for i, step in enumerate(steps, 1):
+#         st.markdown(f"**{i}.** {step}")
+# elif not sub:
+#     st.info("This recipe has no instruction yet.")
 ####
     # ---------------------------
     # Step-by-step execution
@@ -1413,6 +1432,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
