@@ -330,6 +330,18 @@ recipes = {
         ],
         "subrecipes": {}
     },
+    "Green Tea": {
+        "ingredients": {
+            "milk": 1223,
+            "cream": 300,
+            "sugar": 330,
+            "guar": 4,
+            "dry milk": 100,
+            "yolks": 20,
+            "earl grey": 23
+        },
+        "instruction": []
+    },
     "Honeycomb": {
         "ingredients": {
             "sugar": 3000,
@@ -1415,6 +1427,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
