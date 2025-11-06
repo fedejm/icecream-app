@@ -338,7 +338,7 @@ recipes = {
             "guar": 4,
             "dry milk": 100,
             "yolks": 20,
-            "earl grey": 23
+            "green tea": 23
         },
         "instruction": []
     },
@@ -1427,6 +1427,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
