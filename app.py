@@ -465,6 +465,21 @@ recipes = {
             }
         }
     },
+    "Pumpkin": {
+        "ingredients": {
+            "milk": 7611,
+            "cream": 5290,
+            "sugar": 2300,
+            "guar": 46,
+            "dry milk": 690,
+            "yolks": 1150,
+            "pumpkin": 2990,
+            "brown sugar": 2300,
+            "cinnamon": 67,
+            "nutmeg": 25,
+            "ginger": 122,
+            "port": 409
+        },
     "Strawberry Preserves": {
         "ingredients": {
             "strawberries": 1250,
@@ -1427,6 +1442,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
