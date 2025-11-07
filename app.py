@@ -237,6 +237,17 @@ recipes = {
             }
         }
     },
+    "Creme Fraiche": {
+        "ingredients": {
+            "milk": 6902,
+            "sugar": 5220,
+            "guar": 58,
+            "dry milk": 2030,
+            "yolks": 290,
+            "sour cream": 14500
+        },
+        "instruction": []
+    },
     "Crumble": {
         "ingredients": {
             "flour": 223,
@@ -1443,6 +1454,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
