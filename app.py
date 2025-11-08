@@ -912,11 +912,31 @@ elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
         f"Target weight: {target_weight:,.0f} g",
     ]
 
+
 elif scale_mode == "Scale by ingredient weight":
     if not base_ings:
         st.warning("This recipe has no ingredients.")
-    else
-
+    else:
+        ing_names = list(base_ings.keys())
+        anchor_ing = st.selectbox(
+            "Anchor ingredient",
+            ing_names,
+            key=f"{ns}_anchor_ing",
+        )
+        available_g = st.number_input(
+            f"Available {anchor_ing} (g)",
+            min_value=0.0,
+            value=float(base_ings.get(anchor_ing, 0.0)),
+            step=10.0,
+            key=f"{ns}_available_anchor",
+        )
+        base_req = float(base_ings.get(anchor_ing, 0.0))
+        if base_req <= 0:
+            st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+            scale_factor = 1.0
+        else:
+            scale_factor = available_g / base_req
+            info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
 
 ####
 # if scale_mode == "Target batch weight (g)":
@@ -1686,6 +1706,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
