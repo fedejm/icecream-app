@@ -836,9 +836,9 @@ scale_factor = 1.0
 target_weight = None
 info_lines = []
 
-    if scale_mode == "Target batch weight (g)":
-        target_weight = st.number_input(
-            "Target weight (g)",
+if scale_mode == "Target batch weight (g)":
+       target_weight = st.number_input(
+           "Target weight (g)",
             min_value=1.0,
             value=float(original_weight or 1000.0),
             step=100.0,
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
