@@ -815,7 +815,7 @@ scale_mode = st.radio(
 
     # Volume → grams needs density
     # Default ~1.03 g/mL for liquid ice-cream mix; adjust if you track per-recipe densities.
-    if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
         density_g_per_ml = st.number_input(
             "Mix density (g/mL)",
             min_value=0.5,
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
