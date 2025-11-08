@@ -800,6 +800,40 @@ def slugify(s: str) -> str:
     return re.sub(r'[^a-z0-9]+', '_', (s or 'recipe').lower()).strip('_')
 
 ns = f"scale_{slugify(selected_name)}"   # e.g., "scale_vanilla"
+
+# now it's safe to build the controls
+scale_mode = st.radio(
+    "Method",
+    [
+        "Target batch weight (g)",
+        "Container: 5 L",
+        "Container: 1.5 gal",
+        "Containers: combo (5 L + 1.5 gal)",
+        "Scale by ingredient weight",
+        "Multiplier x",
+    ],
+    horizontal=True,
+    key=f"{ns}_scale_mode",
+)
+
+# only needed for volume modes
+density_g_per_ml = None
+if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+    density_g_per_ml = st.number_input(
+        "Mix density (g/mL)",
+        min_value=0.5,
+        max_value=1.5,
+        value=1.03,
+        step=0.01,
+        key=f"{ns}_density",
+    )
+
+# base ingredients & original total (must be defined before scaling logic)
+base_ings = rec.get("ingredients", {})
+original_weight = float(sum(base_ings.values()) or 0.0)
+
+# ... your (now fixed) if/elif scaling block goes here ...
+
 ###
     # ---------------------------
     # Scaling modes
@@ -1712,6 +1746,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
