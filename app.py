@@ -844,8 +844,8 @@ if scale_mode == "Target batch weight (g)":
             step=100.0,
             key=f"{ns}_target_weight",
         )
-        scale_factor = (target_weight / original_weight) if original_weight else 1.0
-        info_lines.append(f"Target weight: {target_weight:,.0f} g")
+    scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    info_lines.append(f"Target weight: {target_weight:,.0f} g")
 
     elif scale_mode == "Container: 5 L":
         n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=f"{ns}_n5l")
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
