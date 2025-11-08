@@ -828,13 +828,13 @@ else:
         density_g_per_ml = None
 
     # Constants
-    GAL_TO_L = 3.785411784
-    VOL_5L_L = 5.0
-    VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+GAL_TO_L = 3.785411784
+VOL_5L_L = 5.0
+VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
 
-    scale_factor = 1.0
-    target_weight = None
-    info_lines = []
+scale_factor = 1.0
+target_weight = None
+info_lines = []
 
     if scale_mode == "Target batch weight (g)":
         target_weight = st.number_input(
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
