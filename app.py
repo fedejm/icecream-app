@@ -793,7 +793,13 @@ if not isinstance(rec, dict):
 # --- RENDER (base or scaled) ---
 # If you have a scaler, produce `scaled_result` here; otherwise just show base:
 show_scaled_result(selected_name, rec, recipes)
+###
+import re
 
+def slugify(s: str) -> str:
+    return re.sub(r'[^a-z0-9]+', '_', (s or 'recipe').lower()).strip('_')
+
+ns = f"scale_{slugify(selected_name)}"   # e.g., "scale_vanilla"
 ###
     # ---------------------------
     # Scaling modes
@@ -1706,6 +1712,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
