@@ -794,14 +794,27 @@ if not isinstance(rec, dict):
 # If you have a scaler, produce `scaled_result` here; otherwise just show base:
 show_scaled_result(selected_name, rec, recipes)
 ###
+# ========================= SCALING UI (single source of truth) =========================
 import re
 
-def slugify(s: str) -> str:
-    return re.sub(r'[^a-z0-9]+', '_', (s or 'recipe').lower()).strip('_')
+def _slugify(s: str) -> str:
+    return re.sub(r'[^a-z0-9]+', '_', (s or 'x').lower()).strip('_')
 
-ns = f"scale_{slugify(selected_name)}"   # e.g., "scale_vanilla"
+# Scope reflects WHERE this UI renders: "main", "sidebar", "tab_scale", etc.
+SCOPE = "main"
+NS_SCALE = f"scale__{SCOPE}__{_slugify(selected_name)}"
 
-# now it's safe to build the controls
+def k(s: str) -> str:
+    return f"{NS_SCALE}__{s}"
+
+# Clear stale per-recipe scaling keys when switching recipe
+if st.session_state.get("prev_recipe_for_scale") != selected_name:
+    for _k in list(st.session_state.keys()):
+        if isinstance(_k, str) and _k.startswith("scale__"):
+            st.session_state.pop(_k)
+    st.session_state["prev_recipe_for_scale"] = selected_name
+
+st.subheader("Scale")
 scale_mode = st.radio(
     "Method",
     [
@@ -813,10 +826,10 @@ scale_mode = st.radio(
         "Multiplier x",
     ],
     horizontal=True,
-    key=f"{ns}_scale_mode",
+    key=k("mode"),
 )
 
-# only needed for volume modes
+# Only needed for volume-based modes
 density_g_per_ml = None
 if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
     density_g_per_ml = st.number_input(
@@ -825,57 +838,200 @@ if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 
         max_value=1.5,
         value=1.03,
         step=0.01,
-        key=f"{ns}_density",
+        key=k("density"),
     )
 
-# base ingredients & original total (must be defined before scaling logic)
+# Constants
+GAL_TO_L = 3.785411784
+VOL_5L_L = 5.0
+VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+
+# Inputs
 base_ings = rec.get("ingredients", {})
 original_weight = float(sum(base_ings.values()) or 0.0)
 
-# ... your (now fixed) if/elif scaling block goes here ...
-###
-import re
-def slugify(s: str) -> str:
-    return re.sub(r'[^a-z0-9]+', '_', (s or 'x').lower()).strip('_')
+scale_factor = 1.0
+target_weight = None
+info_lines: list[str] = []
 
-def key_ns(scope: str, selected_name: str) -> str:
-    # scope = where this widget lives (e.g., "main", "sidebar", "tab_scale")
-    return f"{scope}__{slugify(selected_name)}"
-NS_SCALE = key_ns("scale_main", selected_name)   # if you render in main area
-# NS_SCALE = key_ns("scale_sidebar", selected_name)  # if it's in sidebar, etc.
-scale_mode = st.radio(
-    "Method",
-    [
-        "Target batch weight (g)",
-        "Container: 5 L",
-        "Container: 1.5 gal",
-        "Containers: combo (5 L + 1.5 gal)",
-        "Scale by ingredient weight",
-        "Multiplier x",
-    ],
-    horizontal=True,
-    key=f"{NS_SCALE}_mode",
-)
-
-# only for volume modes
-density_g_per_ml = None
-if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
-    density_g_per_ml = st.number_input(
-        "Mix density (g/mL)",
-        min_value=0.5,
-        max_value=1.5,
-        value=1.03,
-        step=0.01,
-        key=f"{NS_SCALE}_density",
+if scale_mode == "Target batch weight (g)":
+    target_weight = st.number_input(
+        "Target weight (g)",
+        min_value=1.0,
+        value=float(original_weight or 1000.0),
+        step=100.0,
+        key=k("target_weight"),
     )
-key=f"{NS_SCALE}_target_weight"
-key=f"{NS_SCALE}_n5l"
-key=f"{NS_SCALE}_n15"
-key=f"{NS_SCALE}_n5l_combo"
-key=f"{NS_SCALE}_n15_combo"
-key=f"{NS_SCALE}_anchor_ing"
-key=f"{NS_SCALE}_available_anchor"
-key=f"{NS_SCALE}_multiplier"
+    scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+elif scale_mode == "Container: 5 L":
+    n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
+    total_l = n_5l * VOL_5L_L
+    density_g_per_ml = density_g_per_ml or 1.03
+    target_weight = total_l * 1000.0 * density_g_per_ml
+    scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+elif scale_mode == "Container: 1.5 gal":
+    n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
+    total_l = n_15 * VOL_1_5GAL_L
+    density_g_per_ml = density_g_per_ml or 1.03
+    target_weight = total_l * 1000.0 * density_g_per_ml
+    scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+    col_a, col_b = st.columns(2)
+    with col_a:
+        n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
+    with col_b:
+        n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
+    total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+    if total_l <= 0:
+        st.warning("Set at least one container.")
+        total_l = 0.0
+    density_g_per_ml = density_g_per_ml or 1.03
+    target_weight = total_l * 1000.0 * density_g_per_ml
+    scale_factor = (target_weight / original_weight) if original_weight else 1.0
+    info_lines += [
+        f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+        f"Total volume: {total_l:,.2f} L",
+        f"Target weight: {target_weight:,.0f} g",
+    ]
+
+elif scale_mode == "Scale by ingredient weight":
+    if not base_ings:
+        st.warning("This recipe has no ingredients.")
+        scale_factor = 1.0
+    else:
+        ing_names = list(base_ings.keys())
+        anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
+        available_g = st.number_input(
+            f"Available {anchor_ing} (g)",
+            min_value=0.0,
+            value=float(base_ings.get(anchor_ing, 0.0)),
+            step=10.0,
+            key=k("available_anchor"),
+        )
+        base_req = float(base_ings.get(anchor_ing, 0.0))
+        if base_req <= 0:
+            st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+            scale_factor = 1.0
+        else:
+            scale_factor = available_g / base_req
+            info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+else:  # "Multiplier x"
+    scale_factor = st.number_input(
+        "Multiplier",
+        min_value=0.01,
+        value=1.0,
+        step=0.1,
+        key=k("multiplier"),
+    )
+    info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+# --- Apply scaling ---
+scaled = {ing: round(float(qty) * scale_factor, 2) for ing, qty in base_ings.items()}
+total_scaled = round(sum(scaled.values()), 2)
+
+# --- Display summary ---
+st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+if density_g_per_ml and total_scaled > 0:
+    est_l = total_scaled / (density_g_per_ml * 1000.0)
+    st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+for line in info_lines:
+    st.caption(line)
+
+with st.expander("📋 Scaled ingredients (all)", expanded=True):
+    for ing, grams in scaled.items():
+        st.write(f"- {ing}: {grams:.0f} g")
+# =======================================================================================
+
+# import re
+
+# def slugify(s: str) -> str:
+#     return re.sub(r'[^a-z0-9]+', '_', (s or 'recipe').lower()).strip('_')
+
+# ns = f"scale_{slugify(selected_name)}"   # e.g., "scale_vanilla"
+
+# # now it's safe to build the controls
+# scale_mode = st.radio(
+#     "Method",
+#     [
+#         "Target batch weight (g)",
+#         "Container: 5 L",
+#         "Container: 1.5 gal",
+#         "Containers: combo (5 L + 1.5 gal)",
+#         "Scale by ingredient weight",
+#         "Multiplier x",
+#     ],
+#     horizontal=True,
+#     key=f"{ns}_scale_mode",
+# )
+
+# # only needed for volume modes
+# density_g_per_ml = None
+# if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+#     density_g_per_ml = st.number_input(
+#         "Mix density (g/mL)",
+#         min_value=0.5,
+#         max_value=1.5,
+#         value=1.03,
+#         step=0.01,
+#         key=f"{ns}_density",
+#     )
+
+# # base ingredients & original total (must be defined before scaling logic)
+# base_ings = rec.get("ingredients", {})
+# original_weight = float(sum(base_ings.values()) or 0.0)
+
+# # ... your (now fixed) if/elif scaling block goes here ...
+# ###
+# import re
+# def slugify(s: str) -> str:
+#     return re.sub(r'[^a-z0-9]+', '_', (s or 'x').lower()).strip('_')
+
+# def key_ns(scope: str, selected_name: str) -> str:
+#     # scope = where this widget lives (e.g., "main", "sidebar", "tab_scale")
+#     return f"{scope}__{slugify(selected_name)}"
+# NS_SCALE = key_ns("scale_main", selected_name)   # if you render in main area
+# # NS_SCALE = key_ns("scale_sidebar", selected_name)  # if it's in sidebar, etc.
+# scale_mode = st.radio(
+#     "Method",
+#     [
+#         "Target batch weight (g)",
+#         "Container: 5 L",
+#         "Container: 1.5 gal",
+#         "Containers: combo (5 L + 1.5 gal)",
+#         "Scale by ingredient weight",
+#         "Multiplier x",
+#     ],
+#     horizontal=True,
+#     key=f"{NS_SCALE}_mode",
+# )
+
+# # only for volume modes
+# density_g_per_ml = None
+# if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+#     density_g_per_ml = st.number_input(
+#         "Mix density (g/mL)",
+#         min_value=0.5,
+#         max_value=1.5,
+#         value=1.03,
+#         step=0.01,
+#         key=f"{NS_SCALE}_density",
+#     )
+# key=f"{NS_SCALE}_target_weight"
+# key=f"{NS_SCALE}_n5l"
+# key=f"{NS_SCALE}_n15"
+# key=f"{NS_SCALE}_n5l_combo"
+# key=f"{NS_SCALE}_n15_combo"
+# key=f"{NS_SCALE}_anchor_ing"
+# key=f"{NS_SCALE}_available_anchor"
+# key=f"{NS_SCALE}_multiplier"
 
 ###
     # ---------------------------
@@ -1789,6 +1945,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
