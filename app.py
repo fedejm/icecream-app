@@ -747,7 +747,54 @@ def batching_system_section():
     selected_recipe = st.selectbox("Recipe", recipe_options, key=f"{ns}_recipe_select")
     base_ings = recipes[selected_recipe].get("ingredients", {})
     original_weight = float(sum(base_ings.values())) if base_ings else 0.0
+###
+# --- Selection UI + safe defaults ---
+recipe_names = sorted(recipes.keys())
+if not recipe_names:
+    st.warning("No recipes found.")
+    st.stop()
 
+# Keep state stable across reruns
+selected_name = st.session_state.get("selected_recipe")
+
+# If nothing selected yet, default to the first recipe
+if not selected_name:
+    selected_name = recipe_names[0]
+    st.session_state["selected_recipe"] = selected_name
+
+# --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
+if not recipe_names:
+    st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
+    st.stop()
+
+# Heal session value if it points to a recipe that no longer exists
+current_sel = st.session_state.get("selected_recipe")
+if current_sel not in recipe_names:
+    st.session_state["selected_recipe"] = recipe_names[0]
+    current_sel = recipe_names[0]
+
+# IMPORTANT: keep selected_name in sync with the healed value
+selected_name = current_sel
+
+# OPTIONAL (recommended): re-enable the selectbox so you can switch recipes
+selected_name = st.selectbox(
+    "Choose a recipe",
+    recipe_names,
+    index=recipe_names.index(selected_name),
+    key="selected_recipe",
+)
+
+# --- Resolve recipe object + guard ---
+rec = recipes.get(selected_name)
+if not isinstance(rec, dict):
+    st.info("Pick a recipe to view details.")
+    st.stop()
+
+# --- RENDER (base or scaled) ---
+# If you have a scaler, produce `scaled_result` here; otherwise just show base:
+show_scaled_result(selected_name, rec, recipes)
+
+###
     # ---------------------------
     # Scaling modes
     # ---------------------------
@@ -1556,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
