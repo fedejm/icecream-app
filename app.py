@@ -1093,89 +1093,159 @@ info_lines       = locals().get("info_lines", [])
 # info_lines = []
 
 ####
-# --- Scaling logic (uses unified key helper `k`) ---
+# --- Scaling logic (GUARDED; uses unified key helper `k`) ---
 info_lines: list[str] = []
 target_weight = None
 scale_factor = 1.0
 
-if scale_mode == "Target batch weight (g)":
-    target_weight = st.number_input(
-        "Target weight (g)",
-        min_value=1.0,
-        value=float(original_weight or 1000.0),
-        step=100.0,
-        key=k("target_weight"),
-    )
-    scale_factor = (target_weight / original_weight) if original_weight else 1.0
-    info_lines.append(f"Target weight: {target_weight:,.0f} g")
+# If this logic already ran for this recipe/scope in the current run,
+# don't create the widgets again—just read their values from session_state.
+if st.session_state.get("scale_logic_rendered_for") == (SCOPE, selected_name):
+    base_ings = rec.get("ingredients", {})
+    original_weight = float(sum(base_ings.values()) or 0.0)
+    scale_mode = st.session_state.get(k("mode"), "Multiplier x")
+    density_g_per_ml = st.session_state.get(k("density"), density_g_per_ml)
 
-elif scale_mode == "Container: 5 L":
-    n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
-    total_l = n_5l * VOL_5L_L
-    # if user didn’t set density earlier, assume 1.03 g/mL
-    density_g_per_ml = density_g_per_ml or 1.03
-    target_weight = total_l * 1000.0 * density_g_per_ml
-    scale_factor = (target_weight / original_weight) if original_weight else 1.0
-    info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+    if scale_mode == "Target batch weight (g)":
+        target_weight = st.session_state.get(k("target_weight"), original_weight or 1000.0)
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines.append(f"Target weight: {target_weight:,.0f} g")
 
-elif scale_mode == "Container: 1.5 gal":
-    n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
-    total_l = n_15 * VOL_1_5GAL_L
-    density_g_per_ml = density_g_per_ml or 1.03
-    target_weight = total_l * 1000.0 * density_g_per_ml
-    scale_factor = (target_weight / original_weight) if original_weight else 1.0
-    info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+    elif scale_mode == "Container: 5 L":
+        n_5l = st.session_state.get(k("n5l"), 1)
+        total_l = n_5l * VOL_5L_L
+        density_g_per_ml = density_g_per_ml or 1.03
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
 
-elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
-    col_a, col_b = st.columns(2)
-    with col_a:
-        n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
-    with col_b:
-        n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
-    total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
-    if total_l <= 0:
-        st.warning("Set at least one container.")
-        total_l = 0.0
-    density_g_per_ml = density_g_per_ml or 1.03
-    target_weight = total_l * 1000.0 * density_g_per_ml
-    scale_factor = (target_weight / original_weight) if original_weight else 1.0
-    info_lines += [
-        f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
-        f"Total volume: {total_l:,.2f} L",
-        f"Target weight: {target_weight:,.0f} g",
-    ]
+    elif scale_mode == "Container: 1.5 gal":
+        n_15 = st.session_state.get(k("n15"), 1)
+        total_l = n_15 * VOL_1_5GAL_L
+        density_g_per_ml = density_g_per_ml or 1.03
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
 
-elif scale_mode == "Scale by ingredient weight":
-    if not base_ings:
-        st.warning("This recipe has no ingredients.")
-        scale_factor = 1.0
-    else:
-        ing_names = list(base_ings.keys())
-        anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
-        available_g = st.number_input(
-            f"Available {anchor_ing} (g)",
-            min_value=0.0,
-            value=float(base_ings.get(anchor_ing, 0.0)),
-            step=10.0,
-            key=k("available_anchor"),
-        )
-        base_req = float(base_ings.get(anchor_ing, 0.0))
-        if base_req <= 0:
-            st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+    elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+        n_5l = st.session_state.get(k("n5l_combo"), 1)
+        n_15 = st.session_state.get(k("n15_combo"), 0)
+        total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+        if total_l <= 0:
+            total_l = 0.0
+        density_g_per_ml = density_g_per_ml or 1.03
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [
+            f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+            f"Total volume: {total_l:,.2f} L",
+            f"Target weight: {target_weight:,.0f} g",
+        ]
+
+    elif scale_mode == "Scale by ingredient weight":
+        base_ings = rec.get("ingredients", {})
+        if not base_ings:
             scale_factor = 1.0
         else:
-            scale_factor = available_g / base_req
-            info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+            anchor_ing = st.session_state.get(k("anchor_ing"))
+            available_g = float(st.session_state.get(k("available_anchor"), 0.0))
+            base_req = float(base_ings.get(anchor_ing, 0.0)) if anchor_ing else 0.0
+            if base_req <= 0:
+                scale_factor = 1.0
+            else:
+                scale_factor = available_g / base_req
+                info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
 
-else:  # "Multiplier x"
-    scale_factor = st.number_input(
-        "Multiplier",
-        min_value=0.01,
-        value=1.0,
-        step=0.1,
-        key=k("multiplier"),
-    )
-    info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+    else:  # "Multiplier x"
+        scale_factor = float(st.session_state.get(k("multiplier"), 1.0))
+        info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+else:
+    # --- First (and only) time we render the widgets ---
+    info_lines = []
+    target_weight = None
+    scale_factor = 1.0
+
+    if scale_mode == "Target batch weight (g)":
+        target_weight = st.number_input(
+            "Target weight (g)",
+            min_value=1.0,
+            value=float(original_weight or 1000.0),
+            step=100.0,
+            key=k("target_weight"),
+        )
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+    elif scale_mode == "Container: 5 L":
+        n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
+        total_l = n_5l * VOL_5L_L
+        density_g_per_ml = density_g_per_ml or 1.03
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+    elif scale_mode == "Container: 1.5 gal":
+        n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
+        total_l = n_15 * VOL_1_5GAL_L
+        density_g_per_ml = density_g_per_ml or 1.03
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+    elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+        col_a, col_b = st.columns(2)
+        with col_a:
+            n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
+        with col_b:
+            n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
+        total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+        if total_l <= 0:
+            st.warning("Set at least one container.")
+            total_l = 0.0
+        density_g_per_ml = density_g_per_ml or 1.03
+        target_weight = total_l * 1000.0 * density_g_per_ml
+        scale_factor = (target_weight / original_weight) if original_weight else 1.0
+        info_lines += [
+            f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+            f"Total volume: {total_l:,.2f} L",
+            f"Target weight: {target_weight:,.0f} g",
+        ]
+
+    elif scale_mode == "Scale by ingredient weight":
+        if not base_ings:
+            st.warning("This recipe has no ingredients.")
+            scale_factor = 1.0
+        else:
+            ing_names = list(base_ings.keys())
+            anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
+            available_g = st.number_input(
+                f"Available {anchor_ing} (g)",
+                min_value=0.0,
+                value=float(base_ings.get(anchor_ing, 0.0)),
+                step=10.0,
+                key=k("available_anchor"),
+            )
+            base_req = float(base_ings.get(anchor_ing, 0.0))
+            if base_req <= 0:
+                st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+                scale_factor = 1.0
+            else:
+                scale_factor = available_g / base_req
+                info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+    else:  # "Multiplier x"
+        scale_factor = st.number_input(
+            "Multiplier",
+            min_value=0.01,
+            value=1.0,
+            step=0.1,
+            key=k("multiplier"),
+        )
+        info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+    # Mark that we've created the widgets for this recipe/scope
+    st.session_state["scale_logic_rendered_for"] = (SCOPE, selected_name)
 
 # --- Apply scaling ---
 scaled = {ing: round(float(qty) * scale_factor, 2) for ing, qty in base_ings.items()}
@@ -1193,6 +1263,111 @@ for line in info_lines:
 with st.expander("📋 Scaled ingredients (all)", expanded=True):
     for ing, grams in scaled.items():
         st.write(f"- {ing}: {grams:.0f} g")
+
+
+
+
+
+# # --- Scaling logic (uses unified key helper `k`) ---
+# info_lines: list[str] = []
+# target_weight = None
+# scale_factor = 1.0
+
+# if scale_mode == "Target batch weight (g)":
+#     target_weight = st.number_input(
+#         "Target weight (g)",
+#         min_value=1.0,
+#         value=float(original_weight or 1000.0),
+#         step=100.0,
+#         key=k("target_weight"),
+#     )
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+# elif scale_mode == "Container: 5 L":
+#     n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
+#     total_l = n_5l * VOL_5L_L
+#     # if user didn’t set density earlier, assume 1.03 g/mL
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+# elif scale_mode == "Container: 1.5 gal":
+#     n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
+#     total_l = n_15 * VOL_1_5GAL_L
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+# elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#     col_a, col_b = st.columns(2)
+#     with col_a:
+#         n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
+#     with col_b:
+#         n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
+#     total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#     if total_l <= 0:
+#         st.warning("Set at least one container.")
+#         total_l = 0.0
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [
+#         f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#         f"Total volume: {total_l:,.2f} L",
+#         f"Target weight: {target_weight:,.0f} g",
+#     ]
+
+# elif scale_mode == "Scale by ingredient weight":
+#     if not base_ings:
+#         st.warning("This recipe has no ingredients.")
+#         scale_factor = 1.0
+#     else:
+#         ing_names = list(base_ings.keys())
+#         anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
+#         available_g = st.number_input(
+#             f"Available {anchor_ing} (g)",
+#             min_value=0.0,
+#             value=float(base_ings.get(anchor_ing, 0.0)),
+#             step=10.0,
+#             key=k("available_anchor"),
+#         )
+#         base_req = float(base_ings.get(anchor_ing, 0.0))
+#         if base_req <= 0:
+#             st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+#             scale_factor = 1.0
+#         else:
+#             scale_factor = available_g / base_req
+#             info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+# else:  # "Multiplier x"
+#     scale_factor = st.number_input(
+#         "Multiplier",
+#         min_value=0.01,
+#         value=1.0,
+#         step=0.1,
+#         key=k("multiplier"),
+#     )
+#     info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+# # --- Apply scaling ---
+# scaled = {ing: round(float(qty) * scale_factor, 2) for ing, qty in base_ings.items()}
+# total_scaled = round(sum(scaled.values()), 2)
+
+# # --- Display summary ---
+# st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+# if density_g_per_ml and total_scaled > 0:
+#     est_l = total_scaled / (density_g_per_ml * 1000.0)
+#     st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+# for line in info_lines:
+#     st.caption(line)
+
+# with st.expander("📋 Scaled ingredients (all)", expanded=True):
+#     for ing, grams in scaled.items():
+#         st.write(f"- {ing}: {grams:.0f} g")
 
 ####
 # if scale_mode == "Target batch weight (g)":
@@ -2064,6 +2239,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
