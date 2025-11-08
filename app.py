@@ -1032,48 +1032,65 @@ with st.expander("📋 Scaled ingredients (all)", expanded=True):
 # key=f"{NS_SCALE}_anchor_ing"
 # key=f"{NS_SCALE}_available_anchor"
 # key=f"{NS_SCALE}_multiplier"
-
 ###
-    # ---------------------------
-    # Scaling modes
-    # ---------------------------
-st.subheader("Scale")
-scale_mode = st.radio(
-        "Method",
-        [
-            "Target batch weight (g)",
-            "Container: 5 L",
-            "Container: 1.5 gal",
-            "Containers: combo (5 L + 1.5 gal)",
-            "Scale by ingredient weight",
-            "Multiplier x",
-        ],
-        horizontal=True,
-        key=f"{ns}_scale_mode",
-    )
+# ---------------------------
+# Scaling modes (legacy block removed)
+# ---------------------------
+# The unified scaling UI is handled earlier in the script.
+# Keep these symbols so later code that references them won't break.
 
-    # Volume → grams needs density
-    # Default ~1.03 g/mL for liquid ice-cream mix; adjust if you track per-recipe densities.
-if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
-        density_g_per_ml = st.number_input(
-            "Mix density (g/mL)",
-            min_value=0.5,
-            max_value=1.5,
-            value=1.03,
-            step=0.01,
-            key=f"{ns}_density",
-        )
-else:
-        density_g_per_ml = None
-
-    # Constants
-GAL_TO_L = 3.785411784
-VOL_5L_L = 5.0
+# Constants (safe to re-define)
+GAL_TO_L   = 3.785411784
+VOL_5L_L   = 5.0
 VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
 
-scale_factor = 1.0
-target_weight = None
-info_lines = []
+# No second radio here; just ensure variables exist with sane defaults
+density_g_per_ml = locals().get("density_g_per_ml", None)
+scale_factor     = locals().get("scale_factor", 1.0)
+target_weight    = locals().get("target_weight", None)
+info_lines       = locals().get("info_lines", [])
+
+###
+#     # ---------------------------
+#     # Scaling modes
+#     # ---------------------------
+# st.subheader("Scale")
+# scale_mode = st.radio(
+#         "Method",
+#         [
+#             "Target batch weight (g)",
+#             "Container: 5 L",
+#             "Container: 1.5 gal",
+#             "Containers: combo (5 L + 1.5 gal)",
+#             "Scale by ingredient weight",
+#             "Multiplier x",
+#         ],
+#         horizontal=True,
+#         key=f"{ns}_scale_mode",
+#     )
+
+#     # Volume → grams needs density
+#     # Default ~1.03 g/mL for liquid ice-cream mix; adjust if you track per-recipe densities.
+# if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+#         density_g_per_ml = st.number_input(
+#             "Mix density (g/mL)",
+#             min_value=0.5,
+#             max_value=1.5,
+#             value=1.03,
+#             step=0.01,
+#             key=f"{ns}_density",
+#         )
+# else:
+#         density_g_per_ml = None
+
+#     # Constants
+# GAL_TO_L = 3.785411784
+# VOL_5L_L = 5.0
+# VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+
+# scale_factor = 1.0
+# target_weight = None
+# info_lines = []
 
 ####
 if scale_mode == "Target batch weight (g)":
@@ -1945,6 +1962,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
