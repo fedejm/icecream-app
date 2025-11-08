@@ -565,8 +565,110 @@ recipes = {
     }}
 
 ###
+# --- Recipe schema normalizer (ensures keys exist) ---
+def normalize_recipes_schema(recipes: dict) -> dict:
+    for name, r in list(recipes.items()):
+        if not isinstance(r, dict):
+            continue
+        r.setdefault("ingredients", {})
+        # always ensure instruction exists and is a list
+        instr = r.get("instruction", [])
+        if instr is None:
+            instr = []
+        elif isinstance(instr, str):
+            instr = [instr]
+        r["instruction"] = instr
+        # always ensure subrecipes exists and is a dict
+        r.setdefault("subrecipes", {})
+        # also normalize subrecipes
+        for sname, s in r["subrecipes"].items():
+            if not isinstance(s, dict):
+                continue
+            s.setdefault("ingredients", {})
+            sinstr = s.get("instruction", [])
+            if sinstr is None:
+                sinstr = []
+            elif isinstance(sinstr, str):
+                sinstr = [sinstr]
+            s["instruction"] = sinstr
+    return recipes
+
+# call this immediately after defining/importing recipes
+recipes = normalize_recipes_schema(recipes)
 
 
+# --- Instruction helpers ---
+def _unwrap_recipe(obj):
+    """Accept dict or (dict, scale_factor) and return the dict only."""
+    if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
+        return obj[0]
+    return obj if isinstance(obj, dict) else {}
+
+def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+    """Ensure scaled recipe carries instruction/subrecipes forward."""
+    return {
+        "ingredients": new_ingredients or {},
+        "instruction": base_recipe.get("instruction", []) or [],
+        "subrecipes": base_recipe.get("subrecipes", {}) or {},
+    }
+
+def _render_instructions_block(title: str, steps: list[str]):
+    import streamlit as st
+    if not steps:
+        return
+    with st.expander(title, expanded=True):
+        for line in steps:
+            st.markdown(f"- {line}")
+
+def _render_subrecipes(subrecipes: dict):
+    import streamlit as st
+    if not subrecipes:
+        return
+    st.markdown("### 🧩 Sub-recipes")
+    for sname, srec in subrecipes.items():
+        with st.expander(f"Subrecipe: {sname}", expanded=False):
+            ings = srec.get("ingredients", {})
+            if ings:
+                st.markdown("**Ingredients**")
+                for k, v in ings.items():
+                    st.write(f"- {k}: {v:g}")
+            _render_instructions_block("Instructions", srec.get("instruction", []))
+
+def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
+    """
+    Always prints ingredients + instructions + subrecipes.
+    If scaler returned only ingredients, re-attach from the base recipe.
+    """
+    import streamlit as st
+    base = recipes_dict.get(selected_name, {})
+    rec = _unwrap_recipe(scaled_result)
+
+    # If scaler returned only ingredients, re-attach missing fields
+    if rec and "ingredients" in rec and not rec.get("instruction"):
+        rec = make_scaled_recipe(base, rec["ingredients"])
+
+    # Fallback: if rec is empty, show base
+    if not rec:
+        rec = base
+
+    # ----- INGREDIENTS -----
+    ing = rec.get("ingredients", {})
+    if ing:
+        st.markdown("### 📋 Ingredients")
+        for k, v in ing.items():
+            # format numbers nicely if numeric
+            try:
+                st.write(f"- {k}: {float(v):g}")
+            except Exception:
+                st.write(f"- {k}: {v}")
+
+    # ----- INSTRUCTIONS -----
+    _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
+
+    # ----- SUBRECIPES (ingredients + their instructions) -----
+    _render_subrecipes(rec.get("subrecipes", {}))
+
+###
 
 # --- Selection UI + safe defaults ---
 recipe_names = sorted(recipes.keys())
@@ -1454,6 +1556,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
