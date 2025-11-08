@@ -798,7 +798,7 @@ show_scaled_result(selected_name, rec, recipes)
     # ---------------------------
     # Scaling modes
     # ---------------------------
-    st.subheader("Scale")
+st.subheader("Scale")
     scale_mode = st.radio(
         "Method",
         [
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
