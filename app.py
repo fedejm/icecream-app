@@ -824,7 +824,7 @@ if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 
             step=0.01,
             key=f"{ns}_density",
         )
-    else:
+else:
         density_g_per_ml = None
 
     # Constants
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
