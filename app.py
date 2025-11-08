@@ -911,7 +911,7 @@ show_scaled_result(selected_name, rec, recipes)
         )
         info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
 
-    # Apply scaling
+   # Apply scaling
     scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
     total_scaled = round(sum(scaled.values()), 2)
 
@@ -1603,6 +1603,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
