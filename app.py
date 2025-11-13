@@ -549,11 +549,11 @@ recipes = {
     } ,
     "whisky": {
         "ingredients": {
-            "milk": 1016,
+            "milk": 1031,
             "cream": 440,
-            "sugar": 320,
+            "sugar": 315,
             "guar": 4,
-            "dry milk": 120,
+            "dry milk": 110,
             "yolks": 60,
             "whisky": 40,
                     },
@@ -2450,6 +2450,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
