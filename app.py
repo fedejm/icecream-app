@@ -534,13 +534,13 @@ recipes = {
     "vanilla": {
         "ingredients": {
             "milk": 28637,
-            "cream": 13680,
-            "sugar": 9405,
-            "guar": 143,
-            "dry milk": 3135,
-            "yolks": 1710,
-            "vanilla extract": 275,
-            "vanilla seeds": 171
+            "cream": 10806,
+            "sugar": 8915,
+            "guar": 135,
+            "dry milk": 2972,
+            "yolks": 2161,
+            "vanilla extract": 243,
+            "vanilla seeds": 162
         },
         "instruction": [
             "1) Combine all ingredients.",
@@ -2450,6 +2450,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
