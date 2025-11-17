@@ -596,6 +596,37 @@ def normalize_recipes_schema(recipes: dict) -> dict:
 # call this immediately after defining/importing recipes
 recipes = normalize_recipes_schema(recipes)
 ###
+# ---------------------------
+# SINGLE SOURCE OF TRUTH — RECIPE SELECTOR
+# ---------------------------
+
+recipe_names = sorted(recipes.keys())
+
+if not recipe_names:
+    st.error("No recipes found.")
+    st.stop()
+
+# Heal / initialize state
+current_sel = st.session_state.get("selected_recipe")
+if current_sel not in recipe_names:
+    current_sel = recipe_names[0]
+    st.session_state["selected_recipe"] = current_sel
+
+# Main dropdown
+selected_name = st.selectbox(
+    "Choose a recipe",
+    recipe_names,
+    index=recipe_names.index(current_sel),
+    key="selected_recipe",
+)
+
+# Resolve recipe
+rec = recipes.get(selected_name)
+if not isinstance(rec, dict):
+    st.error("Invalid recipe.")
+    st.stop()
+
+###
 # --- Recipe selection (single source of truth) ---
 # recipe_names = sorted(recipes.keys())
 # if not recipe_names:
@@ -2505,6 +2536,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
