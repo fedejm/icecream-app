@@ -725,28 +725,28 @@ def as_steps(obj):
 ###
 
 
-def batching_system_section():
-    import math
-    st.header("Batching System")
-    ns = "bs3"  # namespace for widget keys
+# def batching_system_section():
+#     import math
+#     st.header("Batching System")
+#     ns = "bs3"  # namespace for widget keys
 
-    # Files/lineup (fallbacks if constants missing)
-    lineup_file = LINEUP_FILE if "LINEUP_FILE" in globals() else "weekly_lineup.json"
-    lineup = load_json(lineup_file, [])
-    all_recipe_names = sorted(recipes.keys())
+#     # Files/lineup (fallbacks if constants missing)
+#     lineup_file = LINEUP_FILE if "LINEUP_FILE" in globals() else "weekly_lineup.json"
+#     lineup = load_json(lineup_file, [])
+#     all_recipe_names = sorted(recipes.keys())
 
-    # Filter to weekly lineup
-    show_only_lineup = st.checkbox(
-        "Show only weekly lineup",
-        value=bool(lineup),
-        key=f"{ns}_show_only_lineup",
-    )
-    recipe_options = [r for r in all_recipe_names if (not show_only_lineup or r in lineup)] or all_recipe_names
+#     # Filter to weekly lineup
+#     show_only_lineup = st.checkbox(
+#         "Show only weekly lineup",
+#         value=bool(lineup),
+#         key=f"{ns}_show_only_lineup",
+#     )
+#     recipe_options = [r for r in all_recipe_names if (not show_only_lineup or r in lineup)] or all_recipe_names
 
-    # Pick recipe
-    selected_recipe = st.selectbox("Recipe", recipe_options, key=f"{ns}_recipe_select")
-    base_ings = recipes[selected_recipe].get("ingredients", {})
-    original_weight = float(sum(base_ings.values())) if base_ings else 0.0
+#     # Pick recipe
+#     selected_recipe = st.selectbox("Recipe", recipe_options, key=f"{ns}_recipe_select")
+#     base_ings = recipes[selected_recipe].get("ingredients", {})
+#     original_weight = float(sum(base_ings.values())) if base_ings else 0.0
 ###
 # --- Selection UI + safe defaults ---
 recipe_names = sorted(recipes.keys())
@@ -2465,6 +2465,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
