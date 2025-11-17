@@ -652,10 +652,8 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
         rec = base
 ###
 # --- Recipe selection (single source of truth) ---
-recipe_names = sorted(recipes.keys())
-if not recipe_names:
-    st.warning("No recipes found.")
-    st.stop()
+# recipe_names = sorted(recipes.keys())
+
 
 # Heal / initialize session selection
 current_sel = st.session_state.get("selected_recipe")
@@ -664,12 +662,12 @@ if current_sel not in recipe_names:
     st.session_state["selected_recipe"] = current_sel
 
 # Recipe dropdown
-selected_name = st.selectbox(
-    "Choose a recipe",
-    recipe_names,
-    index=recipe_names.index(current_sel),
-    key="selected_recipe",
-)
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(current_sel),
+#     key="selected_recipe",
+# )
 
 # Resolve recipe dict
 rec = recipes.get(selected_name)
@@ -701,9 +699,9 @@ if not isinstance(rec, dict):
 ####
 # --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
 # If there are no recipes, bail out gracefully.
-if not recipe_names:
-    st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
-    st.stop()
+# if not recipe_names:
+#     st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
+#     st.stop()
 
 # Heal session value if it points to a recipe that no longer exists
 current_sel = st.session_state.get("selected_recipe")
@@ -764,10 +762,10 @@ def as_steps(obj):
 #     original_weight = float(sum(base_ings.values())) if base_ings else 0.0
 ###
 # --- Selection UI + safe defaults ---
-recipe_names = sorted(recipes.keys())
-if not recipe_names:
-    st.warning("No recipes found.")
-    st.stop()
+# recipe_names = sorted(recipes.keys())
+# if not recipe_names:
+#     st.warning("No recipes found.")
+#     st.stop()
 
 # Keep state stable across reruns
 selected_name = st.session_state.get("selected_recipe")
@@ -778,9 +776,9 @@ if not selected_name:
     st.session_state["selected_recipe"] = selected_name
 
 # --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
-if not recipe_names:
-    st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
-    st.stop()
+# if not recipe_names:
+#     st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
+#     st.stop()
 
 # Heal session value if it points to a recipe that no longer exists
 current_sel = st.session_state.get("selected_recipe")
@@ -792,12 +790,12 @@ if current_sel not in recipe_names:
 selected_name = current_sel
 
 # OPTIONAL (recommended): re-enable the selectbox so you can switch recipes
-selected_name = st.selectbox(
-    "Choose a recipe",
-    recipe_names,
-    index=recipe_names.index(selected_name),
-    key="selected_recipe",
-)
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(selected_name),
+#     key="selected_recipe",
+# )
 
 # --- Resolve recipe object + guard ---
 rec = recipes.get(selected_name)
@@ -2480,6 +2478,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
