@@ -122,59 +122,59 @@ def ensure_inventory_files(recipes: dict):
         save_json(THRESHOLD_FILE, thresholds)
 
 ### helpers to display instruction
-def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
-    """Return a full recipe dict (ingredients + instruction + subrecipes) after scaling."""
-    return {
-        "ingredients": new_ingredients,
-        "instruction": base_recipe.get("instruction", []),
-        "subrecipes": base_recipe.get("subrecipes", {}),
-    }
-def _unwrap_recipe(obj):
-    """Accept dict or (dict, scale_factor) and return the dict."""
-    if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
-        return obj[0]
-    return obj if isinstance(obj, dict) else {}
+# def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+#     """Return a full recipe dict (ingredients + instruction + subrecipes) after scaling."""
+#     return {
+#         "ingredients": new_ingredients,
+#         "instruction": base_recipe.get("instruction", []),
+#         "subrecipes": base_recipe.get("subrecipes", {}),
+#     }
+# def _unwrap_recipe(obj):
+#     """Accept dict or (dict, scale_factor) and return the dict."""
+#     if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
+#         return obj[0]
+#     return obj if isinstance(obj, dict) else {}
 
-def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
-    """Ensure scaled recipe carries instruction/subrecipes forward."""
-    return {
-        "ingredients": new_ingredients,
-        "instruction": base_recipe.get("instruction", []),
-        "subrecipes": base_recipe.get("subrecipes", {}),
-    }
+# def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+#     """Ensure scaled recipe carries instruction/subrecipes forward."""
+#     return {
+#         "ingredients": new_ingredients,
+#         "instruction": base_recipe.get("instruction", []),
+#         "subrecipes": base_recipe.get("subrecipes", {}),
+#     }
 
-def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
-    """
-    Prints the ingredients AND instruction no matter what shape your scaler returns.
-    If instruction are missing, it re-attaches them from the base recipe.
-    """
-    import streamlit as st
-    base = recipes_dict.get(selected_name, {})
-    rec = _unwrap_recipe(scaled_result)
+# def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
+#     """
+#     Prints the ingredients AND instruction no matter what shape your scaler returns.
+#     If instruction are missing, it re-attaches them from the base recipe.
+#     """
+#     import streamlit as st
+#     base = recipes_dict.get(selected_name, {})
+#     rec = _unwrap_recipe(scaled_result)
 
-    # If scaler returned only ingredients, reattach instruction/subrecipes
-    if rec and "ingredients" in rec and ("instruction" not in rec or rec.get("instruction") is None):
-        rec = make_scaled_recipe(base, rec["ingredients"])
+#     # If scaler returned only ingredients, reattach instruction/subrecipes
+#     if rec and "ingredients" in rec and ("instruction" not in rec or rec.get("instruction") is None):
+#         rec = make_scaled_recipe(base, rec["ingredients"])
 
-    # Last fallback: if rec is empty, just use base
-    if not rec:
-        rec = base
+#     # Last fallback: if rec is empty, just use base
+#     if not rec:
+#         rec = base
 
-    # ----- INGREDIENTS -----
-    ing = rec.get("ingredients", {})
-    if ing:
-        st.markdown("### 📋 Scaled ingredients (all)")
-        for k, v in ing.items():
-            st.write(f"{k}: {v} g")
+#     # ----- INGREDIENTS -----
+#     ing = rec.get("ingredients", {})
+#     if ing:
+#         st.markdown("### 📋 Scaled ingredients (all)")
+#         for k, v in ing.items():
+#             st.write(f"{k}: {v} g")
 
-    # ----- MAIN INSTRUCTION -----
-    steps = rec.get("instruction") or []
-    if steps:
-        st.markdown(f"### 🧾 Instruction: {selected_name}")
-        for i, step in enumerate(steps, 1):
-            st.markdown(f"**{i}.** {step}")
-    elif not sub:
-        st.info("This recipe has no instruction yet.")
+#     # ----- MAIN INSTRUCTION -----
+#     steps = rec.get("instruction") or []
+#     if steps:
+#         st.markdown(f"### 🧾 Instruction: {selected_name}")
+#         for i, step in enumerate(steps, 1):
+#             st.markdown(f"**{i}.** {step}")
+#     elif not sub:
+#         st.info("This recipe has no instruction yet.")
 
 
 
@@ -596,6 +596,69 @@ def normalize_recipes_schema(recipes: dict) -> dict:
 # call this immediately after defining/importing recipes
 recipes = normalize_recipes_schema(recipes)
 ###
+def _unwrap_recipe(obj):
+    """Return the dict if scaler returned (dict, factor)."""
+    if isinstance(obj, tuple) and isinstance(obj[0], dict):
+        return obj[0]
+    return obj if isinstance(obj, dict) else {}
+
+def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+    """Ensure scaled recipe carries instructions and subrecipes."""
+    return {
+        "ingredients": new_ingredients or {},
+        "instruction": base_recipe.get("instruction", []) or [],
+        "subrecipes": base_recipe.get("subrecipes", {}) or {},
+    }
+
+def _render_instructions_block(title: str, steps: list[str]):
+    if not steps:
+        return
+    with st.expander(title, expanded=True):
+        for line in steps:
+            st.markdown(f"- {line}")
+
+def _render_subrecipes(subrecipes: dict):
+    if not subrecipes:
+        return
+    st.markdown("### 🧩 Sub-recipes")
+    for sname, srec in subrecipes.items():
+        with st.expander(f"Subrecipe: {sname}", expanded=False):
+            ings = srec.get("ingredients", {})
+            if ings:
+                st.markdown("**Ingredients**")
+                for k, v in ings.items():
+                    st.write(f"- {k}: {v:g}")
+            _render_instructions_block("Instructions", srec.get("instruction", []))
+
+def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
+    """Print ingredients + instructions + subrecipes (scaled or base)."""
+    base = recipes_dict.get(selected_name, {})
+    rec = _unwrap_recipe(scaled_result)
+
+    # Attach missing fields if scaler returned only ingredients
+    if rec and "ingredients" in rec and not rec.get("instruction"):
+        rec = make_scaled_recipe(base, rec["ingredients"])
+
+    if not rec:
+        rec = base
+
+    # INGREDIENTS
+    ing = rec.get("ingredients", {})
+    if ing:
+        st.markdown("### 📋 Ingredients")
+        for k, v in ing.items():
+            try:
+                st.write(f"- {k}: {float(v):g}")
+            except Exception:
+                st.write(f"- {k}: {v}")
+
+    # MAIN INSTRUCTIONS
+    _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
+
+    # SUBRECIPES
+    _render_subrecipes(rec.get("subrecipes", {}))
+
+###
 # ---------------------------
 # SINGLE SOURCE OF TRUTH — RECIPE SELECTOR
 # ---------------------------
@@ -656,41 +719,41 @@ if not isinstance(rec, dict):
 ###
 
 # --- Instruction helpers ---
-def _unwrap_recipe(obj):
-    """Accept dict or (dict, scale_factor) and return the dict only."""
-    if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
-        return obj[0]
-    return obj if isinstance(obj, dict) else {}
+# def _unwrap_recipe(obj):
+#     """Accept dict or (dict, scale_factor) and return the dict only."""
+#     if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
+#         return obj[0]
+#     return obj if isinstance(obj, dict) else {}
 
-def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
-    """Ensure scaled recipe carries instruction/subrecipes forward."""
-    return {
-        "ingredients": new_ingredients or {},
-        "instruction": base_recipe.get("instruction", []) or [],
-        "subrecipes": base_recipe.get("subrecipes", {}) or {},
-    }
+# def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+#     """Ensure scaled recipe carries instruction/subrecipes forward."""
+#     return {
+#         "ingredients": new_ingredients or {},
+#         "instruction": base_recipe.get("instruction", []) or [],
+#         "subrecipes": base_recipe.get("subrecipes", {}) or {},
+#     }
 
-def _render_instructions_block(title: str, steps: list[str]):
-    import streamlit as st
-    if not steps:
-        return
-    with st.expander(title, expanded=True):
-        for line in steps:
-            st.markdown(f"- {line}")
+# def _render_instructions_block(title: str, steps: list[str]):
+#     import streamlit as st
+#     if not steps:
+#         return
+#     with st.expander(title, expanded=True):
+#         for line in steps:
+#             st.markdown(f"- {line}")
 
-def _render_subrecipes(subrecipes: dict):
-    import streamlit as st
-    if not subrecipes:
-        return
-    st.markdown("### 🧩 Sub-recipes")
-    for sname, srec in subrecipes.items():
-        with st.expander(f"Subrecipe: {sname}", expanded=False):
-            ings = srec.get("ingredients", {})
-            if ings:
-                st.markdown("**Ingredients**")
-                for k, v in ings.items():
-                    st.write(f"- {k}: {v:g}")
-            _render_instructions_block("Instructions", srec.get("instruction", []))
+# def _render_subrecipes(subrecipes: dict):
+#     import streamlit as st
+#     if not subrecipes:
+#         return
+#     st.markdown("### 🧩 Sub-recipes")
+#     for sname, srec in subrecipes.items():
+#         with st.expander(f"Subrecipe: {sname}", expanded=False):
+#             ings = srec.get("ingredients", {})
+#             if ings:
+#                 st.markdown("**Ingredients**")
+#                 for k, v in ings.items():
+#                     st.write(f"- {k}: {v:g}")
+#             _render_instructions_block("Instructions", srec.get("instruction", []))
 
 def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
     """
@@ -734,22 +797,22 @@ if not isinstance(rec, dict):
     st.stop()
 
 ###
-    # ----- INGREDIENTS -----
-    ing = rec.get("ingredients", {})
-    if ing:
-        st.markdown("### 📋 Ingredients")
-        for k, v in ing.items():
-            # format numbers nicely if numeric
-            try:
-                st.write(f"- {k}: {float(v):g}")
-            except Exception:
-                st.write(f"- {k}: {v}")
+    # # ----- INGREDIENTS -----
+    # ing = rec.get("ingredients", {})
+    # if ing:
+    #     st.markdown("### 📋 Ingredients")
+    #     for k, v in ing.items():
+    #         # format numbers nicely if numeric
+    #         try:
+    #             st.write(f"- {k}: {float(v):g}")
+    #         except Exception:
+    #             st.write(f"- {k}: {v}")
 
     # ----- INSTRUCTIONS -----
-    _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
+    # _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
 
-    # ----- SUBRECIPES (ingredients + their instructions) -----
-    _render_subrecipes(rec.get("subrecipes", {}))
+    # # ----- SUBRECIPES (ingredients + their instructions) -----
+    # _render_subrecipes(rec.get("subrecipes", {}))
 
 ###
 
@@ -1012,11 +1075,11 @@ for line in info_lines:
     st.caption(line)
 
 # 🔹 Show ingredients + instructions + subrecipes in one unified block
-show_scaled_result(
-    selected_name,
-    {"ingredients": scaled},  # scaled result only; helper will reattach instructions
-    recipes,
-)
+# show_scaled_result(
+#     selected_name,
+#     {"ingredients": scaled},  # scaled result only; helper will reattach instructions
+#     recipes,
+# )
 
 # # --- Display summary ---
 # st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
@@ -2536,6 +2599,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
