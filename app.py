@@ -1080,7 +1080,15 @@ for line in info_lines:
 #     {"ingredients": scaled},  # scaled result only; helper will reattach instructions
 #     recipes,
 # )
+###
+# 🔹 Show ingredients + instructions + subrecipes in one unified block
+show_scaled_result(
+    selected_name,
+    {"ingredients": scaled},  # scaled result only; helper will reattach instructions
+    recipes,
+)
 
+###
 # # --- Display summary ---
 # st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
 # if density_g_per_ml and total_scaled > 0:
@@ -2599,6 +2607,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
