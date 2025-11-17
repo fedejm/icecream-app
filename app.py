@@ -2180,8 +2180,8 @@ def set_min_inventory_section(recipes: Dict[str, Any]):
 # --- Sidebar navigation ---
 page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingredient Inventory", "Set Min Inventory"], key="sidebar_nav")
 
-if page == "Batching System":
-    batching_system_section()
+# if page == "Batching System":
+#     batching_system_section()
 
 elif page == "Flavor Inventory":
     flavor_inventory_section()
@@ -2536,6 +2536,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
