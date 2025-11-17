@@ -755,22 +755,7 @@ if not isinstance(rec, dict):
 #                     st.write(f"- {k}: {v:g}")
 #             _render_instructions_block("Instructions", srec.get("instruction", []))
 
-def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
-    """
-    Always prints ingredients + instructions + subrecipes.
-    If scaler returned only ingredients, re-attach from the base recipe.
-    """
-    import streamlit as st
-    base = recipes_dict.get(selected_name, {})
-    rec = _unwrap_recipe(scaled_result)
 
-    # If scaler returned only ingredients, re-attach missing fields
-    if rec and "ingredients" in rec and not rec.get("instruction"):
-        rec = make_scaled_recipe(base, rec["ingredients"])
-
-    # Fallback: if rec is empty, show base
-    if not rec:
-        rec = base
 ###
 # --- Recipe selection (single source of truth) ---
 # recipe_names = sorted(recipes.keys())
@@ -2607,6 +2592,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
