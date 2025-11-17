@@ -284,7 +284,7 @@ recipes = {
             "guar": 75,
             "dry milk": 1000,
             "yolks": 500,
-            "dulce de leche heladero": 90
+            "dulce de leche heladero": 13600
         },
         "instruction": []
     },
@@ -2450,6 +2450,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
