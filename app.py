@@ -640,12 +640,12 @@ if current_sel not in recipe_names:
     st.session_state["selected_recipe"] = current_sel
 
 # Recipe dropdown
-selected_name = st.selectbox(
-    "Choose a recipe",
-    recipe_names,
-    index=recipe_names.index(current_sel),
-    key="selected_recipe",
-)
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(current_sel),
+#     key="selected_recipe",
+# )
 
 # Resolve recipe dict
 rec = recipes.get(selected_name)
@@ -2536,6 +2536,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
