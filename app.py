@@ -670,19 +670,7 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
 
 ###
 
-# --- Selection UI + safe defaults ---
-recipe_names = sorted(recipes.keys())
-if not recipe_names:
-    st.warning("No recipes found.")
-    st.stop()
 
-# Keep state stable across reruns
-selected_name = st.session_state.get("selected_recipe")
-
-# If nothing selected yet, default to the first recipe
-if not selected_name:
-    selected_name = recipe_names[0]
-    st.session_state["selected_recipe"] = selected_name
 ####
 # --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
 # If there are no recipes, bail out gracefully.
@@ -2465,6 +2453,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
