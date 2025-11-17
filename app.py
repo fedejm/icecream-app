@@ -2597,7 +2597,7 @@ def ingredient_inventory_section():
 
 
 ####
-old version 111725
+# old version 11/17/25
 ####
 
 # import streamlit as st
@@ -5052,6 +5052,7 @@ old version 111725
 #             st.dataframe(needs_order)
 #         else:
 #             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
