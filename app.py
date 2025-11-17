@@ -278,12 +278,12 @@ recipes = {
     },
     "Dulce de Leche": {
         "ingredients": {
-            "milk": 24775,
-            "cream": 7500,
+            "milk": 22775,
+            "cream": 8000,
             "sugar": 2550,
             "guar": 75,
             "dry milk": 1000,
-            "yolks": 500,
+            "yolks": 2000,
             "dulce de leche heladero": 13600
         },
         "instruction": []
@@ -2450,6 +2450,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
