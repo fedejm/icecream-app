@@ -2183,14 +2183,14 @@ page = st.sidebar.radio("Go to", ["Batching System", "Flavor Inventory", "Ingred
 # if page == "Batching System":
 #     batching_system_section()
 
-elif page == "Flavor Inventory":
-    flavor_inventory_section()
+# elif page == "Flavor Inventory":
+#     flavor_inventory_section()
 
-elif page == "Ingredient Inventory":
-    ingredient_inventory_section()
+# elif page == "Ingredient Inventory":
+#     ingredient_inventory_section()
 
-elif page == "Set Min Inventory":
-    set_min_inventory_section(recipes)
+# elif page == "Set Min Inventory":
+#     set_min_inventory_section(recipes)
 
 
 # --- Utility Functions ---
@@ -2536,6 +2536,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
