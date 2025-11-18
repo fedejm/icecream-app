@@ -327,7 +327,7 @@ recipes = {
         ],
         "subrecipes": {}
     },
-    "Ginger": {
+   "Ginger": {
     "ingredients": {
         "milk": 936,
         "cream": 380,
@@ -337,6 +337,17 @@ recipes = {
         "yolks": 80,
         "caramelized ginger": 300
     },
+    "instruction": [],
+    "subrecipes": {}
+}
+,
+"Ginger Caramelized": {
+    "ingredients": {
+        "honey": 20,
+        "water": 228,
+        "sugar": 173,
+        "ginger": 125
+    },
     "instruction": [
         "Caramelize the Ginger",
         "1) Cut the Ginger into little pieces.",
@@ -344,22 +355,7 @@ recipes = {
         "3) Add the cut Ginger and bring to a boil.",
         "4) Simmer for 5 minutes."
     ],
-    "subrecipes": {
-        "Caramelized Ginger": {
-            "ingredients": {
-                "honey": 20,
-                "water": 228,
-                "sugar": 173,
-                "ginger": 125
-            },
-            "instruction": [
-                "1) Cut ginger into small pieces.",
-                "2) Cook water, sugar, and honey until dissolved.",
-                "3) Add ginger and bring to a boil.",
-                "4) Simmer for 5 minutes."
-            ]
-        }
-    }
+    "subrecipes": { }
 }
 ,
     "Graham Cracker Crust": {
@@ -5087,6 +5083,7 @@ def ingredient_inventory_section():
 #             st.dataframe(needs_order)
 #         else:
 #             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
