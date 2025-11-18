@@ -344,10 +344,12 @@ recipes = {
             "3) Add the cut Ginger and bring to a boil.",
             "4) Simmer for 5 minutes."
         ],
-        "subrecipes": {"honey": 20,
+        "subrecipes": {
+            "Caramelized Ginger":{
+                      "honey": 20,
                       "water": 228,
                       "sugar": 173,
-                       "ginger": 125}
+                     "ginger": 125}
     },
     "Graham Cracker Crust": {
         "ingredients": {
@@ -5074,6 +5076,7 @@ def ingredient_inventory_section():
 #             st.dataframe(needs_order)
 #         else:
 #             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
