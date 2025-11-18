@@ -327,30 +327,41 @@ recipes = {
         ],
         "subrecipes": {}
     },
-     "Ginger": {
-        "ingredients": {
-            "milk": 936,
-            "cream": 380,
-            "sugar": 190,
-            "guar": 4,
-            "dry milk": 110,
-            "yolks": 80,
-            "caramelized ginger": 300,
-        },
-        "instruction": [
-            "Caramelize the Ginger",
-            "1) Cut the Ginger into little pieces.",
-            "2) Cook the Water, Sugar and Honey on high until the sugar dissolves",
-            "3) Add the cut Ginger and bring to a boil.",
-            "4) Simmer for 5 minutes."
-        ],
-        "subrecipes": {
-            "Caramelized Ginger":{
-                      "honey": 20,
-                      "water": 228,
-                      "sugar": 173,
-                     "ginger": 125}
+    "Ginger": {
+    "ingredients": {
+        "milk": 936,
+        "cream": 380,
+        "sugar": 190,
+        "guar": 4,
+        "dry milk": 110,
+        "yolks": 80,
+        "caramelized ginger": 300
     },
+    "instruction": [
+        "Caramelize the Ginger",
+        "1) Cut the Ginger into little pieces.",
+        "2) Cook the Water, Sugar and Honey on high until the sugar dissolves.",
+        "3) Add the cut Ginger and bring to a boil.",
+        "4) Simmer for 5 minutes."
+    ],
+    "subrecipes": {
+        "Caramelized Ginger": {
+            "ingredients": {
+                "honey": 20,
+                "water": 228,
+                "sugar": 173,
+                "ginger": 125
+            },
+            "instruction": [
+                "1) Cut ginger into small pieces.",
+                "2) Cook water, sugar, and honey until dissolved.",
+                "3) Add ginger and bring to a boil.",
+                "4) Simmer for 5 minutes."
+            ]
+        }
+    }
+}
+,
     "Graham Cracker Crust": {
         "ingredients": {
             "graham cracker crumble": 338,
@@ -5076,6 +5087,7 @@ def ingredient_inventory_section():
 #             st.dataframe(needs_order)
 #         else:
 #             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
