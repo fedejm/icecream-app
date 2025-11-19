@@ -673,6 +673,7 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
     # INGREDIENTS
     G_PER_GALLON_MILK = 3785  # approx grams in 1 US gallon of milk/water
 
+ing = rec.get("ingredients", {})
 for k, v in ing.items():
     try:
         grams = float(v)
@@ -2645,6 +2646,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
