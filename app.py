@@ -122,31 +122,31 @@ def ensure_inventory_files(recipes: dict):
         save_json(THRESHOLD_FILE, thresholds)
 ###
     # INGREDIENTS
-    ing = rec.get("ingredients", {})
-    if ing:
-        st.markdown("### 📋 Ingredients")
+    # ing = rec.get("ingredients", {})
+    # if ing:
+    #     st.markdown("### 📋 Ingredients")
 
-        G_PER_GALLON_MILK = 3785  # ~grams in 1 US gallon (adjust if you want)
+    #     G_PER_GALLON_MILK = 3785  # ~grams in 1 US gallon (adjust if you want)
 
-        for k, v in ing.items():
-            # Try to treat the value as grams
-            try:
-                grams = float(v)
-            except Exception:
-                # Non-numeric (e.g. "to taste") → just print as-is
-                st.write(f"- {k}: {v}")
-                continue
+    #     for k, v in ing.items():
+    #         # Try to treat the value as grams
+    #         try:
+    #             grams = float(v)
+    #         except Exception:
+    #             # Non-numeric (e.g. "to taste") → just print as-is
+    #             st.write(f"- {k}: {v}")
+    #             continue
 
-            # Base text: grams only
-            line = f"- {k}: {grams:g} g"
+    #         # Base text: grams only
+    #         line = f"- {k}: {grams:g} g"
 
-            # Special case: milk → show gallons + remainder grams
-            if k.lower() == "milk":
-                whole_gal = int(grams // G_PER_GALLON_MILK)
-                rem_g = grams - whole_gal * G_PER_GALLON_MILK
-                line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+    #         # Special case: milk → show gallons + remainder grams
+    #         if k.lower() == "milk":
+    #             whole_gal = int(grams // G_PER_GALLON_MILK)
+    #             rem_g = grams - whole_gal * G_PER_GALLON_MILK
+    #             line += f" ({whole_gal} gal + {rem_g:.0f} g)"
 
-            st.write(line)
+    #         st.write(line)
 
 ###
 ### helpers to display instruction
@@ -658,59 +658,110 @@ def _render_subrecipes(subrecipes: dict):
                     st.write(f"- {k}: {v:g}")
             _render_instructions_block("Instructions", srec.get("instruction", []))
 
+###
+def render_ingredients_block(ingredients: dict):
+    """Render ingredients, showing gallons + grams for milk."""
+    if not ingredients:
+        return
+
+    st.markdown("### 📋 Ingredients")
+
+    G_PER_GALLON_MILK = 3785  # adjust if you want
+
+    for k, v in ingredients.items():
+        try:
+            grams = float(v)
+        except Exception:
+            # Non-numeric values (e.g., "to taste")
+            st.write(f"- {k}: {v}")
+            continue
+
+        line = f"- {k}: {grams:g} g"
+
+        if k.lower() == "milk":
+            whole_gal = int(grams // G_PER_GALLON_MILK)
+            rem_g = grams - whole_gal * G_PER_GALLON_MILK
+            line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+        st.write(line)
+
+###
 def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
     """Print ingredients + instructions + subrecipes (scaled or base)."""
     base = recipes_dict.get(selected_name, {})
     rec = _unwrap_recipe(scaled_result)
 
-    # Attach missing fields if scaler returned only ingredients
+    # If scaler returned only ingredients, re-attach instructions/subrecipes
     if rec and "ingredients" in rec and not rec.get("instruction"):
         rec = make_scaled_recipe(base, rec["ingredients"])
 
+    # Last fallback: if rec is empty, just use base
     if not rec:
         rec = base
 
-    # INGREDIENTS
-    G_PER_GALLON_MILK = 3785  # approx grams in 1 US gallon of milk/water
+    # ----- INGREDIENTS (with milk in gallons) -----
+    render_ingredients_block(rec.get("ingredients", {}))
 
-ing = rec.get("ingredients", {})
-for k, v in ing.items():
-    try:
-        grams = float(v)
-    except Exception:
-        # if it's not numeric, just print it as-is
-        st.write(f"- {k}: {v}")
-        continue
+    # ----- MAIN INSTRUCTIONS -----
+    _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
 
-    # Default text: just grams
-    line = f"- {k}: {grams:g}"
+    # ----- SUBRECIPES -----
+    _render_subrecipes(rec.get("subrecipes", {}))
 
-    # Special formatting for milk
-    if k.lower() == "milk":
-        whole_gal = int(grams // G_PER_GALLON_MILK)
-        rem_g = grams % G_PER_GALLON_MILK  # remainder in grams
+###
+# def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
+#     """Print ingredients + instructions + subrecipes (scaled or base)."""
+#     base = recipes_dict.get(selected_name, {})
+#     rec = _unwrap_recipe(scaled_result)
 
-        # Always show the breakdown as "X gal + Y g"
-        line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+#     # Attach missing fields if scaler returned only ingredients
+#     if rec and "ingredients" in rec and not rec.get("instruction"):
+#         rec = make_scaled_recipe(base, rec["ingredients"])
 
-    st.write(line)
+#     if not rec:
+#         rec = base
+
+#     # INGREDIENTS
+#     G_PER_GALLON_MILK = 3785  # approx grams in 1 US gallon of milk/water
+
+# ing = rec.get("ingredients", {})
+# for k, v in ing.items():
+#     try:
+#         grams = float(v)
+#     except Exception:
+#         # if it's not numeric, just print it as-is
+#         st.write(f"- {k}: {v}")
+#         continue
+
+#     # Default text: just grams
+#     line = f"- {k}: {grams:g}"
+
+#     # Special formatting for milk
+#     if k.lower() == "milk":
+#         whole_gal = int(grams // G_PER_GALLON_MILK)
+#         rem_g = grams % G_PER_GALLON_MILK  # remainder in grams
+
+#         # Always show the breakdown as "X gal + Y g"
+#         line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+#     st.write(line)
 
 
     
-    # ing = rec.get("ingredients", {})
-    # if ing:
-    #     st.markdown("### 📋 Ingredients")
-    #     for k, v in ing.items():
-    #         try:
-    #             st.write(f"- {k}: {float(v):g}")
-    #         except Exception:
-    #             st.write(f"- {k}: {v}")
+#     # ing = rec.get("ingredients", {})
+#     # if ing:
+#     #     st.markdown("### 📋 Ingredients")
+#     #     for k, v in ing.items():
+#     #         try:
+#     #             st.write(f"- {k}: {float(v):g}")
+#     #         except Exception:
+#     #             st.write(f"- {k}: {v}")
 
-    # MAIN INSTRUCTIONS
-    _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
+#     # MAIN INSTRUCTIONS
+#     _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
 
-    # SUBRECIPES
-    _render_subrecipes(rec.get("subrecipes", {}))
+#     # SUBRECIPES
+#     _render_subrecipes(rec.get("subrecipes", {}))
 
 ###
 # ---------------------------
@@ -2646,6 +2697,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
