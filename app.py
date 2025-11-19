@@ -643,14 +643,39 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
         rec = base
 
     # INGREDIENTS
-    ing = rec.get("ingredients", {})
-    if ing:
-        st.markdown("### 📋 Ingredients")
-        for k, v in ing.items():
-            try:
-                st.write(f"- {k}: {float(v):g}")
-            except Exception:
-                st.write(f"- {k}: {v}")
+    G_PER_GALLON_MILK = 3785  # approx grams in 1 US gallon of milk/water
+
+for k, v in ing.items():
+    try:
+        grams = float(v)
+    except Exception:
+        # if it's not numeric, just print it as-is
+        st.write(f"- {k}: {v}")
+        continue
+
+    # Default text: just grams
+    line = f"- {k}: {grams:g}"
+
+    # Special formatting for milk
+    if k.lower() == "milk":
+        whole_gal = int(grams // G_PER_GALLON_MILK)
+        rem_g = grams % G_PER_GALLON_MILK  # remainder in grams
+
+        # Always show the breakdown as "X gal + Y g"
+        line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+    st.write(line)
+
+
+    
+    # ing = rec.get("ingredients", {})
+    # if ing:
+    #     st.markdown("### 📋 Ingredients")
+    #     for k, v in ing.items():
+    #         try:
+    #             st.write(f"- {k}: {float(v):g}")
+    #         except Exception:
+    #             st.write(f"- {k}: {v}")
 
     # MAIN INSTRUCTIONS
     _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
@@ -2592,6 +2617,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
