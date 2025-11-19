@@ -120,7 +120,35 @@ def ensure_inventory_files(recipes: dict):
     if not os.path.exists(THRESHOLD_FILE):
         thresholds = {ing: 0 for ing in all_ings}
         save_json(THRESHOLD_FILE, thresholds)
+###
+    # INGREDIENTS
+    ing = rec.get("ingredients", {})
+    if ing:
+        st.markdown("### 📋 Ingredients")
 
+        G_PER_GALLON_MILK = 3785  # ~grams in 1 US gallon (adjust if you want)
+
+        for k, v in ing.items():
+            # Try to treat the value as grams
+            try:
+                grams = float(v)
+            except Exception:
+                # Non-numeric (e.g. "to taste") → just print as-is
+                st.write(f"- {k}: {v}")
+                continue
+
+            # Base text: grams only
+            line = f"- {k}: {grams:g} g"
+
+            # Special case: milk → show gallons + remainder grams
+            if k.lower() == "milk":
+                whole_gal = int(grams // G_PER_GALLON_MILK)
+                rem_g = grams - whole_gal * G_PER_GALLON_MILK
+                line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+            st.write(line)
+
+###
 ### helpers to display instruction
 # def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
 #     """Return a full recipe dict (ingredients + instruction + subrecipes) after scaling."""
@@ -2617,6 +2645,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
