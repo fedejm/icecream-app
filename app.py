@@ -342,6 +342,21 @@ recipes = {
         ],
         "subrecipes": {}
     },
+    "Ladyfinger Sauce": {
+        "ingredients": {
+            "sugar": 900,
+            "water": 255,
+            "honey": 10,
+            "espresso": 20,
+            "rum": 225
+        },
+        "instruction": [
+            "1) Cook the water, sugar, honey and espresso on high until the sugar dissolves.",
+            "2) Once the sugar is dissolved, remove from heat and add the rum.",
+            
+        ],
+        "subrecipes": {}
+    },
     "Lemon Bar": {
         "ingredients": {
             "crust": 566,
@@ -1513,5 +1528,6 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
