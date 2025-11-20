@@ -655,7 +655,11 @@ def _render_subrecipes(subrecipes: dict):
             if ings:
                 st.markdown("**Ingredients**")
                 for k, v in ings.items():
-                    st.write(f"- {k}: {v:g}")
+                    try:
+    st.write(f"- {k}: {int(round(float(v)))}")
+except Exception:
+    st.write(f"- {k}: {v}")
+
             _render_instructions_block("Instructions", srec.get("instruction", []))
 
 ###
@@ -2697,6 +2701,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
