@@ -504,6 +504,22 @@ recipes = {
             "ricotta": 4538
         }},
         
+    "tiramisu": {
+        "ingredients": {
+            "milk": 1796,
+            "cream": 440,
+            "sugar": 480,
+            "guar": 4,
+            "dry milk": 220,
+            "yolks": 572,
+            "marsala wine": 280,
+            "espresso": 8,
+            "caramel": 200
+        },
+        "instruction": [
+           ]
+    },
+        
     "vanilla": {
         "ingredients": {
             "milk": 28637,
@@ -1497,4 +1513,5 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
