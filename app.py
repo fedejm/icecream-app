@@ -638,14 +638,14 @@ def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
         "subrecipes": base_recipe.get("subrecipes", {}) or {},
     }
 
-def _render_instructions_block(title: str, steps: list[str]):
+instructions_block(title: str, steps: list[str]):
     if not steps:
         return
     with st.expander(title, expanded=True):
         for line in steps:
             st.markdown(f"- {line}")
 
-def _render_subrecipes(subrecipes: dict):
+subrecipes(subrecipes: dict):
     if not subrecipes:
         return
     st.markdown("### 🧩 Sub-recipes")
@@ -662,6 +662,32 @@ def _render_subrecipes(subrecipes: dict):
 
             _render_instructions_block("Instructions", srec.get("instruction", []))
 
+###
+# def render_ingredients_block(ingredients: dict):
+#     """Render ingredients, showing gallons + grams for milk."""
+#     if not ingredients:
+#         return
+
+#     st.markdown("### 📋 Ingredients")
+
+#     G_PER_GALLON_MILK = 3785  # adjust if you want
+
+#     for k, v in ingredients.items():
+#         try:
+#             grams = float(v)
+#         except Exception:
+#             # Non-numeric values (e.g., "to taste")
+#             st.write(f"- {k}: {v}")
+#             continue
+
+#         line = f"- {k}: {grams:g} g"
+
+#         if k.lower() == "milk":
+#             whole_gal = int(grams // G_PER_GALLON_MILK)
+#             rem_g = grams - whole_gal * G_PER_GALLON_MILK
+#             line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+#         st.write(line)
 ###
 def render_ingredients_block(ingredients: dict):
     """Render ingredients, showing gallons + grams for milk."""
@@ -680,12 +706,17 @@ def render_ingredients_block(ingredients: dict):
             st.write(f"- {k}: {v}")
             continue
 
-        line = f"- {k}: {grams:g} g"
+        # 🔢 force whole grams
+        grams_int = int(round(grams))
 
+        # Base text: whole grams only
+        line = f"- {k}: {grams_int} g"
+
+        # Special case: milk → show gallons + remainder grams, all integers
         if k.lower() == "milk":
-            whole_gal = int(grams // G_PER_GALLON_MILK)
-            rem_g = grams - whole_gal * G_PER_GALLON_MILK
-            line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+            whole_gal = grams_int // G_PER_GALLON_MILK
+            rem_g = grams_int - whole_gal * G_PER_GALLON_MILK
+            line += f" ({whole_gal} gal + {rem_g} g)"
 
         st.write(line)
 
@@ -842,7 +873,7 @@ if not isinstance(rec, dict):
 #         "subrecipes": base_recipe.get("subrecipes", {}) or {},
 #     }
 
-# def _render_instructions_block(title: str, steps: list[str]):
+# instructions_block(title: str, steps: list[str]):
 #     import streamlit as st
 #     if not steps:
 #         return
@@ -850,7 +881,7 @@ if not isinstance(rec, dict):
 #         for line in steps:
 #             st.markdown(f"- {line}")
 
-# def _render_subrecipes(subrecipes: dict):
+# subrecipes(subrecipes: dict):
 #     import streamlit as st
 #     if not subrecipes:
 #         return
@@ -2701,6 +2732,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
