@@ -120,90 +120,6 @@ def ensure_inventory_files(recipes: dict):
     if not os.path.exists(THRESHOLD_FILE):
         thresholds = {ing: 0 for ing in all_ings}
         save_json(THRESHOLD_FILE, thresholds)
-###
-    # INGREDIENTS
-    # ing = rec.get("ingredients", {})
-    # if ing:
-    #     st.markdown("### 📋 Ingredients")
-
-    #     G_PER_GALLON_MILK = 3785  # ~grams in 1 US gallon (adjust if you want)
-
-    #     for k, v in ing.items():
-    #         # Try to treat the value as grams
-    #         try:
-    #             grams = float(v)
-    #         except Exception:
-    #             # Non-numeric (e.g. "to taste") → just print as-is
-    #             st.write(f"- {k}: {v}")
-    #             continue
-
-    #         # Base text: grams only
-    #         line = f"- {k}: {grams:g} g"
-
-    #         # Special case: milk → show gallons + remainder grams
-    #         if k.lower() == "milk":
-    #             whole_gal = int(grams // G_PER_GALLON_MILK)
-    #             rem_g = grams - whole_gal * G_PER_GALLON_MILK
-    #             line += f" ({whole_gal} gal + {rem_g:.0f} g)"
-
-    #         st.write(line)
-
-###
-### helpers to display instruction
-# def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
-#     """Return a full recipe dict (ingredients + instruction + subrecipes) after scaling."""
-#     return {
-#         "ingredients": new_ingredients,
-#         "instruction": base_recipe.get("instruction", []),
-#         "subrecipes": base_recipe.get("subrecipes", {}),
-#     }
-# def _unwrap_recipe(obj):
-#     """Accept dict or (dict, scale_factor) and return the dict."""
-#     if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
-#         return obj[0]
-#     return obj if isinstance(obj, dict) else {}
-
-# def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
-#     """Ensure scaled recipe carries instruction/subrecipes forward."""
-#     return {
-#         "ingredients": new_ingredients,
-#         "instruction": base_recipe.get("instruction", []),
-#         "subrecipes": base_recipe.get("subrecipes", {}),
-#     }
-
-# def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
-#     """
-#     Prints the ingredients AND instruction no matter what shape your scaler returns.
-#     If instruction are missing, it re-attaches them from the base recipe.
-#     """
-#     import streamlit as st
-#     base = recipes_dict.get(selected_name, {})
-#     rec = _unwrap_recipe(scaled_result)
-
-#     # If scaler returned only ingredients, reattach instruction/subrecipes
-#     if rec and "ingredients" in rec and ("instruction" not in rec or rec.get("instruction") is None):
-#         rec = make_scaled_recipe(base, rec["ingredients"])
-
-#     # Last fallback: if rec is empty, just use base
-#     if not rec:
-#         rec = base
-
-#     # ----- INGREDIENTS -----
-#     ing = rec.get("ingredients", {})
-#     if ing:
-#         st.markdown("### 📋 Scaled ingredients (all)")
-#         for k, v in ing.items():
-#             st.write(f"{k}: {v} g")
-
-#     # ----- MAIN INSTRUCTION -----
-#     steps = rec.get("instruction") or []
-#     if steps:
-#         st.markdown(f"### 🧾 Instruction: {selected_name}")
-#         for i, step in enumerate(steps, 1):
-#             st.markdown(f"**{i}.** {step}")
-#     elif not sub:
-#         st.info("This recipe has no instruction yet.")
-
 
 
 # --- Recipe Database ---
@@ -718,9 +634,39 @@ def _render_subrecipes(subrecipes: dict):
             if ings:
                 st.markdown("**Ingredients**")
                 for k, v in ings.items():
-                    st.write(f"- {k}: {v:g}")
+                    try:
+                        st.write(f"- {k}: {int(round(float(v)))}")
+                    except Exception:
+                        st.write(f"- {k}: {v}")
+
             _render_instructions_block("Instructions", srec.get("instruction", []))
 
+###
+# def render_ingredients_block(ingredients: dict):
+#     """Render ingredients, showing gallons + grams for milk."""
+#     if not ingredients:
+#         return
+
+#     st.markdown("### 📋 Ingredients")
+
+#     G_PER_GALLON_MILK = 3785  # adjust if you want
+
+#     for k, v in ingredients.items():
+#         try:
+#             grams = float(v)
+#         except Exception:
+#             # Non-numeric values (e.g., "to taste")
+#             st.write(f"- {k}: {v}")
+#             continue
+
+#         line = f"- {k}: {grams:g} g"
+
+#         if k.lower() == "milk":
+#             whole_gal = int(grams // G_PER_GALLON_MILK)
+#             rem_g = grams - whole_gal * G_PER_GALLON_MILK
+#             line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+#         st.write(line)
 ###
 def render_ingredients_block(ingredients: dict):
     """Render ingredients, showing gallons + grams for milk."""
@@ -739,12 +685,17 @@ def render_ingredients_block(ingredients: dict):
             st.write(f"- {k}: {v}")
             continue
 
-        line = f"- {k}: {grams:g} g"
+        # 🔢 force whole grams
+        grams_int = int(round(grams))
 
+        # Base text: whole grams only
+        line = f"- {k}: {grams_int} g"
+
+        # Special case: milk → show gallons + remainder grams, all integers
         if k.lower() == "milk":
-            whole_gal = int(grams // G_PER_GALLON_MILK)
-            rem_g = grams - whole_gal * G_PER_GALLON_MILK
-            line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+            whole_gal = grams_int // G_PER_GALLON_MILK
+            rem_g = grams_int - whole_gal * G_PER_GALLON_MILK
+            line += f" ({whole_gal} gal + {rem_g} g)"
 
         st.write(line)
 
@@ -771,7 +722,65 @@ def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
     # ----- SUBRECIPES -----
     _render_subrecipes(rec.get("subrecipes", {}))
 
+###
+# def show_scaled_result(selected_name: str, scaled_result, recipes_dict: dict):
+#     """Print ingredients + instructions + subrecipes (scaled or base)."""
+#     base = recipes_dict.get(selected_name, {})
+#     rec = _unwrap_recipe(scaled_result)
 
+#     # Attach missing fields if scaler returned only ingredients
+#     if rec and "ingredients" in rec and not rec.get("instruction"):
+#         rec = make_scaled_recipe(base, rec["ingredients"])
+
+#     if not rec:
+#         rec = base
+
+#     # INGREDIENTS
+#     G_PER_GALLON_MILK = 3785  # approx grams in 1 US gallon of milk/water
+
+# ing = rec.get("ingredients", {})
+# for k, v in ing.items():
+#     try:
+#         grams = float(v)
+#     except Exception:
+#         # if it's not numeric, just print it as-is
+#         st.write(f"- {k}: {v}")
+#         continue
+
+#     # Default text: just grams
+#     line = f"- {k}: {grams:g}"
+
+#     # Special formatting for milk
+#     if k.lower() == "milk":
+#         whole_gal = int(grams // G_PER_GALLON_MILK)
+#         rem_g = grams % G_PER_GALLON_MILK  # remainder in grams
+
+#         # Always show the breakdown as "X gal + Y g"
+#         line += f" ({whole_gal} gal + {rem_g:.0f} g)"
+
+#     st.write(line)
+
+
+    
+#     # ing = rec.get("ingredients", {})
+#     # if ing:
+#     #     st.markdown("### 📋 Ingredients")
+#     #     for k, v in ing.items():
+#     #         try:
+#     #             st.write(f"- {k}: {float(v):g}")
+#     #         except Exception:
+#     #             st.write(f"- {k}: {v}")
+
+#     # MAIN INSTRUCTIONS
+#     _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
+
+#     # SUBRECIPES
+#     _render_subrecipes(rec.get("subrecipes", {}))
+
+###
+# ---------------------------
+# SINGLE SOURCE OF TRUTH — RECIPE SELECTOR
+# ---------------------------
 
 recipe_names = sorted(recipes.keys())
 
@@ -800,7 +809,11 @@ if not isinstance(rec, dict):
     st.stop()
 
 ###
-
+# --- Recipe selection (single source of truth) ---
+# recipe_names = sorted(recipes.keys())
+# if not recipe_names:
+#     st.warning("No recipes found.")
+#     st.stop()
 
 # Heal / initialize session selection
 current_sel = st.session_state.get("selected_recipe")
@@ -808,7 +821,13 @@ if current_sel not in recipe_names:
     current_sel = recipe_names[0]
     st.session_state["selected_recipe"] = current_sel
 
-
+# Recipe dropdown
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(current_sel),
+#     key="selected_recipe",
+# )
 
 # Resolve recipe dict
 rec = recipes.get(selected_name)
@@ -818,7 +837,62 @@ if not isinstance(rec, dict):
 
 ###
 
+# --- Instruction helpers ---
+# def _unwrap_recipe(obj):
+#     """Accept dict or (dict, scale_factor) and return the dict only."""
+#     if isinstance(obj, tuple) and obj and isinstance(obj[0], dict):
+#         return obj[0]
+#     return obj if isinstance(obj, dict) else {}
 
+# def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
+#     """Ensure scaled recipe carries instruction/subrecipes forward."""
+#     return {
+#         "ingredients": new_ingredients or {},
+#         "instruction": base_recipe.get("instruction", []) or [],
+#         "subrecipes": base_recipe.get("subrecipes", {}) or {},
+#     }
+
+# instructions_block(title: str, steps: list[str]):
+#     import streamlit as st
+#     if not steps:
+#         return
+#     with st.expander(title, expanded=True):
+#         for line in steps:
+#             st.markdown(f"- {line}")
+
+# subrecipes(subrecipes: dict):
+#     import streamlit as st
+#     if not subrecipes:
+#         return
+#     st.markdown("### 🧩 Sub-recipes")
+#     for sname, srec in subrecipes.items():
+#         with st.expander(f"Subrecipe: {sname}", expanded=False):
+#             ings = srec.get("ingredients", {})
+#             if ings:
+#                 st.markdown("**Ingredients**")
+#                 for k, v in ings.items():
+#                     st.write(f"- {k}: {v:g}")
+#             _render_instructions_block("Instructions", srec.get("instruction", []))
+
+
+###
+# --- Recipe selection (single source of truth) ---
+# recipe_names = sorted(recipes.keys())
+
+
+# Heal / initialize session selection
+current_sel = st.session_state.get("selected_recipe")
+if current_sel not in recipe_names:
+    current_sel = recipe_names[0]
+    st.session_state["selected_recipe"] = current_sel
+
+# Recipe dropdown
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(current_sel),
+#     key="selected_recipe",
+# )
 
 # Resolve recipe dict
 rec = recipes.get(selected_name)
@@ -826,15 +900,50 @@ if not isinstance(rec, dict):
     st.info("Pick a recipe to view details.")
     st.stop()
 
+###
+    # # ----- INGREDIENTS -----
+    # ing = rec.get("ingredients", {})
+    # if ing:
+    #     st.markdown("### 📋 Ingredients")
+    #     for k, v in ing.items():
+    #         # format numbers nicely if numeric
+    #         try:
+    #             st.write(f"- {k}: {float(v):g}")
+    #         except Exception:
+    #             st.write(f"- {k}: {v}")
+
+    # ----- INSTRUCTIONS -----
+    # _render_instructions_block("🛠️ Instructions", rec.get("instruction", []))
+
+    # # ----- SUBRECIPES (ingredients + their instructions) -----
+    # _render_subrecipes(rec.get("subrecipes", {}))
+
+###
 
 
+####
+# --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
+# If there are no recipes, bail out gracefully.
+# if not recipe_names:
+#     st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
+#     st.stop()
 
-
+# Heal session value if it points to a recipe that no longer exists
 current_sel = st.session_state.get("selected_recipe")
 if current_sel not in recipe_names:
     st.session_state["selected_recipe"] = recipe_names[0]
     current_sel = recipe_names[0]
 
+# Compute a safe index (now guaranteed to exist)
+safe_index = recipe_names.index(current_sel)
+
+# # Render the selectbox (updates session_state on change)
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=safe_index,
+#     key="selected_recipe",
+# )
 
 # --- Resolve recipe object + guard ---
 rec = recipes.get(selected_name)
@@ -851,6 +960,37 @@ def as_steps(obj):
     return v if isinstance(v, list) else [str(v)]
 
 
+###
+
+
+# def batching_system_section():
+#     import math
+#     st.header("Batching System")
+#     ns = "bs3"  # namespace for widget keys
+
+#     # Files/lineup (fallbacks if constants missing)
+#     lineup_file = LINEUP_FILE if "LINEUP_FILE" in globals() else "weekly_lineup.json"
+#     lineup = load_json(lineup_file, [])
+#     all_recipe_names = sorted(recipes.keys())
+
+#     # Filter to weekly lineup
+#     show_only_lineup = st.checkbox(
+#         "Show only weekly lineup",
+#         value=bool(lineup),
+#         key=f"{ns}_show_only_lineup",
+#     )
+#     recipe_options = [r for r in all_recipe_names if (not show_only_lineup or r in lineup)] or all_recipe_names
+
+#     # Pick recipe
+#     selected_recipe = st.selectbox("Recipe", recipe_options, key=f"{ns}_recipe_select")
+#     base_ings = recipes[selected_recipe].get("ingredients", {})
+#     original_weight = float(sum(base_ings.values())) if base_ings else 0.0
+###
+# --- Selection UI + safe defaults ---
+# recipe_names = sorted(recipes.keys())
+# if not recipe_names:
+#     st.warning("No recipes found.")
+#     st.stop()
 
 # Keep state stable across reruns
 selected_name = st.session_state.get("selected_recipe")
@@ -860,7 +1000,10 @@ if not selected_name:
     selected_name = recipe_names[0]
     st.session_state["selected_recipe"] = selected_name
 
-
+# --- SAFETY GUARD BEFORE RENDERING SELECTBOX ---
+# if not recipe_names:
+#     st.warning("No valid recipes found. Add/fix a recipe JSON file to begin.")
+#     st.stop()
 
 # Heal session value if it points to a recipe that no longer exists
 current_sel = st.session_state.get("selected_recipe")
@@ -868,7 +1011,16 @@ if current_sel not in recipe_names:
     st.session_state["selected_recipe"] = recipe_names[0]
     current_sel = recipe_names[0]
 
+# IMPORTANT: keep selected_name in sync with the healed value
+selected_name = current_sel
 
+# OPTIONAL (recommended): re-enable the selectbox so you can switch recipes
+# selected_name = st.selectbox(
+#     "Choose a recipe",
+#     recipe_names,
+#     index=recipe_names.index(selected_name),
+#     key="selected_recipe",
+# )
 
 # --- Resolve recipe object + guard ---
 rec = recipes.get(selected_name)
@@ -1040,6 +1192,838 @@ show_scaled_result(
     recipes,
 )
 
+###
+# # --- Display summary ---
+# st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+# if density_g_per_ml and total_scaled > 0:
+#     est_l = total_scaled / (density_g_per_ml * 1000.0)
+#     st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+# for line in info_lines:
+#     st.caption(line)
+
+# with st.expander("📋 Scaled ingredients (all)", expanded=True):
+#     for ing, grams in scaled.items():
+#         st.write(f"- {ing}: {grams:.0f} g")
+
+# If you want to show the recipe instructions alongside the scaled ingredients, uncomment:
+# show_scaled_result(selected_name, {"ingredients": scaled}, recipes)
+# =============================================================================
+
+###    
+# # --- RENDER (base or scaled) ---
+# # If you have a scaler, produce `scaled_result` here; otherwise just show base:
+# show_scaled_result(selected_name, rec, recipes)
+# ###
+# # ========================= SCALING UI (single source of truth) =========================
+# import re
+
+# def _slugify(s: str) -> str:
+#     return re.sub(r'[^a-z0-9]+', '_', (s or 'x').lower()).strip('_')
+
+# # Scope reflects WHERE this UI renders: "main", "sidebar", "tab_scale", etc.
+# SCOPE = "main"
+# NS_SCALE = f"scale__{SCOPE}__{_slugify(selected_name)}"
+
+# def k(s: str) -> str:
+#     return f"{NS_SCALE}__{s}"
+
+# # Clear stale per-recipe scaling keys when switching recipe
+# if st.session_state.get("prev_recipe_for_scale") != selected_name:
+#     for _k in list(st.session_state.keys()):
+#         if isinstance(_k, str) and _k.startswith("scale__"):
+#             st.session_state.pop(_k)
+#     st.session_state["prev_recipe_for_scale"] = selected_name
+
+# st.subheader("Scale")
+# scale_mode = st.radio(
+#     "Method",
+#     [
+#         "Target batch weight (g)",
+#         "Container: 5 L",
+#         "Container: 1.5 gal",
+#         "Containers: combo (5 L + 1.5 gal)",
+#         "Scale by ingredient weight",
+#         "Multiplier x",
+#     ],
+#     horizontal=True,
+#     key=k("mode"),
+# )
+
+# # Only needed for volume-based modes
+# density_g_per_ml = None
+# if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+#     density_g_per_ml = st.number_input(
+#         "Mix density (g/mL)",
+#         min_value=0.5,
+#         max_value=1.5,
+#         value=1.03,
+#         step=0.01,
+#         key=k("density"),
+#     )
+
+# # Constants
+# GAL_TO_L = 3.785411784
+# VOL_5L_L = 5.0
+# VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+
+# # Inputs
+# base_ings = rec.get("ingredients", {})
+# original_weight = float(sum(base_ings.values()) or 0.0)
+
+# scale_factor = 1.0
+# target_weight = None
+# info_lines: list[str] = []
+
+# if scale_mode == "Target batch weight (g)":
+#     target_weight = st.number_input(
+#         "Target weight (g)",
+#         min_value=1.0,
+#         value=float(original_weight or 1000.0),
+#         step=100.0,
+#         key=k("target_weight"),
+#     )
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+# elif scale_mode == "Container: 5 L":
+#     n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
+#     total_l = n_5l * VOL_5L_L
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+# elif scale_mode == "Container: 1.5 gal":
+#     n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
+#     total_l = n_15 * VOL_1_5GAL_L
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+# elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#     col_a, col_b = st.columns(2)
+#     with col_a:
+#         n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
+#     with col_b:
+#         n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
+#     total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#     if total_l <= 0:
+#         st.warning("Set at least one container.")
+#         total_l = 0.0
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [
+#         f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#         f"Total volume: {total_l:,.2f} L",
+#         f"Target weight: {target_weight:,.0f} g",
+#     ]
+
+# elif scale_mode == "Scale by ingredient weight":
+#     if not base_ings:
+#         st.warning("This recipe has no ingredients.")
+#         scale_factor = 1.0
+#     else:
+#         ing_names = list(base_ings.keys())
+#         anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
+#         available_g = st.number_input(
+#             f"Available {anchor_ing} (g)",
+#             min_value=0.0,
+#             value=float(base_ings.get(anchor_ing, 0.0)),
+#             step=10.0,
+#             key=k("available_anchor"),
+#         )
+#         base_req = float(base_ings.get(anchor_ing, 0.0))
+#         if base_req <= 0:
+#             st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+#             scale_factor = 1.0
+#         else:
+#             scale_factor = available_g / base_req
+#             info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+# else:  # "Multiplier x"
+#     scale_factor = st.number_input(
+#         "Multiplier",
+#         min_value=0.01,
+#         value=1.0,
+#         step=0.1,
+#         key=k("multiplier"),
+#     )
+#     info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+# # --- Apply scaling ---
+# scaled = {ing: round(float(qty) * scale_factor, 2) for ing, qty in base_ings.items()}
+# total_scaled = round(sum(scaled.values()), 2)
+
+# # --- Display summary ---
+# st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+# if density_g_per_ml and total_scaled > 0:
+#     est_l = total_scaled / (density_g_per_ml * 1000.0)
+#     st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+# for line in info_lines:
+#     st.caption(line)
+
+# with st.expander("📋 Scaled ingredients (all)", expanded=True):
+#     for ing, grams in scaled.items():
+#         st.write(f"- {ing}: {grams:.0f} g")
+# # =======================================================================================
+
+# # import re
+
+# # def slugify(s: str) -> str:
+# #     return re.sub(r'[^a-z0-9]+', '_', (s or 'recipe').lower()).strip('_')
+
+# # ns = f"scale_{slugify(selected_name)}"   # e.g., "scale_vanilla"
+
+# # # now it's safe to build the controls
+# # scale_mode = st.radio(
+# #     "Method",
+# #     [
+# #         "Target batch weight (g)",
+# #         "Container: 5 L",
+# #         "Container: 1.5 gal",
+# #         "Containers: combo (5 L + 1.5 gal)",
+# #         "Scale by ingredient weight",
+# #         "Multiplier x",
+# #     ],
+# #     horizontal=True,
+# #     key=f"{ns}_scale_mode",
+# # )
+
+# # # only needed for volume modes
+# # density_g_per_ml = None
+# # if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+# #     density_g_per_ml = st.number_input(
+# #         "Mix density (g/mL)",
+# #         min_value=0.5,
+# #         max_value=1.5,
+# #         value=1.03,
+# #         step=0.01,
+# #         key=f"{ns}_density",
+# #     )
+
+# # # base ingredients & original total (must be defined before scaling logic)
+# # base_ings = rec.get("ingredients", {})
+# # original_weight = float(sum(base_ings.values()) or 0.0)
+
+# # # ... your (now fixed) if/elif scaling block goes here ...
+# # ###
+# # import re
+# # def slugify(s: str) -> str:
+# #     return re.sub(r'[^a-z0-9]+', '_', (s or 'x').lower()).strip('_')
+
+# # def key_ns(scope: str, selected_name: str) -> str:
+# #     # scope = where this widget lives (e.g., "main", "sidebar", "tab_scale")
+# #     return f"{scope}__{slugify(selected_name)}"
+# # NS_SCALE = key_ns("scale_main", selected_name)   # if you render in main area
+# # # NS_SCALE = key_ns("scale_sidebar", selected_name)  # if it's in sidebar, etc.
+# # scale_mode = st.radio(
+# #     "Method",
+# #     [
+# #         "Target batch weight (g)",
+# #         "Container: 5 L",
+# #         "Container: 1.5 gal",
+# #         "Containers: combo (5 L + 1.5 gal)",
+# #         "Scale by ingredient weight",
+# #         "Multiplier x",
+# #     ],
+# #     horizontal=True,
+# #     key=f"{NS_SCALE}_mode",
+# # )
+
+# # # only for volume modes
+# # density_g_per_ml = None
+# # if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+# #     density_g_per_ml = st.number_input(
+# #         "Mix density (g/mL)",
+# #         min_value=0.5,
+# #         max_value=1.5,
+# #         value=1.03,
+# #         step=0.01,
+# #         key=f"{NS_SCALE}_density",
+# #     )
+# # key=f"{NS_SCALE}_target_weight"
+# # key=f"{NS_SCALE}_n5l"
+# # key=f"{NS_SCALE}_n15"
+# # key=f"{NS_SCALE}_n5l_combo"
+# # key=f"{NS_SCALE}_n15_combo"
+# # key=f"{NS_SCALE}_anchor_ing"
+# # key=f"{NS_SCALE}_available_anchor"
+# # key=f"{NS_SCALE}_multiplier"
+# ###
+# # ---------------------------
+# # Scaling modes (legacy block removed)
+# # ---------------------------
+# # The unified scaling UI is handled earlier in the script.
+# # Keep these symbols so later code that references them won't break.
+
+# # Constants (safe to re-define)
+# GAL_TO_L   = 3.785411784
+# VOL_5L_L   = 5.0
+# VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+
+# # No second radio here; just ensure variables exist with sane defaults
+# density_g_per_ml = locals().get("density_g_per_ml", None)
+# scale_factor     = locals().get("scale_factor", 1.0)
+# target_weight    = locals().get("target_weight", None)
+# info_lines       = locals().get("info_lines", [])
+
+# ###
+# #     # ---------------------------
+# #     # Scaling modes
+# #     # ---------------------------
+# # st.subheader("Scale")
+# # scale_mode = st.radio(
+# #         "Method",
+# #         [
+# #             "Target batch weight (g)",
+# #             "Container: 5 L",
+# #             "Container: 1.5 gal",
+# #             "Containers: combo (5 L + 1.5 gal)",
+# #             "Scale by ingredient weight",
+# #             "Multiplier x",
+# #         ],
+# #         horizontal=True,
+# #         key=f"{ns}_scale_mode",
+# #     )
+
+# #     # Volume → grams needs density
+# #     # Default ~1.03 g/mL for liquid ice-cream mix; adjust if you track per-recipe densities.
+# # if scale_mode in {"Container: 5 L", "Container: 1.5 gal", "Containers: combo (5 L + 1.5 gal)"}:
+# #         density_g_per_ml = st.number_input(
+# #             "Mix density (g/mL)",
+# #             min_value=0.5,
+# #             max_value=1.5,
+# #             value=1.03,
+# #             step=0.01,
+# #             key=f"{ns}_density",
+# #         )
+# # else:
+# #         density_g_per_ml = None
+
+# #     # Constants
+# # GAL_TO_L = 3.785411784
+# # VOL_5L_L = 5.0
+# # VOL_1_5GAL_L = 1.5 * GAL_TO_L  # ≈ 5.678 L
+
+# # scale_factor = 1.0
+# # target_weight = None
+# # info_lines = []
+
+# ####
+# # --- Scaling logic (GUARDED; uses unified key helper `k`) ---
+# info_lines: list[str] = []
+# target_weight = None
+# scale_factor = 1.0
+
+# # If this logic already ran for this recipe/scope in the current run,
+# # don't create the widgets again—just read their values from session_state.
+# if st.session_state.get("scale_logic_rendered_for") == (SCOPE, selected_name):
+#     base_ings = rec.get("ingredients", {})
+#     original_weight = float(sum(base_ings.values()) or 0.0)
+#     scale_mode = st.session_state.get(k("mode"), "Multiplier x")
+#     density_g_per_ml = st.session_state.get(k("density"), density_g_per_ml)
+
+#     if scale_mode == "Target batch weight (g)":
+#         target_weight = st.session_state.get(k("target_weight"), original_weight or 1000.0)
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+#     elif scale_mode == "Container: 5 L":
+#         n_5l = st.session_state.get(k("n5l"), 1)
+#         total_l = n_5l * VOL_5L_L
+#         density_g_per_ml = density_g_per_ml or 1.03
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+#     elif scale_mode == "Container: 1.5 gal":
+#         n_15 = st.session_state.get(k("n15"), 1)
+#         total_l = n_15 * VOL_1_5GAL_L
+#         density_g_per_ml = density_g_per_ml or 1.03
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+#     elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#         n_5l = st.session_state.get(k("n5l_combo"), 1)
+#         n_15 = st.session_state.get(k("n15_combo"), 0)
+#         total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#         if total_l <= 0:
+#             total_l = 0.0
+#         density_g_per_ml = density_g_per_ml or 1.03
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [
+#             f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#             f"Total volume: {total_l:,.2f} L",
+#             f"Target weight: {target_weight:,.0f} g",
+#         ]
+
+#     elif scale_mode == "Scale by ingredient weight":
+#         base_ings = rec.get("ingredients", {})
+#         if not base_ings:
+#             scale_factor = 1.0
+#         else:
+#             anchor_ing = st.session_state.get(k("anchor_ing"))
+#             available_g = float(st.session_state.get(k("available_anchor"), 0.0))
+#             base_req = float(base_ings.get(anchor_ing, 0.0)) if anchor_ing else 0.0
+#             if base_req <= 0:
+#                 scale_factor = 1.0
+#             else:
+#                 scale_factor = available_g / base_req
+#                 info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+#     else:  # "Multiplier x"
+#         scale_factor = float(st.session_state.get(k("multiplier"), 1.0))
+#         info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+# else:
+#     # --- First (and only) time we render the widgets ---
+#     info_lines = []
+#     target_weight = None
+#     scale_factor = 1.0
+
+#     if scale_mode == "Target batch weight (g)":
+#         target_weight = st.number_input(
+#             "Target weight (g)",
+#             min_value=1.0,
+#             value=float(original_weight or 1000.0),
+#             step=100.0,
+#             key=k("target_weight"),
+#         )
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+#     elif scale_mode == "Container: 5 L":
+#         n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
+#         total_l = n_5l * VOL_5L_L
+#         density_g_per_ml = density_g_per_ml or 1.03
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+#     elif scale_mode == "Container: 1.5 gal":
+#         n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
+#         total_l = n_15 * VOL_1_5GAL_L
+#         density_g_per_ml = density_g_per_ml or 1.03
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+#     elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#         col_a, col_b = st.columns(2)
+#         with col_a:
+#             n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
+#         with col_b:
+#             n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
+#         total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#         if total_l <= 0:
+#             st.warning("Set at least one container.")
+#             total_l = 0.0
+#         density_g_per_ml = density_g_per_ml or 1.03
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [
+#             f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#             f"Total volume: {total_l:,.2f} L",
+#             f"Target weight: {target_weight:,.0f} g",
+#         ]
+
+#     elif scale_mode == "Scale by ingredient weight":
+#         if not base_ings:
+#             st.warning("This recipe has no ingredients.")
+#             scale_factor = 1.0
+#         else:
+#             ing_names = list(base_ings.keys())
+#             anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
+#             available_g = st.number_input(
+#                 f"Available {anchor_ing} (g)",
+#                 min_value=0.0,
+#                 value=float(base_ings.get(anchor_ing, 0.0)),
+#                 step=10.0,
+#                 key=k("available_anchor"),
+#             )
+#             base_req = float(base_ings.get(anchor_ing, 0.0))
+#             if base_req <= 0:
+#                 st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+#                 scale_factor = 1.0
+#             else:
+#                 scale_factor = available_g / base_req
+#                 info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+#     else:  # "Multiplier x"
+#         scale_factor = st.number_input(
+#             "Multiplier",
+#             min_value=0.01,
+#             value=1.0,
+#             step=0.1,
+#             key=k("multiplier"),
+#         )
+#         info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+#     # Mark that we've created the widgets for this recipe/scope
+#     st.session_state["scale_logic_rendered_for"] = (SCOPE, selected_name)
+
+# # --- Apply scaling ---
+# scaled = {ing: round(float(qty) * scale_factor, 2) for ing, qty in base_ings.items()}
+# total_scaled = round(sum(scaled.values()), 2)
+
+# # --- Display summary ---
+# st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+# if density_g_per_ml and total_scaled > 0:
+#     est_l = total_scaled / (density_g_per_ml * 1000.0)
+#     st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+# for line in info_lines:
+#     st.caption(line)
+
+# with st.expander("📋 Scaled ingredients (all)", expanded=True):
+#     for ing, grams in scaled.items():
+#         st.write(f"- {ing}: {grams:.0f} g")
+
+
+
+
+
+# # --- Scaling logic (uses unified key helper `k`) ---
+# info_lines: list[str] = []
+# target_weight = None
+# scale_factor = 1.0
+
+# if scale_mode == "Target batch weight (g)":
+#     target_weight = st.number_input(
+#         "Target weight (g)",
+#         min_value=1.0,
+#         value=float(original_weight or 1000.0),
+#         step=100.0,
+#         key=k("target_weight"),
+#     )
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+# elif scale_mode == "Container: 5 L":
+#     n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=k("n5l"))
+#     total_l = n_5l * VOL_5L_L
+#     # if user didn’t set density earlier, assume 1.03 g/mL
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+# elif scale_mode == "Container: 1.5 gal":
+#     n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=k("n15"))
+#     total_l = n_15 * VOL_1_5GAL_L
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+# elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#     col_a, col_b = st.columns(2)
+#     with col_a:
+#         n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=k("n5l_combo"))
+#     with col_b:
+#         n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=k("n15_combo"))
+#     total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#     if total_l <= 0:
+#         st.warning("Set at least one container.")
+#         total_l = 0.0
+#     density_g_per_ml = density_g_per_ml or 1.03
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [
+#         f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#         f"Total volume: {total_l:,.2f} L",
+#         f"Target weight: {target_weight:,.0f} g",
+#     ]
+
+# elif scale_mode == "Scale by ingredient weight":
+#     if not base_ings:
+#         st.warning("This recipe has no ingredients.")
+#         scale_factor = 1.0
+#     else:
+#         ing_names = list(base_ings.keys())
+#         anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=k("anchor_ing"))
+#         available_g = st.number_input(
+#             f"Available {anchor_ing} (g)",
+#             min_value=0.0,
+#             value=float(base_ings.get(anchor_ing, 0.0)),
+#             step=10.0,
+#             key=k("available_anchor"),
+#         )
+#         base_req = float(base_ings.get(anchor_ing, 0.0))
+#         if base_req <= 0:
+#             st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+#             scale_factor = 1.0
+#         else:
+#             scale_factor = available_g / base_req
+#             info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+# else:  # "Multiplier x"
+#     scale_factor = st.number_input(
+#         "Multiplier",
+#         min_value=0.01,
+#         value=1.0,
+#         step=0.1,
+#         key=k("multiplier"),
+#     )
+#     info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+# # --- Apply scaling ---
+# scaled = {ing: round(float(qty) * scale_factor, 2) for ing, qty in base_ings.items()}
+# total_scaled = round(sum(scaled.values()), 2)
+
+# # --- Display summary ---
+# st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+# if density_g_per_ml and total_scaled > 0:
+#     est_l = total_scaled / (density_g_per_ml * 1000.0)
+#     st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+# for line in info_lines:
+#     st.caption(line)
+
+# with st.expander("📋 Scaled ingredients (all)", expanded=True):
+#     for ing, grams in scaled.items():
+#         st.write(f"- {ing}: {grams:.0f} g")
+
+####
+# if scale_mode == "Target batch weight (g)":
+#     target_weight = st.number_input(
+#         "Target weight (g)",
+#         min_value=1.0,
+#         value=float(original_weight or 1000.0),
+#         step=100.0,
+#         key=f"{ns}_target_weight",
+#     )
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+# elif scale_mode == "Container: 5 L":
+#     n_5l = st.number_input(
+#         "How many 5 L pans?",
+#         min_value=1,
+#         value=1,
+#         step=1,
+#         key=f"{ns}_n5l",
+#     )
+#     total_l = n_5l * VOL_5L_L
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [
+#         f"Total volume: {total_l:,.2f} L",
+#         f"Target weight: {target_weight:,.0f} g",
+#     ]
+
+# elif scale_mode == "Container: 1.5 gal":
+#     n_15 = st.number_input(
+#         "How many 1.5 gal tubs?",
+#         min_value=1,
+#         value=1,
+#         step=1,
+#         key=f"{ns}_n15",
+#     )
+#     total_l = n_15 * VOL_1_5GAL_L
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [
+#         f"Total volume: {total_l:,.2f} L",
+#         f"Target weight: {target_weight:,.0f} g",
+#     ]
+
+# elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#     col_a, col_b = st.columns(2)
+#     with col_a:
+#         n_5l = st.number_input(
+#             "5 L pans",
+#             min_value=0,
+#             value=1,
+#             step=1,
+#             key=f"{ns}_n5l_combo",
+#         )
+#     with col_b:
+#         n_15 = st.number_input(
+#             "1.5 gal tubs",
+#             min_value=0,
+#             value=0,
+#             step=1,
+#             key=f"{ns}_n15_combo",
+#         )
+
+#     total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#     if total_l <= 0:
+#         st.warning("Set at least one container.")
+#         total_l = 0.0
+
+#     target_weight = total_l * 1000.0 * density_g_per_ml
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines += [
+#         f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#         f"Total volume: {total_l:,.2f} L",
+#         f"Target weight: {target_weight:,.0f} g",
+#     ]
+
+
+# elif scale_mode == "Scale by ingredient weight":
+#     if not base_ings:
+#         st.warning("This recipe has no ingredients.")
+#     else:
+#         ing_names = list(base_ings.keys())
+#         anchor_ing = st.selectbox(
+#             "Anchor ingredient",
+#             ing_names,
+#             key=f"{ns}_anchor_ing",
+#         )
+#         available_g = st.number_input(
+#             f"Available {anchor_ing} (g)",
+#             min_value=0.0,
+#             value=float(base_ings.get(anchor_ing, 0.0)),
+#             step=10.0,
+#             key=f"{ns}_available_anchor",
+#         )
+#         base_req = float(base_ings.get(anchor_ing, 0.0))
+#         if base_req <= 0:
+#             st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+#             scale_factor = 1.0
+#         else:
+#             scale_factor = available_g / base_req
+#             info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+####
+# if scale_mode == "Target batch weight (g)":
+#        target_weight = st.number_input(
+#            "Target weight (g)",
+#             min_value=1.0,
+#             value=float(original_weight or 1000.0),
+#             step=100.0,
+#             key=f"{ns}_target_weight",
+#         )
+#     scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#     info_lines.append(f"Target weight: {target_weight:,.0f} g")
+
+#     elif scale_mode == "Container: 5 L":
+#         n_5l = st.number_input("How many 5 L pans?", min_value=1, value=1, step=1, key=f"{ns}_n5l")
+#         total_l = n_5l * VOL_5L_L
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+#     elif scale_mode == "Container: 1.5 gal":
+#         n_15 = st.number_input("How many 1.5 gal tubs?", min_value=1, value=1, step=1, key=f"{ns}_n15")
+#         total_l = n_15 * VOL_1_5GAL_L
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [f"Total volume: {total_l:,.2f} L", f"Target weight: {target_weight:,.0f} g"]
+
+#     elif scale_mode == "Containers: combo (5 L + 1.5 gal)":
+#         col_a, col_b = st.columns(2)
+#         with col_a:
+#             n_5l = st.number_input("5 L pans", min_value=0, value=1, step=1, key=f"{ns}_n5l_combo")
+#         with col_b:
+#             n_15 = st.number_input("1.5 gal tubs", min_value=0, value=0, step=1, key=f"{ns}_n15_combo")
+
+#         total_l = n_5l * VOL_5L_L + n_15 * VOL_1_5GAL_L
+#         if total_l <= 0:
+#             st.warning("Set at least one container.")
+#             total_l = 0.0
+#         target_weight = total_l * 1000.0 * density_g_per_ml
+#         scale_factor = (target_weight / original_weight) if original_weight else 1.0
+#         info_lines += [
+#             f"5 L pans: {n_5l}  |  1.5 gal tubs: {n_15}",
+#             f"Total volume: {total_l:,.2f} L",
+#             f"Target weight: {target_weight:,.0f} g",
+#         ]
+
+#     elif scale_mode == "Scale by ingredient weight":
+#         if not base_ings:
+#             st.warning("This recipe has no ingredients.")
+#         else:
+#             ing_names = list(base_ings.keys())
+#             anchor_ing = st.selectbox("Anchor ingredient", ing_names, key=f"{ns}_anchor_ing")
+#             available_g = st.number_input(
+#                 f"Available {anchor_ing} (g)",
+#                 min_value=0.0,
+#                 value=float(base_ings.get(anchor_ing, 0.0)),
+#                 step=10.0,
+#                 key=f"{ns}_available_anchor",
+#             )
+#             base_req = float(base_ings.get(anchor_ing, 0.0))
+#             if base_req <= 0:
+#                 st.warning(f"Anchor ingredient '{anchor_ing}' has 0 g in the base recipe.")
+#                 scale_factor = 1.0
+#             else:
+#                 scale_factor = available_g / base_req
+#                 info_lines.append(f"Scale factor from {anchor_ing}: ×{scale_factor:.3f}")
+
+#     else:  # "Multiplier x"
+#         scale_factor = st.number_input(
+#             "Multiplier",
+#             min_value=0.01,
+#             value=1.0,
+#             step=0.1,
+#             key=f"{ns}_multiplier",
+#         )
+#         info_lines.append(f"Scale factor: ×{scale_factor:.3f}")
+
+#    # Apply scaling
+#     scaled = {ing: round(qty * scale_factor, 2) for ing, qty in base_ings.items()}
+#     total_scaled = round(sum(scaled.values()), 2)
+
+#     # Display summary
+#     st.metric("Total batch weight (g)", f"{total_scaled:,.2f}")
+#     if density_g_per_ml and total_scaled > 0:
+#         est_l = total_scaled / (density_g_per_ml * 1000.0)
+#         st.caption(f"Estimated volume: {est_l:,.2f} L @ {density_g_per_ml:.2f} g/mL")
+
+#     for line in info_lines:
+#         st.caption(line)
+
+#     with st.expander("📋 Scaled ingredients (all)"):
+#         for ing, grams in scaled.items():
+#             st.write(f"- {ing}: {grams:.0f} g")
+###
+# # ----- MAIN/ SUBRECIPE INSTRUCTIONS (re-bind to current selection) -----
+# selected_name = st.session_state.get("selected_recipe", selected_name)
+# rec = (recipes or {}).get(selected_name, {}) or {}
+
+# def _as_steps(obj):
+#     if not isinstance(obj, dict):
+#         return []
+#     steps = obj.get("instruction")
+#     if steps is None:
+#         steps = obj.get("instructions")
+#     if isinstance(steps, str):
+#         steps = [s for s in steps.splitlines() if s.strip()]
+#     elif not isinstance(steps, list):
+#         steps = []
+#     return steps
+
+# # Subrecipes
+# sub = rec.get("subrecipes") or {}
+# for sub_name, sub_obj in sub.items():
+#     steps = _as_steps(sub_obj)
+#     if steps:
+#         st.markdown(f"### 👩‍🍳 Subrecipe: {sub_name}")
+#         for i, step in enumerate(steps, 1):
+#             st.markdown(f"**{i}.** {step}")
+
+# # Main
+# steps = _as_steps(rec)
+# if steps:
+#     st.markdown(f"### 🧾 Instructions: {selected_name}")
+#     for i, step in enumerate(steps, 1):
+#         st.markdown(f"**{i}.** {step}")
+# elif not sub:
+#     st.info("This recipe has no instruction yet.")
+
+####
+    # ---------------------------
+    # Step-by-step execution
+    # ---------------------------
+    #
 
 ###
 # ---------- Step-by-step execution ----------
@@ -1093,6 +2077,119 @@ if step is not None:
         st.button("Start over", key=f"{key_prefix}_restart",
                   on_click=lambda: st.session_state.update({step_key: 0}))
 
+###
+#     # ---------- Step-by-step execution ----------
+#     st.subheader("Execute batch (step-by-step)")
+#     key_prefix = f"bs_{selected_recipe}"
+
+#     # Initialize step state
+#     if f"{key_prefix}_step" not in st.session_state:
+#         st.session_state[f"{key_prefix}_step"] = None
+#         st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
+
+#     # Start / Continue flow
+#     start_clicked = st.button("▶️ Start batch", key=f"{key_prefix}_start")
+#     if start_clicked:
+#         st.session_state[f"{key_prefix}_step"] = 0
+#         st.session_state[f"{key_prefix}_order"] = list(scaled.keys())
+
+#     step = st.session_state[f"{key_prefix}_step"]
+#     order = st.session_state[f"{key_prefix}_order"]
+
+#     if step is not None:
+#         if step < len(order):
+#             ing = order[step]
+#             grams = scaled.get(ing, 0)
+#             # exact phrasing: "ingredient amount grams"
+#             st.info(f"**{ing} {grams:.0f} grams**")
+
+#             col1, col2, col3 = st.columns(3)
+#             with col1:
+#                 if st.button("⬅️ Back", key=f"{key_prefix}_back", disabled=(step == 0)):
+#                     st.session_state[f"{key_prefix}_step"] = max(0, step - 1)
+#                     st.stop()
+#             with col2:
+#                 if st.button("⏹ Reset", key=f"{key_prefix}_reset"):
+#                     st.session_state[f"{key_prefix}_step"] = None
+#                     st.stop()
+#             with col3:
+#                 if st.button("Next ➡️", key=f"{key_prefix}_next"):
+#                     st.session_state[f"{key_prefix}_step"] = step + 1
+#                     st.stop()
+#         else:
+#             st.success("✅ Batch complete")
+#             if st.button("Start over", key=f"{key_prefix}_restart"):
+#                 st.session_state[f"{key_prefix}_step"] = 0
+#                 st.stop()
+
+
+
+# def flavor_inventory_section():
+#     st.header("Flavor Inventory")
+
+#     # Pick files safely even if constants are missing elsewhere
+#     flavor_inventory_file = INVENTORY_FILE if "INVENTORY_FILE" in globals() else "flavor_inventory.json"
+#     lineup_file = LINEUP_FILE if "LINEUP_FILE" in globals() else "weekly_lineup.json"
+
+#     lineup = load_json(lineup_file, [])               # expects a list of flavor names
+#     all_flavors = sorted(recipes.keys())
+
+#     show_only_lineup = st.checkbox(
+#         "Show only weekly lineup",
+#         value=bool(lineup),
+#         key="fi_show_only_lineup"
+#     )
+#     flavors = [f for f in all_flavors if (not show_only_lineup or f in lineup)]
+#     if not flavors:
+#         st.warning("No lineup found. Showing all recipes.")
+#         flavors = all_flavors
+
+#     # Load current flavor inventory; ensure all flavors are present
+#     current = load_json(flavor_inventory_file, {name: 0 for name in flavors})
+#     for name in flavors:
+#         current.setdefault(name, 0)
+
+#     # Filter UI
+#     filter_text = st.text_input("Filter flavors", "", key="fi_filter").strip().lower()
+#     display_flavors = [f for f in flavors if filter_text in f.lower()]
+
+#     # Editable grid (3 columns)
+#     cols = st.columns(3)
+#     updated = {}
+#     for i, name in enumerate(display_flavors):
+#         with cols[i % 3]:
+#             updated[name] = st.number_input(
+#                 name,
+#                 min_value=0.0,
+#                 value=float(current.get(name, 0)),
+#                 step=1.0,
+#                 key=f"fi_qty_{name.replace(' ', '_')}"
+#             )
+
+#     # Add/Remove flavors (optional)
+#     with st.expander("➕➖ Add or remove flavors"):
+#         new_name = st.text_input("Add a flavor", "", key="fi_add_name").strip()
+#         if st.button("Add flavor", key="fi_add_btn") and new_name:
+#             if new_name not in current:
+#                 current[new_name] = 0
+#                 save_json(flavor_inventory_file, current)
+#                 st.info("Flavor added. Press Save or reload to see it in the grid.")
+
+#         to_remove = st.selectbox("Remove a flavor", [""] + sorted(current.keys()), key="fi_remove_sel")
+#         if st.button("Remove selected", key="fi_remove_btn") and to_remove:
+#             current.pop(to_remove, None)
+#             save_json(flavor_inventory_file, current)
+#             st.info("Flavor removed. Press Save or reload to update the grid.")
+
+#     # Save
+#     if st.button("💾 Save flavor inventory", key="fi_save_btn"):
+#         current.update(updated)
+#         save_json(flavor_inventory_file, current)
+#         st.success("Flavor inventory saved.")
+
+#     with st.expander("⚙️ Files"):
+#         st.write(f"Flavor inventory file: `{flavor_inventory_file}`")
+#         st.write(f"Weekly lineup file: `{lineup_file}`")
 ####
 # ingredient inventory code 
 def ingredient_inventory_section():
@@ -1614,7 +2711,4 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
-
-
-
-
+###
