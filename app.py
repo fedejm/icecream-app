@@ -638,7 +638,7 @@ def make_scaled_recipe(base_recipe: dict, new_ingredients: dict) -> dict:
         "subrecipes": base_recipe.get("subrecipes", {}) or {},
     }
 
-def instructions_block(title: str, steps: list[str]):
+def _render_instructions_block(title: str, steps: list[str]):
     if not steps:
         return
     with st.expander(title, expanded=True):
@@ -2732,6 +2732,7 @@ def ingredient_inventory_section():
             st.dataframe(needs_order)
         else:
             st.success("✅ All ingredients above minimum thresholds.")
+
 
 
 
