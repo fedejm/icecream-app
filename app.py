@@ -149,6 +149,16 @@ recipes = {
             "clove": 1
         }
     },
+    "Chocolate Sorbet": {
+        "ingredients": {
+            "water": 1349,
+            "pectin": 4,
+            "sugar": 480,
+            "guar": 7,
+            "chocolate onyx": 140,
+            "dark cocoa": 20
+        }
+    },
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -2712,3 +2722,4 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
