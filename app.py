@@ -254,6 +254,18 @@ recipes = {
         },
         "instruction": []
     },
+    "Espresso": {
+        "ingredients": {
+            "milk": 2112,
+            "cream": 840,
+            "sugar": 680,
+            "guar": 8,
+            "dry milk": 200,
+            "yolks": 160,
+            "espresso": 40
+        },
+        "instruction": []
+    },
     "Fresh Mint": {
         "ingredients": {
             "milk": 31140,
@@ -451,12 +463,12 @@ recipes = {
     },
     "Pistachio": {
         "ingredients": {
-            "milk": 32640,
-            "cream": 750,
+            "milk": 29140,
+            "cream": 3250,
             "sugar": 8250,
             "guar": 110,
             "dry milk": 2750,
-            "yolks": 1000,
+            "yolks": 2000,
             "pistachio paste": 4500
         },
         "instruction": [
@@ -490,6 +502,18 @@ recipes = {
             "nutmeg": 25,
             "ginger": 122,
             "port": 409
+        }
+        },
+    "Sreawberry Gelato": {
+        "ingredients": {
+            "milk": 7398,
+            "cream": 4320,
+            "sugar": 4860,
+            "guar": 27,
+            "dry milk": 1620,
+            "yolks": 540,
+            "sreawberry": 8100,
+            "lemon": 135
         }
         },
     "Strawberry Preserves": {
@@ -2722,4 +2746,5 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
