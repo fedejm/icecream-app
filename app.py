@@ -149,6 +149,19 @@ recipes = {
             "clove": 1
         }
     },
+    "Chocolate Gelato": {
+        "ingredients": {
+            "milk": 90355,
+            "cream": 20400,
+            "sugar": 28050,
+            "guar": 255,
+            "dry milk": 8500,
+            "egg yolks": 6800,
+            "chocolate onyx": 13600,
+            "dark cocoa": 2040
+        }
+    }
+    ,
     "Chocolate Sorbet": {
         "ingredients": {
             "water": 1349,
@@ -2746,5 +2759,6 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
