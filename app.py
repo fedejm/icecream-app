@@ -138,6 +138,17 @@ recipes = {
         ]
     
 },
+    "Cardamom": {
+        "ingredients": {
+            "milk": 16614,
+            "cream": 5700,
+            "sugar": 4950,
+            "guar": 66,
+            "dry milk": 1650,
+            "egg yolks": 900,
+            "cardamom": 120
+        }
+    },
     "Chai": {
         "ingredients": {
             "cardamom mix": 2000,
@@ -2759,6 +2770,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
