@@ -266,6 +266,22 @@ recipes = {
         },
         "instruction": []
     },
+    "Egg Nog": {
+        "ingredients": {
+            "milk": 10020,
+            "cream": 3000,
+            "sugar": 3200,
+            "guar": 20,
+            "dry milk": 900,
+            "yolks": 2400,
+            "rum": 400,
+            "cinnamon": 20,
+            "nutmeg": 20,
+            "ginger": 20,
+        },
+        "instruction": []
+    }
+    ,
     "Earl Grey": {
         "ingredients": {
             "milk": 11016,
@@ -2770,6 +2786,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
