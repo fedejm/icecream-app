@@ -138,6 +138,15 @@ recipes = {
         ]
     
 },
+    "Brown Butter": {
+        "ingredients": {
+            "milk": 12606,
+            "brown sugar": 3350,
+            "guar": 44,
+            "dry milk": 1200,
+            "egg yolks": 800
+        }
+    },
     "Cardamom": {
         "ingredients": {
             "milk": 16614,
@@ -387,6 +396,18 @@ recipes = {
             "dry milk": 100,
             "yolks": 20,
             "green tea": 23
+        },
+        "instruction": []
+    },
+    "Hazelnut": {
+        "ingredients": {
+            "milk": 1164,
+            "cream": 80,
+            "sugar": 152,
+            "guar": 4,
+            "dry milk": 120,
+            "yolks": 80,
+            "hazelnut pr": 400
         },
         "instruction": []
     },
@@ -2786,6 +2807,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
