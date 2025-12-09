@@ -478,6 +478,16 @@ recipes = {
             }
         }
     },
+    "Mango Sorbet": {
+        "ingredients": {
+            "water": 10149,
+            "Mango": 13300,
+            "pectin": 41,
+            "sugar": 3510
+        },
+        "instruction": [],
+        "subrecipes": {}
+    },
     "Lemon Sorbet": {
         "ingredients": {
             "water": 5442,
@@ -2807,6 +2817,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
