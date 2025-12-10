@@ -138,6 +138,17 @@ recipes = {
         ]
     
 },
+    "Banana": {
+        "ingredients": {
+            "milk": 1958,
+            "cream": 735,
+            "sugar": 784,
+            "guar": 2,
+            "dry milk": 294, 
+            "egg yolks": 147,
+            "banana": 980
+        }
+    },
     "Brown Butter": {
         "ingredients": {
             "milk": 12606,
@@ -2817,6 +2828,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
