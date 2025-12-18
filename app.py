@@ -530,7 +530,7 @@ recipes = {
             "guar gum": 11,
             "sugar": 939, 
             "peanut butter": 447
-        },
+        }},
     "Pear Sorbet": {
         "ingredients": {
             "water": 5500,
@@ -2846,6 +2846,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
