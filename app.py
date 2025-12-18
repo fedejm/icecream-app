@@ -635,7 +635,17 @@ recipes = {
             "dry milk": 1664,
             "yolks": 605,
             "ricotta": 4538
-        }},
+        }},, 
+    "rum raisin": {
+        "ingredients": {
+            "milk": 1086,
+            "cream": 320,
+            "sugar": 330,
+            "guar": 4,
+            "dry milk": 100,
+            "yolks": 80,
+            "rum": 80
+        }}
         
     "tiramisu": {
         "ingredients": {
@@ -2828,6 +2838,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
