@@ -274,6 +274,21 @@ recipes = {
         "instruction": [],
         "subrecipes": {}
     },
+    "Donut": {
+        "ingredients": {
+            "milk": 1251,
+            "brown sugar": 330,
+            "guar": 4,
+            "dry milk": 120,
+            "yolks": 100,
+            "malted barley": 30,
+            "salt": 2, 
+            "yeast extract": 3, 
+            "donuts": 120, 
+            "butter (add later, like brown butter)": 160
+        },
+        "instruction": []
+    },
     "Dulce de Leche": {
         "ingredients": {
             "milk": 22775,
@@ -2846,6 +2861,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
