@@ -283,7 +283,7 @@ recipes = {
             "yolks": 100,
             "malted barley": 30,
             "salt": 2, 
-            "yeast extract": 3, 
+            "yeast extract": 1, 
             "donuts": 120, 
             "butter (add later, like brown butter)": 160
         },
@@ -2861,6 +2861,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
