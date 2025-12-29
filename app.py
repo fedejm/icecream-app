@@ -545,7 +545,7 @@ recipes = {
             "guar gum": 11,
             "sugar": 939, 
             "peanut butter": 447
-        }},,
+        }},
     "Peanut Butter": {
         "ingredients": {
             "milk": 24716,
@@ -2871,6 +2871,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
