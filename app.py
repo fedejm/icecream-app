@@ -148,7 +148,7 @@ recipes = {
             "egg yolks": 147,
             "banana": 980
         }
-    }
+    },
     "Brown Butter": {
         "ingredients": {
             "milk": 12606,
@@ -2871,6 +2871,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
