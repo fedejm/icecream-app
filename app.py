@@ -21,7 +21,12 @@ def load_recipes(path: str, mtime: float):
 mtime = _recipes_mtime(RECIPES_PATH)
 recipes = load_recipes(RECIPES_PATH, mtime)
 
-
+st.write("RECIPES_PATH:", RECIPES_PATH)
+st.write("Exists?", os.path.exists(RECIPES_PATH))
+if os.path.exists(RECIPES_PATH):
+    st.write("Modified:", os.path.getmtime(RECIPES_PATH))
+    st.write("Size:", os.path.getsize(RECIPES_PATH))
+####
 
 # --- File Constants ---
 LINEUP_FILE = "weekly_lineup.json"
@@ -2896,6 +2901,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
