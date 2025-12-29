@@ -232,7 +232,8 @@ recipes = {
             "dry milk": 1050,
             "yolks": 600,
             "cream cheese": 3000
-        }},
+        }
+    },
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -493,7 +494,7 @@ recipes = {
         },
         "instruction": [
             "1) Cook the water, sugar, honey and espresso on high until the sugar dissolves.",
-            "2) Once the sugar is dissolved, remove from heat and add the rum.",
+            "2) Once the sugar is dissolved, remove from heat and add the rum."
             
         ],
         "subrecipes": {}
@@ -2901,6 +2902,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
