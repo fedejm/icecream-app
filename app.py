@@ -203,6 +203,16 @@ recipes = {
             "dark cocoa": 20
         }
     },
+    "Creame Cheese": {
+        "ingredients": {
+            "milk": 7020,
+            "cream": 750,
+            "sugar": 2550,
+            "guar": 30,
+            "dry milk": 1050,
+            "yolks": 600,
+            "cream cheese": 3000
+        },
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -2871,6 +2881,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
