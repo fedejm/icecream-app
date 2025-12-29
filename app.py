@@ -4,7 +4,22 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List
 
+RECIPES_PATH = "recipes.json"  # <-- change if your file is elsewhere
 
+def _recipes_mtime(path: str) -> float:
+    try:
+        return os.path.getmtime(path)
+    except FileNotFoundError:
+        return 0.0
+
+@st.cache_data(ttl=60)
+def load_recipes(path: str, mtime: float):
+    # mtime is ONLY here to bust the cache when the file changes
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+mtime = _recipes_mtime(RECIPES_PATH)
+recipes = load_recipes(RECIPES_PATH, mtime)
 
 
 
@@ -2881,6 +2896,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
