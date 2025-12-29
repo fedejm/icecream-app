@@ -8,6 +8,10 @@ st.write("CWD:", os.getcwd())
 st.write("Files in CWD:", os.listdir("."))
 
 RECIPES_PATH = "recipes.json"  # <-- change if your file is elsewhere
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RECIPES_PATH = os.path.join(BASE_DIR, "recipes.json")
 
 def _recipes_mtime(path: str) -> float:
     try:
@@ -3562,6 +3566,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
