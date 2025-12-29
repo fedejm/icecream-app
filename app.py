@@ -555,7 +555,7 @@ recipes = {
             "dry milk": 2756, 
             "egg yolks": 2297,
             "peanut butter": 4594
-        }}
+        }},
     "Pear Sorbet": {
         "ingredients": {
             "water": 5500,
@@ -2871,6 +2871,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
