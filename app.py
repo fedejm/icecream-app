@@ -4,6 +4,30 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RECIPES_PATH = os.path.join(BASE_DIR, "recipes.json")
+
+def _recipes_mtime(path: str) -> float:
+    try:
+        return os.path.getmtime(path)
+    except FileNotFoundError:
+        return 0.0
+
+@st.cache_data(ttl=60)
+def load_recipes(path: str, mtime: float):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+mtime = _recipes_mtime(RECIPES_PATH)
+
+if not os.path.exists(RECIPES_PATH):
+    st.error(f"Missing recipes file: {RECIPES_PATH}")
+    st.info("Fix: add recipes.json to the repo (same folder as app.py) or update RECIPES_PATH.")
+    st.stop()
+
+recipes = load_recipes(RECIPES_PATH, mtime)
+
+
 st.write("CWD:", os.getcwd())
 st.write("Files in CWD:", os.listdir("."))
 
@@ -3566,6 +3590,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
