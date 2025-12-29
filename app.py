@@ -4,6 +4,9 @@ import json
 from datetime import datetime
 from typing import Any, Dict, List
 
+st.write("CWD:", os.getcwd())
+st.write("Files in CWD:", os.listdir("."))
+
 RECIPES_PATH = "recipes.json"  # <-- change if your file is elsewhere
 
 def _recipes_mtime(path: str) -> float:
@@ -3559,6 +3562,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
