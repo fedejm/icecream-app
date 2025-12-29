@@ -1,1 +1,14 @@
+{
+  "TEST": {
+    "ingredients": {
+      "milk": 1000,
+      "sugar": 200
+    },
+    "instruction": [
+      "Mix ingredients.",
+      "Pasteurize.",
+      "Freeze."
+    ]
+  }
+}
 
