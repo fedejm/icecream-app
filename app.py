@@ -758,7 +758,8 @@ recipes = {
             "2) Pasteurize the mix.",
             "3) Chill, batch freeze, and pack."
         ]
-    }}
+    }
+}
 
 ###
 ###
@@ -2902,6 +2903,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
