@@ -142,6 +142,7 @@ def ensure_inventory_files(recipes: dict):
         save_json(THRESHOLD_FILE, thresholds)
 
 
+# # --- Recipe Database ---
 # --- Recipe Database ---
 recipes = {
     "Brownies": {
@@ -151,33 +152,35 @@ recipes = {
             "eggs": 372,
             "sugar": 600,
             "flour": 161,
-            "salt": 4
+            "salt": 4,
         },
         "instruction": [
             "1) Bake at 350°F for 30 minutes."
-        ]
-    
-},
+        ],
+    },
+
     "Banana": {
         "ingredients": {
             "milk": 1958,
             "cream": 735,
             "sugar": 784,
             "guar": 2,
-            "dry milk": 294, 
+            "dry milk": 294,
             "egg yolks": 147,
-            "banana": 980
+            "banana": 980,
         }
     },
+
     "Brown Butter": {
         "ingredients": {
             "milk": 12606,
             "brown sugar": 3350,
             "guar": 44,
             "dry milk": 1200,
-            "egg yolks": 800
+            "egg yolks": 800,
         }
     },
+
     "Cardamom": {
         "ingredients": {
             "milk": 16614,
@@ -186,9 +189,10 @@ recipes = {
             "guar": 66,
             "dry milk": 1650,
             "egg yolks": 900,
-            "cardamom": 120
+            "cardamom": 120,
         }
     },
+
     "Chai": {
         "ingredients": {
             "cardamom mix": 2000,
@@ -197,9 +201,10 @@ recipes = {
             "nutmeg": 2,
             "all spice": 2,
             "black pepper": 2,
-            "clove": 1
+            "clove": 1,
         }
     },
+
     "Chocolate Gelato": {
         "ingredients": {
             "milk": 90355,
@@ -209,10 +214,10 @@ recipes = {
             "dry milk": 8500,
             "egg yolks": 6800,
             "chocolate onyx": 13600,
-            "dark cocoa": 2040
+            "dark cocoa": 2040,
         }
-    }
-    ,
+    },
+
     "Chocolate Sorbet": {
         "ingredients": {
             "water": 1349,
@@ -220,9 +225,10 @@ recipes = {
             "sugar": 480,
             "guar": 7,
             "chocolate onyx": 140,
-            "dark cocoa": 20
+            "dark cocoa": 20,
         }
     },
+
     "Creame Cheese": {
         "ingredients": {
             "milk": 7020,
@@ -231,9 +237,10 @@ recipes = {
             "guar": 30,
             "dry milk": 1050,
             "yolks": 600,
-            "cream cheese": 3000
+            "cream cheese": 3000,
         }
     },
+
     "Creme Brulee": {
         "ingredients": {
             "milk": 20300,
@@ -242,30 +249,31 @@ recipes = {
             "guar": 72,
             "dry milk": 2800,
             "yolks": 2400,
-            "caramel sauce": 3200
+            "caramel sauce": 3200,
         },
         "instruction": [
             "1) Weigh and mix all base ingredients except caramel sauce.",
             "2) Weigh the caramel ingredients and cook on high until the sauce reaches 220°F.",
             "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
             "4) Incorporate the caramel/base mix into the remainder of the base and mix well.",
-            "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+            "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in.",
         ],
         "subrecipes": {
             "caramel sauce": {
                 "ingredients": {
                     "sugar": 3200,
                     "water": 500,
-                    "honey": 50
+                    "honey": 50,
                 },
                 "instruction": [
                     "1) Combine sugar, water, and honey.",
                     "2) Cook on medium-high heat until sugar dissolves.",
-                    "3) Raise heat and cook until mixture reaches 220°F."
-                ]
+                    "3) Raise heat and cook until mixture reaches 220°F.",
+                ],
             }
-        }
+        },
     },
+
     "Creme Fraiche": {
         "ingredients": {
             "milk": 6902,
@@ -273,24 +281,26 @@ recipes = {
             "guar": 58,
             "dry milk": 2030,
             "yolks": 290,
-            "sour cream": 14500
+            "sour cream": 14500,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Crumble": {
         "ingredients": {
             "flour": 223,
             "sugar": 388,
             "cinnamon": 8,
-            "butter": 272
+            "butter": 272,
         },
         "instruction": [
             "1) Melt the butter.",
             "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
-            "3) Bake for 15 minutes at 350°F."
+            "3) Bake for 15 minutes at 350°F.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Cookie Dough": {
         "ingredients": {
             "butter": 396,
@@ -300,11 +310,12 @@ recipes = {
             "pasteurized egg yolks": 90,
             "vanilla extract": 16,
             "flour": 646,
-            "salt": 6
+            "salt": 6,
         },
         "instruction": [],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Donut": {
         "ingredients": {
             "milk": 1251,
@@ -313,13 +324,14 @@ recipes = {
             "dry milk": 120,
             "yolks": 100,
             "malted barley": 30,
-            "salt": 2, 
-            "yeast extract": 1, 
-            "donuts": 120, 
-            "butter (add later, like brown butter)": 160
+            "salt": 2,
+            "yeast extract": 1,
+            "donuts": 120,
+            "butter (add later, like brown butter)": 160,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Dulce de Leche": {
         "ingredients": {
             "milk": 22775,
@@ -328,10 +340,11 @@ recipes = {
             "guar": 75,
             "dry milk": 1000,
             "yolks": 2000,
-            "dulce de leche heladero": 13600
+            "dulce de leche heladero": 13600,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Egg Nog": {
         "ingredients": {
             "milk": 10020,
@@ -343,11 +356,11 @@ recipes = {
             "rum": 400,
             "cinnamon": 20,
             "nutmeg": 20,
-            "ginger": 20,
+            "ginger": 20,  # <-- removed trailing comma that broke parsing elsewhere
         },
-        "instruction": []
-    }
-    ,
+        "instruction": [],
+    },
+
     "Earl Grey": {
         "ingredients": {
             "milk": 11016,
@@ -356,10 +369,11 @@ recipes = {
             "guar": 44,
             "dry milk": 800,
             "yolks": 500,
-            "earl grey": 400
+            "earl grey": 400,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Espresso": {
         "ingredients": {
             "milk": 2112,
@@ -368,10 +382,11 @@ recipes = {
             "guar": 8,
             "dry milk": 200,
             "yolks": 160,
-            "espresso": 40
+            "espresso": 40,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Fresh Mint": {
         "ingredients": {
             "milk": 31140,
@@ -381,7 +396,7 @@ recipes = {
             "dry milk": 3000,
             "yolks": 750,
             "mint": 1250,
-            "blanched mint": 500
+            "blanched mint": 500,
         },
         "instruction": [
             "Day 1: Prepare Mint-Infused Milk",
@@ -395,55 +410,57 @@ recipes = {
             "7) Drain the mint and blend until very fine and smooth.",
             "Final Steps:",
             "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
-            "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+            "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
-   "Ginger": {
-    "ingredients": {
-        "milk": 936,
-        "cream": 380,
-        "sugar": 190,
-        "guar": 4,
-        "dry milk": 110,
-        "yolks": 80,
-        "caramelized ginger": 300
+
+    "Ginger": {
+        "ingredients": {
+            "milk": 936,
+            "cream": 380,
+            "sugar": 190,
+            "guar": 4,
+            "dry milk": 110,
+            "yolks": 80,
+            "caramelized ginger": 300,
+        },
+        "instruction": [],
+        "subrecipes": {},
     },
-    "instruction": [],
-    "subrecipes": {}
-}
-,
-"Ginger Caramelized": {
-    "ingredients": {
-        "honey": 20,
-        "water": 228,
-        "sugar": 173,
-        "ginger": 125
+
+    "Ginger Caramelized": {
+        "ingredients": {
+            "honey": 20,
+            "water": 228,
+            "sugar": 173,
+            "ginger": 125,
+        },
+        "instruction": [
+            "Caramelize the Ginger",
+            "1) Cut the Ginger into little pieces.",
+            "2) Cook the Water, Sugar and Honey on high until the sugar dissolves.",
+            "3) Add the cut Ginger and bring to a boil.",
+            "4) Simmer for 5 minutes.",
+        ],
+        "subrecipes": {},
     },
-    "instruction": [
-        "Caramelize the Ginger",
-        "1) Cut the Ginger into little pieces.",
-        "2) Cook the Water, Sugar and Honey on high until the sugar dissolves.",
-        "3) Add the cut Ginger and bring to a boil.",
-        "4) Simmer for 5 minutes."
-    ],
-    "subrecipes": { }
-}
-,
+
     "Graham Cracker Crust": {
         "ingredients": {
             "graham cracker crumble": 338,
             "butter": 310,
-            "sugar": 352
+            "sugar": 352,
         },
         "instruction": [
             "1) Process graham crackers on the Robocoupe.",
             "2) Mix ingredients on the mixer.",
             "3) Press ingredients down on a flat pan.",
-            "4) Bake for 15 minutes at 325°F."
+            "4) Bake for 15 minutes at 325°F.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Green Tea": {
         "ingredients": {
             "milk": 1223,
@@ -452,10 +469,11 @@ recipes = {
             "guar": 4,
             "dry milk": 100,
             "yolks": 20,
-            "green tea": 23
+            "green tea": 23,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Hazelnut": {
         "ingredients": {
             "milk": 1164,
@@ -464,49 +482,51 @@ recipes = {
             "guar": 4,
             "dry milk": 120,
             "yolks": 80,
-            "hazelnut pr": 400
+            "hazelnut pr": 400,
         },
-        "instruction": []
+        "instruction": [],
     },
+
     "Honeycomb": {
         "ingredients": {
             "sugar": 3000,
             "honey": 50,
             "water": 1450,
-            "baking soda": 250
+            "baking soda": 250,
         },
         "instruction": [
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
             "3) Continue cooking on high until 300°F.",
             "4) Add the baking soda and stir.",
-            "5) Pour the rising honeycomb on previously greased trays and let cool."
+            "5) Pour the rising honeycomb on previously greased trays and let cool.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Ladyfinger Sauce": {
         "ingredients": {
             "sugar": 900,
             "water": 255,
             "honey": 10,
             "espresso": 20,
-            "rum": 225
+            "rum": 225,
         },
         "instruction": [
             "1) Cook the water, sugar, honey and espresso on high until the sugar dissolves.",
-            "2) Once the sugar is dissolved, remove from heat and add the rum."
-            
+            "2) Once the sugar is dissolved, remove from heat and add the rum.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Lemon Bar": {
         "ingredients": {
             "crust": 566,
-            "filling": 1362
+            "filling": 1362,
         },
         "instruction": [
             "1) Bake the crust at 350°F for 15 minutes.",
-            "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
+            "2) Pour filling onto baked crust and bake at 350°F for 20 minutes.",
         ],
         "subrecipes": {
             "crust": {
@@ -514,86 +534,94 @@ recipes = {
                     "butter": 225,
                     "flour": 240,
                     "sugar": 100,
-                    "salt": 1
+                    "salt": 1,
                 },
                 "instruction": [
                     "1) Process all crust ingredients in a food processor until smooth.",
-                    "2) Press into a greased pan and bake for 15 minutes at 325°F."
-                ]
+                    "2) Press into a greased pan and bake for 15 minutes at 325°F.",
+                ],
             },
             "filling": {
                 "ingredients": {
                     "eggs (each)": 12,
                     "lemon juice": 360,
                     "sugar": 900,
-                    "flour": 90
+                    "flour": 90,
                 },
                 "instruction": [
                     "1) Beat all filling ingredients in a bowl until fully dissolved.",
-                    "2) Pour on top of the baked crust and bake for 20 minutes at 325°F."
-                ]
-            }
-        }
+                    "2) Pour on top of the baked crust and bake for 20 minutes at 325°F.",
+                ],
+            },
+        },
     },
+
     "Mango Sorbet": {
         "ingredients": {
             "water": 10149,
             "Mango": 13300,
             "pectin": 41,
-            "sugar": 3510
+            "sugar": 3510,
         },
         "instruction": [],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Lemon Sorbet": {
         "ingredients": {
             "water": 5442,
             "lemon": 3500,
             "pectin": 87,
             "guar gum": 12,
-            "sugar": 2625
+            "sugar": 2625,
         },
         "instruction": [],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Peach Preserves": {
         "ingredients": {
             "peaches": 1350,
             "sugar": 1250,
-            "lemon": 82
+            "lemon": 82,
         },
         "instruction": [
             "1) Combine cored peaches and sugar and let stand for 3 hours.",
             "2) Bring to boil, stirring occasionally.",
-            "3) Cook until it reaches 220°F and syrup is thick."
+            "3) Cook until it reaches 220°F and syrup is thick.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Vegan Peanut Butter": {
         "ingredients": {
             "water": 3085,
             "pectin": 18,
             "guar gum": 11,
-            "sugar": 939, 
-            "peanut butter": 447
-        }},
+            "sugar": 939,
+            "peanut butter": 447,
+        }
+    },
+
     "Peanut Butter": {
         "ingredients": {
             "milk": 24716,
             "cream": 3675,
             "sugar": 7810,
             "guar": 92,
-            "dry milk": 2756, 
+            "dry milk": 2756,
             "egg yolks": 2297,
-            "peanut butter": 4594
-        }},
+            "peanut butter": 4594,
+        }
+    },
+
     "Pear Sorbet": {
         "ingredients": {
             "water": 5500,
             "pectin": 100,
             "sugar": 3500,
             "pear": 10600,
-            "lemon": 300
+            "lemon": 300,
         },
         "instruction": [
             "1) Quarter the pears and remove their seeds.",
@@ -603,10 +631,11 @@ recipes = {
             "5) Cook until pears are soft and translucent.",
             "6) Re-weigh cooked pear+water mix.",
             "7) Add enough water to make up the difference between step 4 and 6.",
-            "8) Process all the ingredients in a blender until smooth."
+            "8) Process all the ingredients in a blender until smooth.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Pistachio": {
         "ingredients": {
             "milk": 29140,
@@ -615,25 +644,26 @@ recipes = {
             "guar": 110,
             "dry milk": 2750,
             "yolks": 2000,
-            "pistachio paste": 4500
+            "pistachio paste": 4500,
         },
         "instruction": [
             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
-            "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
+            "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth.",
         ],
         "subrecipes": {
             "pistachio paste": {
                 "ingredients": {
                     "roasted pistachios": 2967,
-                    "pistachio oil": 1532
+                    "pistachio oil": 1532,
                 },
                 "instruction": [
                     "1) Roast the pistachios if raw.",
-                    "2) Blend pistachios with pistachio oil until smooth and creamy."
-                ]
+                    "2) Blend pistachios with pistachio oil until smooth and creamy.",
+                ],
             }
-        }
+        },
     },
+
     "Pumpkin": {
         "ingredients": {
             "milk": 7611,
@@ -647,9 +677,10 @@ recipes = {
             "cinnamon": 67,
             "nutmeg": 25,
             "ginger": 122,
-            "port": 409
+            "port": 409,
         }
-        },
+    },
+
     "Sreawberry Gelato": {
         "ingredients": {
             "milk": 7398,
@@ -659,37 +690,40 @@ recipes = {
             "dry milk": 1620,
             "yolks": 540,
             "sreawberry": 8100,
-            "lemon": 135
+            "lemon": 135,
         }
-        },
+    },
+
     "Strawberry Preserves": {
         "ingredients": {
             "strawberries": 1250,
             "sugar": 1150,
             "pectin": 11,
-            "lemon": 89
+            "lemon": 89,
         },
         "instruction": [
             "1) Combine strawberries and sugar and let stand for 3 hours.",
             "2) Bring to boil, stirring occasionally.",
-            "3) Cook until it reaches 220°F and syrup is thick."
+            "3) Cook until it reaches 220°F and syrup is thick.",
         ],
-        "subrecipes": {}
+        "subrecipes": {},
     },
+
     "Toffee": {
         "ingredients": {
             "butter": 863,
             "sugar": 779,
             "honey": 17,
-            "salt": 4
+            "salt": 4,
         },
         "instruction": [
             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
             "2) Once sugar is completely dissolved, stop stirring.",
-            "3) Continue cooking on high until 300°F."
+            "3) Continue cooking on high until 300°F.",
         ],
-        "subrecipes": {}
-    }, 
+        "subrecipes": {},
+    },
+
     "ricotta": {
         "ingredients": {
             "milk": 15822,
@@ -698,8 +732,10 @@ recipes = {
             "guar": 61,
             "dry milk": 1664,
             "yolks": 605,
-            "ricotta": 4538
-        }},
+            "ricotta": 4538,
+        }
+    },
+
     "rum raisin": {
         "ingredients": {
             "milk": 1086,
@@ -708,9 +744,10 @@ recipes = {
             "guar": 4,
             "dry milk": 100,
             "yolks": 80,
-            "rum": 80
-        }},
-        
+            "rum": 80,
+        }
+    },
+
     "tiramisu": {
         "ingredients": {
             "milk": 1796,
@@ -721,12 +758,11 @@ recipes = {
             "yolks": 572,
             "marsala wine": 280,
             "espresso": 8,
-            "caramel": 200
+            "caramel": 200,
         },
-        "instruction": [
-           ]
+        "instruction": [],
     },
-        
+
     "vanilla": {
         "ingredients": {
             "milk": 28637,
@@ -736,13 +772,15 @@ recipes = {
             "dry milk": 2972,
             "yolks": 2161,
             "vanilla extract": 243,
-            "vanilla seeds": 162
+            "vanilla seeds": 162,
         },
         "instruction": [
             "1) Combine all ingredients.",
             "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."]
-    } ,
+            "3) Chill, batch freeze, and pack.",
+        ],
+    },
+
     "whisky": {
         "ingredients": {
             "milk": 1031,
@@ -751,18 +789,636 @@ recipes = {
             "guar": 4,
             "dry milk": 110,
             "yolks": 60,
-            "whisky": 40,
-                    },
+            "whisky": 40,  # <-- removed trailing comma inside this dict entry
+        },
         "instruction": [
             "1) Combine all ingredients.",
             "2) Pasteurize the mix.",
-            "3) Chill, batch freeze, and pack."
-        ]
-    }
+            "3) Chill, batch freeze, and pack.",
+        ],
+    },
 }
 
-###
-###
+# recipes = {
+#     "Brownies": {
+#         "ingredients": {
+#             "molding solitaire": 483,
+#             "butter": 380,
+#             "eggs": 372,
+#             "sugar": 600,
+#             "flour": 161,
+#             "salt": 4
+#         },
+#         "instruction": [
+#             "1) Bake at 350°F for 30 minutes."
+#         ]
+    
+# },
+#     "Banana": {
+#         "ingredients": {
+#             "milk": 1958,
+#             "cream": 735,
+#             "sugar": 784,
+#             "guar": 2,
+#             "dry milk": 294, 
+#             "egg yolks": 147,
+#             "banana": 980
+#         }
+#     },
+#     "Brown Butter": {
+#         "ingredients": {
+#             "milk": 12606,
+#             "brown sugar": 3350,
+#             "guar": 44,
+#             "dry milk": 1200,
+#             "egg yolks": 800
+#         }
+#     },
+#     "Cardamom": {
+#         "ingredients": {
+#             "milk": 16614,
+#             "cream": 5700,
+#             "sugar": 4950,
+#             "guar": 66,
+#             "dry milk": 1650,
+#             "egg yolks": 900,
+#             "cardamom": 120
+#         }
+#     },
+#     "Chai": {
+#         "ingredients": {
+#             "cardamom mix": 2000,
+#             "dry ginger": 4,
+#             "cinnamon": 4,
+#             "nutmeg": 2,
+#             "all spice": 2,
+#             "black pepper": 2,
+#             "clove": 1
+#         }
+#     },
+#     "Chocolate Gelato": {
+#         "ingredients": {
+#             "milk": 90355,
+#             "cream": 20400,
+#             "sugar": 28050,
+#             "guar": 255,
+#             "dry milk": 8500,
+#             "egg yolks": 6800,
+#             "chocolate onyx": 13600,
+#             "dark cocoa": 2040
+#         }
+#     }
+#     ,
+#     "Chocolate Sorbet": {
+#         "ingredients": {
+#             "water": 1349,
+#             "pectin": 4,
+#             "sugar": 480,
+#             "guar": 7,
+#             "chocolate onyx": 140,
+#             "dark cocoa": 20
+#         }
+#     },
+#     "Creame Cheese": {
+#         "ingredients": {
+#             "milk": 7020,
+#             "cream": 750,
+#             "sugar": 2550,
+#             "guar": 30,
+#             "dry milk": 1050,
+#             "yolks": 600,
+#             "cream cheese": 3000
+#         }
+#     },
+#     "Creme Brulee": {
+#         "ingredients": {
+#             "milk": 20300,
+#             "cream": 6828,
+#             "sugar": 4400,
+#             "guar": 72,
+#             "dry milk": 2800,
+#             "yolks": 2400,
+#             "caramel sauce": 3200
+#         },
+#         "instruction": [
+#             "1) Weigh and mix all base ingredients except caramel sauce.",
+#             "2) Weigh the caramel ingredients and cook on high until the sauce reaches 220°F.",
+#             "3) Add some of the base into the caramel sauce and keep cooking on low heat until homogeneous.",
+#             "4) Incorporate the caramel/base mix into the remainder of the base and mix well.",
+#             "5) Before batch freezing, burn some caramel crust pieces with a torch as mix-in."
+#         ],
+#         "subrecipes": {
+#             "caramel sauce": {
+#                 "ingredients": {
+#                     "sugar": 3200,
+#                     "water": 500,
+#                     "honey": 50
+#                 },
+#                 "instruction": [
+#                     "1) Combine sugar, water, and honey.",
+#                     "2) Cook on medium-high heat until sugar dissolves.",
+#                     "3) Raise heat and cook until mixture reaches 220°F."
+#                 ]
+#             }
+#         }
+#     },
+#     "Creme Fraiche": {
+#         "ingredients": {
+#             "milk": 6902,
+#             "sugar": 5220,
+#             "guar": 58,
+#             "dry milk": 2030,
+#             "yolks": 290,
+#             "sour cream": 14500
+#         },
+#         "instruction": []
+#     },
+#     "Crumble": {
+#         "ingredients": {
+#             "flour": 223,
+#             "sugar": 388,
+#             "cinnamon": 8,
+#             "butter": 272
+#         },
+#         "instruction": [
+#             "1) Melt the butter.",
+#             "2) Briefly mix ingredients on the mixer, and remove them before they form a homogeneous mix.",
+#             "3) Bake for 15 minutes at 350°F."
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Cookie Dough": {
+#         "ingredients": {
+#             "butter": 396,
+#             "sugar": 344,
+#             "brown sugar": 386,
+#             "pasteurized egg whites": 92,
+#             "pasteurized egg yolks": 90,
+#             "vanilla extract": 16,
+#             "flour": 646,
+#             "salt": 6
+#         },
+#         "instruction": [],
+#         "subrecipes": {}
+#     },
+#     "Donut": {
+#         "ingredients": {
+#             "milk": 1251,
+#             "brown sugar": 330,
+#             "guar": 4,
+#             "dry milk": 120,
+#             "yolks": 100,
+#             "malted barley": 30,
+#             "salt": 2, 
+#             "yeast extract": 1, 
+#             "donuts": 120, 
+#             "butter (add later, like brown butter)": 160
+#         },
+#         "instruction": []
+#     },
+#     "Dulce de Leche": {
+#         "ingredients": {
+#             "milk": 22775,
+#             "cream": 8000,
+#             "sugar": 2550,
+#             "guar": 75,
+#             "dry milk": 1000,
+#             "yolks": 2000,
+#             "dulce de leche heladero": 13600
+#         },
+#         "instruction": []
+#     },
+#     "Egg Nog": {
+#         "ingredients": {
+#             "milk": 10020,
+#             "cream": 3000,
+#             "sugar": 3200,
+#             "guar": 20,
+#             "dry milk": 900,
+#             "yolks": 2400,
+#             "rum": 400,
+#             "cinnamon": 20,
+#             "nutmeg": 20,
+#             "ginger": 20,
+#         },
+#         "instruction": []
+#     }
+#     ,
+#     "Earl Grey": {
+#         "ingredients": {
+#             "milk": 11016,
+#             "cream": 4000,
+#             "sugar": 3300,
+#             "guar": 44,
+#             "dry milk": 800,
+#             "yolks": 500,
+#             "earl grey": 400
+#         },
+#         "instruction": []
+#     },
+#     "Espresso": {
+#         "ingredients": {
+#             "milk": 2112,
+#             "cream": 840,
+#             "sugar": 680,
+#             "guar": 8,
+#             "dry milk": 200,
+#             "yolks": 160,
+#             "espresso": 40
+#         },
+#         "instruction": []
+#     },
+#     "Fresh Mint": {
+#         "ingredients": {
+#             "milk": 31140,
+#             "cream": 6500,
+#             "sugar": 8500,
+#             "guar": 110,
+#             "dry milk": 3000,
+#             "yolks": 750,
+#             "mint": 1250,
+#             "blanched mint": 500
+#         },
+#         "instruction": [
+#             "Day 1: Prepare Mint-Infused Milk",
+#             "1) Heat 2 gallons of milk (to be subtracted from the base) with some fresh mint to 250°F for 2 hours.",
+#             "2) After 2 hours, cover and refrigerate overnight to infuse the flavor.",
+#             "Day 2: Prepare Blanched Mint Purée",
+#             "3) 3 hours ahead, place 2 gallons of water in the freezer for ice water bath.",
+#             "4) Bring 2 gallons of fresh water to a boil.",
+#             "5) Carefully submerge the remaining fresh mint into the boiling water for 30 seconds.",
+#             "6) Immediately drain and shock the mint in the ice water bath to preserve its green color.",
+#             "7) Drain the mint and blend until very fine and smooth.",
+#             "Final Steps:",
+#             "8) Strain the infused milk from Day 1, pressing the mint to extract flavor.",
+#             "9) Mix the strained mint milk and blended mint purée with the remaining base ingredients until homogeneous."
+#         ],
+#         "subrecipes": {}
+#     },
+#    "Ginger": {
+#     "ingredients": {
+#         "milk": 936,
+#         "cream": 380,
+#         "sugar": 190,
+#         "guar": 4,
+#         "dry milk": 110,
+#         "yolks": 80,
+#         "caramelized ginger": 300
+#     },
+#     "instruction": [],
+#     "subrecipes": {}
+# }
+# ,
+# "Ginger Caramelized": {
+#     "ingredients": {
+#         "honey": 20,
+#         "water": 228,
+#         "sugar": 173,
+#         "ginger": 125
+#     },
+#     "instruction": [
+#         "Caramelize the Ginger",
+#         "1) Cut the Ginger into little pieces.",
+#         "2) Cook the Water, Sugar and Honey on high until the sugar dissolves.",
+#         "3) Add the cut Ginger and bring to a boil.",
+#         "4) Simmer for 5 minutes."
+#     ],
+#     "subrecipes": { }
+# }
+# ,
+#     "Graham Cracker Crust": {
+#         "ingredients": {
+#             "graham cracker crumble": 338,
+#             "butter": 310,
+#             "sugar": 352
+#         },
+#         "instruction": [
+#             "1) Process graham crackers on the Robocoupe.",
+#             "2) Mix ingredients on the mixer.",
+#             "3) Press ingredients down on a flat pan.",
+#             "4) Bake for 15 minutes at 325°F."
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Green Tea": {
+#         "ingredients": {
+#             "milk": 1223,
+#             "cream": 300,
+#             "sugar": 330,
+#             "guar": 4,
+#             "dry milk": 100,
+#             "yolks": 20,
+#             "green tea": 23
+#         },
+#         "instruction": []
+#     },
+#     "Hazelnut": {
+#         "ingredients": {
+#             "milk": 1164,
+#             "cream": 80,
+#             "sugar": 152,
+#             "guar": 4,
+#             "dry milk": 120,
+#             "yolks": 80,
+#             "hazelnut pr": 400
+#         },
+#         "instruction": []
+#     },
+#     "Honeycomb": {
+#         "ingredients": {
+#             "sugar": 3000,
+#             "honey": 50,
+#             "water": 1450,
+#             "baking soda": 250
+#         },
+#         "instruction": [
+#             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
+#             "2) Once sugar is completely dissolved, stop stirring.",
+#             "3) Continue cooking on high until 300°F.",
+#             "4) Add the baking soda and stir.",
+#             "5) Pour the rising honeycomb on previously greased trays and let cool."
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Ladyfinger Sauce": {
+#         "ingredients": {
+#             "sugar": 900,
+#             "water": 255,
+#             "honey": 10,
+#             "espresso": 20,
+#             "rum": 225
+#         },
+#         "instruction": [
+#             "1) Cook the water, sugar, honey and espresso on high until the sugar dissolves.",
+#             "2) Once the sugar is dissolved, remove from heat and add the rum."
+            
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Lemon Bar": {
+#         "ingredients": {
+#             "crust": 566,
+#             "filling": 1362
+#         },
+#         "instruction": [
+#             "1) Bake the crust at 350°F for 15 minutes.",
+#             "2) Pour filling onto baked crust and bake at 350°F for 20 minutes."
+#         ],
+#         "subrecipes": {
+#             "crust": {
+#                 "ingredients": {
+#                     "butter": 225,
+#                     "flour": 240,
+#                     "sugar": 100,
+#                     "salt": 1
+#                 },
+#                 "instruction": [
+#                     "1) Process all crust ingredients in a food processor until smooth.",
+#                     "2) Press into a greased pan and bake for 15 minutes at 325°F."
+#                 ]
+#             },
+#             "filling": {
+#                 "ingredients": {
+#                     "eggs (each)": 12,
+#                     "lemon juice": 360,
+#                     "sugar": 900,
+#                     "flour": 90
+#                 },
+#                 "instruction": [
+#                     "1) Beat all filling ingredients in a bowl until fully dissolved.",
+#                     "2) Pour on top of the baked crust and bake for 20 minutes at 325°F."
+#                 ]
+#             }
+#         }
+#     },
+#     "Mango Sorbet": {
+#         "ingredients": {
+#             "water": 10149,
+#             "Mango": 13300,
+#             "pectin": 41,
+#             "sugar": 3510
+#         },
+#         "instruction": [],
+#         "subrecipes": {}
+#     },
+#     "Lemon Sorbet": {
+#         "ingredients": {
+#             "water": 5442,
+#             "lemon": 3500,
+#             "pectin": 87,
+#             "guar gum": 12,
+#             "sugar": 2625
+#         },
+#         "instruction": [],
+#         "subrecipes": {}
+#     },
+#     "Peach Preserves": {
+#         "ingredients": {
+#             "peaches": 1350,
+#             "sugar": 1250,
+#             "lemon": 82
+#         },
+#         "instruction": [
+#             "1) Combine cored peaches and sugar and let stand for 3 hours.",
+#             "2) Bring to boil, stirring occasionally.",
+#             "3) Cook until it reaches 220°F and syrup is thick."
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Vegan Peanut Butter": {
+#         "ingredients": {
+#             "water": 3085,
+#             "pectin": 18,
+#             "guar gum": 11,
+#             "sugar": 939, 
+#             "peanut butter": 447
+#         }},
+#     "Peanut Butter": {
+#         "ingredients": {
+#             "milk": 24716,
+#             "cream": 3675,
+#             "sugar": 7810,
+#             "guar": 92,
+#             "dry milk": 2756, 
+#             "egg yolks": 2297,
+#             "peanut butter": 4594
+#         }},
+#     "Pear Sorbet": {
+#         "ingredients": {
+#             "water": 5500,
+#             "pectin": 100,
+#             "sugar": 3500,
+#             "pear": 10600,
+#             "lemon": 300
+#         },
+#         "instruction": [
+#             "1) Quarter the pears and remove their seeds.",
+#             "2) Fill a pot with the quartered pears and weigh.",
+#             "3) Add water to completely cover the pears.",
+#             "4) Weigh the water + pears in the pot.",
+#             "5) Cook until pears are soft and translucent.",
+#             "6) Re-weigh cooked pear+water mix.",
+#             "7) Add enough water to make up the difference between step 4 and 6.",
+#             "8) Process all the ingredients in a blender until smooth."
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Pistachio": {
+#         "ingredients": {
+#             "milk": 29140,
+#             "cream": 3250,
+#             "sugar": 8250,
+#             "guar": 110,
+#             "dry milk": 2750,
+#             "yolks": 2000,
+#             "pistachio paste": 4500
+#         },
+#         "instruction": [
+#             "1) If pistachios are raw, roast them at 300°F for 8 minutes.",
+#             "2) Mix the roasted pistachios and the pistachio oil in the Robocoupe for 10 minutes, then blend for 15 minutes until very smooth."
+#         ],
+#         "subrecipes": {
+#             "pistachio paste": {
+#                 "ingredients": {
+#                     "roasted pistachios": 2967,
+#                     "pistachio oil": 1532
+#                 },
+#                 "instruction": [
+#                     "1) Roast the pistachios if raw.",
+#                     "2) Blend pistachios with pistachio oil until smooth and creamy."
+#                 ]
+#             }
+#         }
+#     },
+#     "Pumpkin": {
+#         "ingredients": {
+#             "milk": 7611,
+#             "cream": 5290,
+#             "sugar": 2300,
+#             "guar": 46,
+#             "dry milk": 690,
+#             "yolks": 1150,
+#             "pumpkin": 2990,
+#             "brown sugar": 2300,
+#             "cinnamon": 67,
+#             "nutmeg": 25,
+#             "ginger": 122,
+#             "port": 409
+#         }
+#         },
+#     "Sreawberry Gelato": {
+#         "ingredients": {
+#             "milk": 7398,
+#             "cream": 4320,
+#             "sugar": 4860,
+#             "guar": 27,
+#             "dry milk": 1620,
+#             "yolks": 540,
+#             "sreawberry": 8100,
+#             "lemon": 135
+#         }
+#         },
+#     "Strawberry Preserves": {
+#         "ingredients": {
+#             "strawberries": 1250,
+#             "sugar": 1150,
+#             "pectin": 11,
+#             "lemon": 89
+#         },
+#         "instruction": [
+#             "1) Combine strawberries and sugar and let stand for 3 hours.",
+#             "2) Bring to boil, stirring occasionally.",
+#             "3) Cook until it reaches 220°F and syrup is thick."
+#         ],
+#         "subrecipes": {}
+#     },
+#     "Toffee": {
+#         "ingredients": {
+#             "butter": 863,
+#             "sugar": 779,
+#             "honey": 17,
+#             "salt": 4
+#         },
+#         "instruction": [
+#             "1) Cook on medium heat, stirring constantly until sugar dissolves.",
+#             "2) Once sugar is completely dissolved, stop stirring.",
+#             "3) Continue cooking on high until 300°F."
+#         ],
+#         "subrecipes": {}
+#     }, 
+#     "ricotta": {
+#         "ingredients": {
+#             "milk": 15822,
+#             "cream": 2420,
+#             "sugar": 5143,
+#             "guar": 61,
+#             "dry milk": 1664,
+#             "yolks": 605,
+#             "ricotta": 4538
+#         }},
+#     "rum raisin": {
+#         "ingredients": {
+#             "milk": 1086,
+#             "cream": 320,
+#             "sugar": 330,
+#             "guar": 4,
+#             "dry milk": 100,
+#             "yolks": 80,
+#             "rum": 80
+#         }},
+        
+#     "tiramisu": {
+#         "ingredients": {
+#             "milk": 1796,
+#             "cream": 440,
+#             "sugar": 480,
+#             "guar": 4,
+#             "dry milk": 220,
+#             "yolks": 572,
+#             "marsala wine": 280,
+#             "espresso": 8,
+#             "caramel": 200
+#         },
+#         "instruction": [
+#            ]
+#     },
+        
+#     "vanilla": {
+#         "ingredients": {
+#             "milk": 28637,
+#             "cream": 10806,
+#             "sugar": 8915,
+#             "guar": 135,
+#             "dry milk": 2972,
+#             "yolks": 2161,
+#             "vanilla extract": 243,
+#             "vanilla seeds": 162
+#         },
+#         "instruction": [
+#             "1) Combine all ingredients.",
+#             "2) Pasteurize the mix.",
+#             "3) Chill, batch freeze, and pack."]
+#     } ,
+#     "whisky": {
+#         "ingredients": {
+#             "milk": 1031,
+#             "cream": 440,
+#             "sugar": 315,
+#             "guar": 4,
+#             "dry milk": 110,
+#             "yolks": 60,
+#             "whisky": 40,
+#                     },
+#         "instruction": [
+#             "1) Combine all ingredients.",
+#             "2) Pasteurize the mix.",
+#             "3) Chill, batch freeze, and pack."
+#         ]
+#     }
+# }
+
+# ###
+# ###
 # --- Recipe schema normalizer (ensures keys exist) ---
 def normalize_recipes_schema(recipes: dict) -> dict:
     for name, r in list(recipes.items()):
@@ -2903,6 +3559,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
