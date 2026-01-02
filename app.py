@@ -636,9 +636,9 @@ recipes = {
 
     "Peanut Butter": {
         "ingredients": {
-            "milk": 24716,
+            "milk": 24945,
             "cream": 3675,
-            "sugar": 7810,
+            "sugar": 7580,
             "guar": 92,
             "dry milk": 2756,
             "egg yolks": 2297,
@@ -3590,6 +3590,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
