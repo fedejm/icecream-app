@@ -494,13 +494,13 @@ recipes = {
 
     "Green Tea": {
         "ingredients": {
-            "milk": 1223,
-            "cream": 300,
-            "sugar": 330,
-            "guar": 4,
-            "dry milk": 100,
-            "yolks": 20,
-            "green tea": 23,
+            "milk": 2347,
+            "cream": 900,
+            "sugar": 743,
+            "guar": 9,
+            "dry milk": 225,
+            "yolks": 225,
+            "green tea": 52,
         },
         "instruction": [],
     },
@@ -3590,6 +3590,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
