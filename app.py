@@ -349,16 +349,16 @@ recipes = {
 
     "Donut": {
         "ingredients": {
-            "milk": 1251,
-            "brown sugar": 330,
-            "guar": 4,
-            "dry milk": 120,
-            "yolks": 100,
-            "malted barley": 30,
-            "salt": 2,
-            "yeast extract": 1,
-            "donuts": 120,
-            "butter (add later, like brown butter)": 160,
+            "milk": 9380,
+            "brown sugar": 2475,
+            "guar": 33,
+            "dry milk": 900,
+            "yolks": 750,
+            "malted barley": 225,
+            "salt": 15,
+            "yeast extract": 5,
+            "donuts": 900,
+            "butter (add later, like brown butter)": 1200,
         },
         "instruction": [],
     },
@@ -3590,6 +3590,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
