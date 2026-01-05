@@ -28,8 +28,8 @@ if not os.path.exists(RECIPES_PATH):
 recipes = load_recipes(RECIPES_PATH, mtime)
 
 
-st.write("CWD:", os.getcwd())
-st.write("Files in CWD:", os.listdir("."))
+# st.write("CWD:", os.getcwd())
+# st.write("Files in CWD:", os.listdir("."))
 
 RECIPES_PATH = "recipes.json"  # <-- change if your file is elsewhere
 import os
@@ -52,11 +52,11 @@ def load_recipes(path: str, mtime: float):
 mtime = _recipes_mtime(RECIPES_PATH)
 recipes = load_recipes(RECIPES_PATH, mtime)
 
-st.write("RECIPES_PATH:", RECIPES_PATH)
-st.write("Exists?", os.path.exists(RECIPES_PATH))
-if os.path.exists(RECIPES_PATH):
-    st.write("Modified:", os.path.getmtime(RECIPES_PATH))
-    st.write("Size:", os.path.getsize(RECIPES_PATH))
+# st.write("RECIPES_PATH:", RECIPES_PATH)
+# st.write("Exists?", os.path.exists(RECIPES_PATH))
+# if os.path.exists(RECIPES_PATH):
+#     st.write("Modified:", os.path.getmtime(RECIPES_PATH))
+#     st.write("Size:", os.path.getsize(RECIPES_PATH))
 ####
 
 # --- File Constants ---
@@ -3590,6 +3590,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
