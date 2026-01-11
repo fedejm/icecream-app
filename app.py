@@ -202,6 +202,20 @@ recipes = {
         }
     },
 
+    "Blueberry Jam": {
+        "ingredients": {
+            "blueberries": 1000,
+            "sugar": 700,
+            "lemon juice": 30,
+                    },
+        "instruction": [
+            "1) Bring to a boil cooking at 300°F on the hot plate, stirring frequently.",
+            "2) Once it boils, bring it down to 250°F, stirring frequently.",
+            "3) Cook until it reaches 220°F.",
+        ],
+        "subrecipes": {},
+    },
+
     "Brown Butter": {
         "ingredients": {
             "milk": 12606,
@@ -3590,6 +3604,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
