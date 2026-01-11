@@ -826,6 +826,22 @@ recipes = {
         ],
     },
 
+    "waffle cone batter": {
+        "ingredients": {
+            "whole eggs": 2060,
+            "egg whites": 1236,
+            "water": 3710,
+            "sugar": 5802,
+            "flour": 5776,
+            "vanilla extract": 15,
+            "butter": 1334,
+            "cinnamon": 82,
+        },
+        "instruction": [
+           
+        ],
+    },
+
     "whisky": {
         "ingredients": {
             "milk": 1031,
@@ -1443,7 +1459,25 @@ recipes = {
 #             "1) Combine all ingredients.",
 #             "2) Pasteurize the mix.",
 #             "3) Chill, batch freeze, and pack."]
-#     } ,
+#     },
+#     "waffle cone batter": {
+#         "ingredients": {
+#             "whole egg": 2060
+#             "egg white": 1236,
+#             "water": 3710,
+#             "sugar": 5802,
+#             "flour": 5776,
+#             "butter": 1334,
+
+#             "cinnamon": 82,
+#                     },
+#         "instruction": [
+#             "1) Combine all ingredients.",
+#             "2) Pasteurize the mix.",
+#             "3) Chill, batch freeze, and pack."
+#         ]
+#     }
+# } ,
 #     "whisky": {
 #         "ingredients": {
 #             "milk": 1031,
@@ -3604,6 +3638,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
