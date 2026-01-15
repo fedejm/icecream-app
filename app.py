@@ -638,6 +638,31 @@ recipes = {
         "subrecipes": {},
     },
 
+    "Shortbread crust": {
+        "ingredients": {
+            "Shortbread Cookies": 250,
+            "butter": 120,
+            "powdered sugar": 20,
+            
+        },
+        "instruction": [
+            "1) Crumb the cookies on the processor.",
+            "2) Melt Butter.",
+            "3) Mix the cookie crumbs, powdered sugar and melted butter.",
+            "4) Place on a tray lined with parchment paper and cover with parchment paper.",
+            "5) Press the parchment paper covered cookes until you get a ~1/4 inch thick dough.",
+            "6) Place on the freezer until it hardens, then cut in small squares.",
+        ],
+        "subrecipes": {
+            
+                },
+                "instruction": [
+                    
+                ],
+            }
+        },
+    },
+
     "Vegan Peanut Butter": {
         "ingredients": {
             "water": 3085,
@@ -3638,6 +3663,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
