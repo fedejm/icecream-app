@@ -651,7 +651,8 @@ recipes = {
         "Press until you get a ~1/4 inch thick dough.",
         "Place in the freezer until it hardens, then cut into small squares."
     ],
-    "subrecipes": {},
+    "subrecipes": {}
+    },
 
     "Vegan Peanut Butter": {
         "ingredients": {
@@ -3653,6 +3654,7 @@ def ingredient_inventory_section():
         else:
             st.success("✅ All ingredients above minimum thresholds.")
 ###
+
 
 
 
