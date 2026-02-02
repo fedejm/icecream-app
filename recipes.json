@@ -89,6 +89,15 @@
     }
   },
 
+  "Cassis": {
+    "ingredients": {
+      "water": 2821,
+      "pectin": 36,
+      "sugar": 1710,
+      "cassis": 4433
+    }
+  },
+
   "Chai": {
     "ingredients": {
       "cardamom mix": 2000,
