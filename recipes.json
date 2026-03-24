@@ -134,6 +134,23 @@
     }
   },
 
+  "Cookie Butter": {
+    "ingredients": {
+      "biscoff cookies": 108,
+      "milk": 54,
+      "brown sugar": 12,
+      "vanilla extract": 6,
+      "cinnamon": 2,
+      "coconut oil": 14
+    },
+    "instruction": [
+      "1) grind biscoff cookies on Robocoupe until very fine.",
+      "2) add milk, brown sugar, vanilla, cinnamon and coconut oil.",
+      "3) continue blending until smooth."
+    ],
+    "subrecipes": {}
+  },
+
   "Creame Cheese": {
     "ingredients": {
       "milk": 7020,
