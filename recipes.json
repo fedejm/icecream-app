@@ -303,6 +303,14 @@
     "instruction": []
   },
 
+  "Earl Grey W. Mix": {
+    "ingredients": {
+      "White Mix": 19600,
+      "earl grey": 400
+    },
+    "instruction": []
+  },
+
   "Espresso": {
     "ingredients": {
       "milk": 2112,
