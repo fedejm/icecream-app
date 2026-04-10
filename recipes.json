@@ -89,6 +89,13 @@
     }
   },
 
+  "Cardamom W.Mix": {
+    "ingredients": {
+      "white mix": 9960,
+      "cardamom": 40
+    }
+  },
+
   "Cassis": {
     "ingredients": {
       "water": 2821,
