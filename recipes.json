@@ -746,6 +746,17 @@
     ]
   },
 
+  "Vanilla White Mix": {
+    "ingredients": {
+      "White Mix": 49325,
+      "vanilla extract": 225,
+      "vanilla seeds": 150
+    },
+    "instruction": [
+      
+    ]
+  },
+
   "waffle cone batter": {
     "ingredients": {
       "whole eggs": 2060,
