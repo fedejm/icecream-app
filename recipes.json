@@ -745,6 +745,18 @@
     "instruction": []
   },
 
+  "white mix": {
+    "ingredients": {
+      "milk": 53250,
+      "cream": 20000,
+      "sugar": 16500,
+      "guar": 250,
+      "dry milk": 5000,
+      "yolks": 5000
+      
+    }
+  },
+
   "whisky": {
     "ingredients": {
       "milk": 1031,
