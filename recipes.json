@@ -501,6 +501,17 @@
     "subrecipes": {}
   },
 
+  "Olive Oil": {
+    "ingredients": {
+      "skim milk": 17458,
+      "sugar": 5040,
+      "guar": 42,
+      "dry milk": 1400,
+      "egg yolks": 280,
+      "olive oil": 3780
+    }
+  },
+
   "Peach Preserves": {
     "ingredients": {
       "peaches": 1350,
