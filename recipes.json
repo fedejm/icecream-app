@@ -511,6 +511,24 @@
     "instruction": [],
     "subrecipes": {}
   },
+  {
+  "Marshmallow Fluff": {
+    "ingredients": {
+      "Cream of Tartar": 1,
+      "sugar": 255,
+      "honey": 150,
+      "water": 20,
+      "salt": 1
+    },
+    "instruction": [
+      "1) Place Egg Whites out of the fridge 2 hours before using (so they are close to room temp).",
+      "2) Separate Egg Whites and place on beater bowl with cream of tartar.",
+      "3) Cook Sugar, Honey, Water and Salt at 350°F.",
+      "4) When caramel reaches 220°F, start beating the egg whites at medium speed.",
+      "5) When caramel reaches 248°F, remove from heat, add to egg whites.",
+      "6) Whisk at med/high speed for 10 minutes."
+    ]
+  }
 
   "Lemon Sorbet": {
     "ingredients": {
