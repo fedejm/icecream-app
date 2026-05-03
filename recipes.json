@@ -515,8 +515,8 @@
   "Marshmallow Fluff": {
     "ingredients": {
       "Cream of Tartar": 1,
-      "sugar": 255,
-      "honey": 150,
+      "sugar": 150,
+      "honey": 255,
       "water": 20,
       "salt": 1
     },
