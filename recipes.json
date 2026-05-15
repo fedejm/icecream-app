@@ -511,6 +511,19 @@
     "instruction": [],
     "subrecipes": {}
   },
+
+  "HazelnutMascarpone Balsamic":
+    "ingredients": {
+      "milk": 2365,
+      "sugar": 825,
+      "guar": 10,
+      "dry milk": 350,
+      "yolks": 250,
+      "mascarpone": 1000,
+      "Balsamic": 200,
+    },
+    "instruction": []
+  },
   
   "Marshmallow Fluff": {
     "ingredients": {
