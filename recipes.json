@@ -513,7 +513,7 @@
   },
 
   "HazelnutMascarpone Balsamic":
-    "ingredients": {
+   { "ingredients": {
       "milk": 2365,
       "sugar": 825,
       "guar": 10,
