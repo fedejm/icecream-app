@@ -501,6 +501,19 @@
     }
   },
 
+  "Malted Milk":
+   { "ingredients": {
+      "milk": 1988,
+      "cream": 680,
+      "sugar": 520,
+      "guar": 8,
+      "dry milk": 240,
+      "yolks": 240,
+      "malted barley extract": 320
+    },
+    "instruction": []
+  },
+
   "Mango Sorbet": {
     "ingredients": {
       "water": 10149,
