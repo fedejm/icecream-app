@@ -837,6 +837,17 @@
     "instruction": []
   },
 
+  "white chocolate": {
+    "ingredients": {
+      "milk": 11790,
+      "sugar": 1600,
+      "guar gum": 20,
+      "dry milk": 990,
+      "egg yolks": 600,
+      "white chocolate": 5000
+    }
+  },
+
   "white mix": {
     "ingredients": {
       "milk": 53250,
