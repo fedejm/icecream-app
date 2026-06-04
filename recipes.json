@@ -25,6 +25,14 @@
     }
   },
 
+  "Basil": {
+    "ingredients": {
+      "white mix": 3920,
+      "fresh basil": 80
+     
+    }
+  },
+
   "Black Sesame": {
     "ingredients": {
       "milk": 10356,
