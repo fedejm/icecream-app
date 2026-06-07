@@ -615,6 +615,19 @@
     "subrecipes": {}
   },
 
+  "Plum": {
+    "ingredients": {
+      "plum": 2400,
+      "sugar": 720,
+      "water": 860,
+      "pectin": 20
+    },
+    "instruction": [
+     
+    ],
+    "subrecipes": {}
+  },
+
   "Shortbread crust": {
     "ingredients": {
       "Shortbread Cookies": 250,
