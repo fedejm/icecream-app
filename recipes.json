@@ -619,8 +619,9 @@
     "ingredients": {
       "plum": 2400,
       "sugar": 720,
-      "water": 860,
-      "pectin": 20
+      "water": 846,
+      "pectin": 30,
+      "guar gum": 4
     },
     "instruction": [
      
