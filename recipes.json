@@ -762,6 +762,19 @@
     "subrecipes": {}
   },
 
+  "Strawberry Sorbet": {
+    "ingredients": {
+      "strawberry": 4584,
+      "sugar": 1433,
+      "pectin": 42,
+      "water": 1581
+    },
+    "instruction": [
+      
+    ],
+    "subrecipes": {}
+  },
+
   "Toffee": {
     "ingredients": {
       "butter": 863,
