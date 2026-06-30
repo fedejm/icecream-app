@@ -829,6 +829,19 @@
     "instruction": []
   },
 
+  "tres leches": {
+    "ingredients": {
+      "milk": 1792,
+      "cream": 608,
+      "guar": 8,
+      "dry milk": 220,
+      "yolks": 160,
+      "cinnamon": 12,
+      "condensed milk": 1200
+    },
+    "instruction": []
+  },
+
   "vanilla": {
     "ingredients": {
       "milk": 28637,
