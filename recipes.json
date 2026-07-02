@@ -414,6 +414,21 @@
     "subrecipes": {}
   },
 
+  "Grape": {
+    "ingredients": {
+      "milk": 1308,
+      "cream": 735,
+      "sugar": 784,
+      "guar": 10,
+      "dry milk": 294,
+      "yolks": 147,
+      "grape": 1617,
+      "lemon": 5
+    },
+    "instruction": [],
+    "subrecipes": {}
+  },
+
   "Green Tea": {
     "ingredients": {
       "milk": 2347,
