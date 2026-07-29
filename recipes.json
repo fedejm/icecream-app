@@ -661,6 +661,18 @@
     "subrecipes": {}
   },
 
+  "Port": {
+    "ingredients": {
+      "milk": 5128,
+      "cream": 1800,
+      "sugar": 1600,
+      "guar": 22,
+      "dry milk": 550,
+      "egg yolks": 400,
+      "port": 500
+    }
+  },
+
   "Vegan Peanut Butter": {
     "ingredients": {
       "water": 3085,
