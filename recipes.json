@@ -615,6 +615,18 @@
       "olive oil": 3780
     }
   },
+  "Orange Curd": {
+    "ingredients": {
+      "skim milk": 995,
+      "cream": 350,
+      "sugar": 825,
+      "guar": 5,
+      "dry milk": 275,
+      "egg yolks": 800,
+      "lemon juice": 250,
+      "orange juice":1500
+    }
+  },
 
   "Peach Preserves": {
     "ingredients": {
