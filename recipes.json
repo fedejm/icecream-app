@@ -871,11 +871,11 @@
   "tres leches": {
     "ingredients": {
       "milk": 1844,
-      "cream": 248,
+      "cream": 328,
       "guar": 8,
       "dry milk": 220,
       "yolks": 160,
-      "condensed milk": 1520
+      "condensed milk": 1440
     },
     "instruction": []
   },
