@@ -138,6 +138,22 @@
     }
   },
 
+  "Chocolate Sauce": {
+    "ingredients": {
+      "water": 235,
+      "dark cocoa powder": 42, 
+      "vanilla": 4,
+      "sugar": 200
+    },
+    "instruction": [
+      "1) Whisk together water, cocoa and sugar.",
+      "2) Cook on medium heat ",
+      "3) When it boils, simmer for 30 seconds."
+    ],
+    "subrecipes": {}
+
+  },
+
   "Chocolate Sorbet": {
     "ingredients": {
       "water": 1349,
