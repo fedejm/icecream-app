@@ -659,10 +659,10 @@
       "water": 657,
       "peach": 1500,
       "lime": 135,
-      "ginger puree": 90,
+      "ginger puree": 180,
       "pectin": 15,
       "guar gum": 3,
-      "sugar": 600
+      "sugar": 510
     },
     "instruction": [],
     "subrecipes": {}
