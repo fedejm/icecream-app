@@ -654,15 +654,15 @@
     "subrecipes": {}
   },
 
-  "Peach Ginger Sorbet": {
+  "Peach Ginger Lime Sorbet": {
     "ingredients": {
-      "water": 657,
+      "water": 627,
       "peach": 1500,
       "lime": 135,
-      "ginger puree": 180,
+      "ginger puree": 270,
       "pectin": 15,
       "guar gum": 3,
-      "sugar": 510
+      "sugar": 450
     },
     "instruction": [],
     "subrecipes": {}
