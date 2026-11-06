@@ -668,6 +668,24 @@
     "subrecipes": {}
   },
 
+  "Pecan Pie Filling": {
+    "ingredients": {
+      "brown sugar": 1378,
+      "sugar": 660,
+      "eggs": 345,
+      "milk": 210,
+      "vanilla": 22,
+      "butter": 385
+    },
+    "instruction": [
+      "1) On a saucepan melt the butter on low.",
+      "2) Incorporate the dry ingredients, milk, vanilla and eggs and stir until mixed.",
+      "3) Cook until it reaches 220°F (don't let it go over 250°F because the eggs will scramble.",
+      "4) Remove from heat."
+    ],
+    "subrecipes": {}
+  },
+
   "Plum": {
     "ingredients": {
       "plum": 2400,
